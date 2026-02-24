@@ -42,5 +42,5 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./docker-volumes/postgres:var/lib/postgresql
+      - ./docker-volumes/postgres:/var/lib/postgresql
     
