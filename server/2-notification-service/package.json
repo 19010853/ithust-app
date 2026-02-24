@@ -39,6 +39,7 @@
     "tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
+    "@19010853/ithust-shared": "^0.0.18",
     "@elastic/elasticsearch": "^8.10.0",
     "amqplib": "^0.10.3",
     "dotenv": "^16.3.1",
