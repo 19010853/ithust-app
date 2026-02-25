@@ -46,6 +46,9 @@ services:
     container_name: rabbitmq_container
     image: rabbitmq:3.13-rc-management-alpine
     restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=ithust
+      - RABBITMQ_DEFAULT_PASS=ithustpass
     ports:
      # AMQP Protocol port
      - '5672:5672'
