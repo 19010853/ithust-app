@@ -88,6 +88,36 @@ services:
     depends_on:
       - elasticsearch
 
+  gateway:
+    container_name: gateway_container
+    build:
+      context: ../server/1-gateway-service
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - 4000:4000
+    env_file: ../server/1-gateway-service/.env
+    environment:
+        - ENABLE_APM=0
+        - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
+        - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
+        - NODE_ENV=development
+        - SECRET_KEY_ONE=115179afbb25d7e0607053c2a5a00d3d
+        - SECRET_KEY_TWO=d8c2a398015c7534431afb798617ce94
+        - CLIENT_URL=http://localhost:3000
+        - AUTH_BASE_URL=http://localhost:4002
+        - USERS_BASE_URL=http://localhost:4003
+        - GIG_BASE_URL=http://localhost:4004
+        - MESSAGE_BASE_URL=http://localhost:4005
+        - ORDER_BASE_URL=http://localhost:4006
+        - REVIEW_BASE_URL=http://localhost:4007
+        - REDIS_HOST=redis://redis_container:6379
+        - ELASTIC_SEARCH_URL=http://elasticsearch_container:9200
+        - ELASTIC_APM_SERVER_URL=http://localhost:8200
+        - ELASTIC_APM_SECRET_TOKEN=
+    depends_on:
+      - elasticsearch
+
   notifications:
     container_name: notifications_container
     build:
