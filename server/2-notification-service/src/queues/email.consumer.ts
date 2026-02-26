@@ -1,8 +1,9 @@
-import { winstonLogger } from "@19010853/ithust-shared";
+import { IEmailLocals, winstonLogger } from "@19010853/ithust-shared";
 import { config } from "@notifications/config";
 import { Channel, ConsumeMessage } from "amqplib";
 import { Logger } from "winston";
 import { createConnection } from "./connection";
+import { sendEmail } from "./mail.transport";
 
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'notificationQueueConnection', 'debug');
 
@@ -18,9 +19,18 @@ async function consumeAuthEmailMessages(channel: Channel): Promise<void> {
         const jobQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
         await channel.bindQueue(jobQueue.queue, exchangeName, routingKey);
         channel.consume(jobQueue.queue, async (msg: ConsumeMessage | null) => {
-            console.log(JSON.parse(msg!.content.toString()));
+            const { receiverEmail, username, verifyLink, resetLink, template, otp } = JSON.parse(msg!.content.toString());
+            const locals: IEmailLocals = {
+                appLink: `${config.CLIENT_URL}`,
+                appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
+                username,
+                verifyLink,
+                resetLink,
+                otp
+            };
+            await sendEmail(template, receiverEmail, locals);
             channel.ack(msg!);
-        })
+        });
     } catch (error) {
         log.log('error', 'NotificationService EmailConsumer consumeAuthMessages() method error:', error);
     }
@@ -35,10 +45,67 @@ async function consumeOrderEmailMessages(channel: Channel): Promise<void> {
         const routingKey = 'order-email';
         const queueName = 'order-email-queue';
         await channel.assertExchange(exchangeName, 'direct');
-        const jobberQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
-        await channel.bindQueue(jobberQueue.queue, exchangeName, routingKey);
-        channel.consume(jobberQueue.queue, async (msg: ConsumeMessage | null) => {
-            console.log(JSON.parse(msg!.content.toString()));
+        const jobQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
+        await channel.bindQueue(jobQueue.queue, exchangeName, routingKey);
+        channel.consume(jobQueue.queue, async (msg: ConsumeMessage | null) => {
+            const {
+                receiverEmail,
+                username,
+                template,
+                sender,
+                offerLink,
+                amount,
+                buyerUsername,
+                sellerUsername,
+                title,
+                description,
+                deliveryDays,
+                orderId,
+                orderDue,
+                requirements,
+                orderUrl,
+                originalDate,
+                newDate,
+                reason,
+                subject,
+                header,
+                type,
+                message,
+                serviceFee,
+                total
+            } = JSON.parse(msg!.content.toString());
+            const locals: IEmailLocals = {
+                appLink: `${config.CLIENT_URL}`,
+                appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
+                username,
+                sender,
+                offerLink,
+                amount,
+                buyerUsername,
+                sellerUsername,
+                title,
+                description,
+                deliveryDays,
+                orderId,
+                orderDue,
+                requirements,
+                orderUrl,
+                originalDate,
+                newDate,
+                reason,
+                subject,
+                header,
+                type,
+                message,
+                serviceFee,
+                total
+            };
+            if (template === 'orderPlaced') {
+                await sendEmail('orderPlaced', receiverEmail, locals);
+                await sendEmail('orderReceipt', receiverEmail, locals);
+            } else {
+                await sendEmail(template, receiverEmail, locals);
+            }
             channel.ack(msg!);
         });
     } catch (error) {
