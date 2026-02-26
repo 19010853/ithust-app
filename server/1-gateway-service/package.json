@@ -43,7 +43,10 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "@19010853/ithust-shared": "^0.0.18",
     "@jest/types": "^29.6.3",
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^20.8.10",
     "@types/compression": "^1.7.4",
     "@types/cookie-session": "^2.0.46",
     "@types/cors": "^2.8.15",
