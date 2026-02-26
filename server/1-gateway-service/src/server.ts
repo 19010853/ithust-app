@@ -9,13 +9,14 @@ import compression from "compression";
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import http from 'http';
-// import { isAxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { config } from "@gateway/config";
 import { elasticSearch } from "./elasticsearch";
 import { appRoutes } from "./routes";
 
 
 const SERVER_PORT = 4000;
+const DEFAULT_ERROR_CODE = 500;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gatewayServer', 'debug');
 
 export class GatewayServer {
@@ -82,10 +83,10 @@ export class GatewayServer {
                 res.status(error.statusCode).json(error.serializedErrors());
             }
 
-            // if (isAxiosError(error)) {
-            //     log.log('error', `GatewayService Axios Error - ${error?.response?.data?.comingFrom}:`, error);
-            //     res.status(error?.response?.data?.statusCode ?? DEFAULT_ERROR_CODE).json({ message: error?.response?.data?.message ?? 'Error occurred.' });
-            // }
+            if (isAxiosError(error)) {
+                log.log('error', `GatewayService Axios Error - ${error?.response?.data?.comingFrom}:`, error);
+                res.status(error?.response?.data?.statusCode ?? DEFAULT_ERROR_CODE).json({ message: error?.response?.data?.message ?? 'Error occurred.' });
+            }
 
             next();
         });
