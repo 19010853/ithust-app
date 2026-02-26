@@ -10,12 +10,13 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import http from 'http';
 import { isAxiosError } from "axios";
+import { config } from "@gateway/config";
 
 const DEFAULT_ERROR_CODE = 500;
 
 
 const SERVER_PORT = 4000;
-const log: Logger = winstonLogger('', 'gatewayServer', 'debug');
+const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gatewayServer', 'debug');
 
 export class GatewayServer {
     private app: Application;
@@ -38,15 +39,15 @@ export class GatewayServer {
         app.use(
             cookieSession({
                 name: 'session',
-                keys: [],
+                keys: [`${config.SECRET_KEY_ONE}`, `${config.SECRET_KEY_TWO}`],
                 maxAge: 24 * 7 * 3600000,
-                secure: false // update with value from config
+                secure: config.NODE_ENV !== 'development'
             })
         );
         app.use(hpp());
         app.use(helmet());
         app.use(cors({
-            origin: '',
+            origin: config.CLIENT_URL,
             credentials: true,
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
             allowedHeaders: ['Content-Type', 'Authorization']
@@ -59,7 +60,7 @@ export class GatewayServer {
         app.use(urlencoded({ extended: true, limit: '200mb' }));
     }
 
-    private routesMiddleware(app: Application): void {
+    private routesMiddleware(_app: Application): void {
 
     }
 
