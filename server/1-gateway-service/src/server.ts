@@ -11,6 +11,7 @@ import { StatusCodes } from "http-status-codes";
 import http from 'http';
 import { isAxiosError } from "axios";
 import { config } from "@gateway/config";
+import { elasticSearch } from "./elasticsearch";
 
 const DEFAULT_ERROR_CODE = 500;
 
@@ -65,7 +66,7 @@ export class GatewayServer {
     }
 
     private startElasticSearch(): void {
-
+        elasticSearch.checkConnection();
     }
 
     private errorHandler(app: Application): void {
