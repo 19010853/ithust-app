@@ -9,11 +9,10 @@ import compression from "compression";
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import http from 'http';
-import { isAxiosError } from "axios";
+// import { isAxiosError } from "axios";
 import { config } from "@gateway/config";
 import { elasticSearch } from "./elasticsearch";
-
-const DEFAULT_ERROR_CODE = 500;
+import { appRoutes } from "./routes";
 
 
 const SERVER_PORT = 4000;
@@ -61,8 +60,8 @@ export class GatewayServer {
         app.use(urlencoded({ extended: true, limit: '200mb' }));
     }
 
-    private routesMiddleware(_app: Application): void {
-
+    private routesMiddleware(app: Application): void {
+        appRoutes(app);
     }
 
     private startElasticSearch(): void {
@@ -83,10 +82,10 @@ export class GatewayServer {
                 res.status(error.statusCode).json(error.serializedErrors());
             }
 
-            if (isAxiosError(error)) {
-                log.log('error', `GatewayService Axios Error - ${error?.response?.data?.comingFrom}:`, error);
-                res.status(error?.response?.data?.statusCode ?? DEFAULT_ERROR_CODE).json({ message: error?.response?.data?.message ?? 'Error occurred.' });
-            }
+            // if (isAxiosError(error)) {
+            //     log.log('error', `GatewayService Axios Error - ${error?.response?.data?.comingFrom}:`, error);
+            //     res.status(error?.response?.data?.statusCode ?? DEFAULT_ERROR_CODE).json({ message: error?.response?.data?.message ?? 'Error occurred.' });
+            // }
 
             next();
         });

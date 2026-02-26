@@ -30,7 +30,7 @@
       {
         "transform": "typescript-transform-paths",
         "afterDeclarations": true
-      },
+      }
     ],
     "paths": {
       "@gateway/*": [
