@@ -87,6 +87,28 @@ services:
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     depends_on:
       - elasticsearch
+
+  notifications:
+    container_name: notifications_container
+    build:
+      context: ../server/2-notification-service
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - 4001:4001
+    env_file: ../server/2-notification-service/.env
+    environment:
+      - ENABLE_APM=0
+      - NODE_ENV=development
+      - CLIENT_URL=http://localhost:3000
+      - RABBITMQ_ENDPOINT=amqp://ithust:ithustpass@localhost:5672
+      - SENDER_EMAIL=willow.lubowitz@ethereal.email
+      - SENDER_EMAIL_PASSWORD=A7efG3qU8da958nKwt
+      - ELASTIC_SEARCH_URL=http://localhost:9200
+      - ELASTIC_APM_SERVER_URL=http://localhost:8200
+      - ELASTIC_APM_SECRET_TOKEN=
+    depends_on:
+      - elasticsearch 
     
 networks:
   elastic:
