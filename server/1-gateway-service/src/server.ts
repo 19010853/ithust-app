@@ -13,6 +13,7 @@ import { isAxiosError } from "axios";
 import { config } from "@gateway/config";
 import { elasticSearch } from "./elasticsearch";
 import { appRoutes } from "./routes";
+import { axiosAuthInstance } from "./services/api/auth.service";
 
 
 const SERVER_PORT = 4000;
@@ -52,7 +53,14 @@ export class GatewayServer {
             credentials: true,
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
             allowedHeaders: ['Content-Type', 'Authorization']
-        }))
+        }));
+
+        app.use((req: Request, _res: Response, next: NextFunction) => {
+            if (req.session?.jwt) {
+                axiosAuthInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
+            }
+            next();
+        });
     }
 
     private standardMiddleware(app: Application): void {

@@ -1,5 +1,4 @@
 import path from 'path';
-
 import { IEmailLocals, winstonLogger } from '@19010853/ithust-shared';
 import { Logger } from 'winston';
 import { config } from '@notifications/config';
@@ -20,7 +19,7 @@ async function emailTemplates(template: string, receiver: string, locals: IEmail
         });
         const email: Email = new Email({
             message: {
-                from: `Jobber App <${config.SENDER_EMAIL}>`
+                from: `ITHust App <${config.SENDER_EMAIL}>`
             },
             send: true,
             preview: false,

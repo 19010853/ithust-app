@@ -9,7 +9,7 @@ import { verify } from "jsonwebtoken";
 import compression from "compression";
 import { checkConnection } from "./elasticsearch";
 import http from 'http';
-import { authRoutes } from "./routes";
+import { appRoutes } from "./routes";
 import { createConnection } from "./queues/connection";
 import { Channel } from "amqplib";
 
@@ -56,7 +56,7 @@ function standardMiddleware(app: Application): void {
 }
 
 function routesMiddleware(app: Application): void {
-    authRoutes(app);
+    appRoutes(app);
 }
 
 async function startQueues(): Promise<void> {
