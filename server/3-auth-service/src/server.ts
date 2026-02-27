@@ -9,6 +9,7 @@ import { verify } from "jsonwebtoken";
 import compression from "compression";
 import { checkConnection } from "./elasticsearch";
 import http from 'http';
+import { authRoutes } from "./routes";
 
 const SERVER_PORT = 4002;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'authenticationServer', 'debug');
@@ -51,7 +52,7 @@ function standardMiddleware(app: Application): void {
 }
 
 function routesMiddleware(app: Application): void {
-    console.log(app);
+    authRoutes(app);
 }
 
 async function startQueues(): Promise<void> {
