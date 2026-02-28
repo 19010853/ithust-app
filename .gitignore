@@ -39,3 +39,4 @@ Thumbs.db
 
 # Docker data volumes (crucial for ignoring large database files)
 volumes/docker-volumes/
+apiCalls

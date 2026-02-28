@@ -40,13 +40,13 @@
     "socket.io-client": "^4.7.2",
     "typescript": "^5.2.2",
     "typescript-transform-paths": "^3.4.6",
+    "useragent": "^2.3.0",
     "winston": "^3.11.0"
   },
   "devDependencies": {
     "@19010853/ithust-shared": "^0.0.18",
     "@jest/types": "^29.6.3",
     "@types/bcrypt": "^5.0.2",
-    "@types/node": "^20.8.10",
     "@types/compression": "^1.7.4",
     "@types/cookie-session": "^2.0.46",
     "@types/cors": "^2.8.15",
@@ -54,6 +54,8 @@
     "@types/hpp": "^0.2.4",
     "@types/jest": "^29.5.7",
     "@types/jsonwebtoken": "^9.0.4",
+    "@types/node": "^20.8.10",
+    "@types/useragent": "^2.3.4",
     "@typescript-eslint/eslint-plugin": "^6.9.1",
     "@typescript-eslint/parser": "^6.9.1",
     "eslint": "^8.52.0",

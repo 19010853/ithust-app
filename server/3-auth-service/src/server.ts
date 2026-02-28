@@ -39,7 +39,11 @@ function securityMiddleware(app: Application): void {
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
         })
     );
+    // gatewaytoken into gatewayToken error
     app.use((req: Request, _res: Response, next: NextFunction) => {
+        if (req.headers.gatewaytoken) {
+            req.headers.gatewayToken = req.headers.gatewaytoken as string;
+        }
         if (req.headers.authorization) {
             const token = req.headers.authorization.split(' ')[1];
             const payload: IAuthPayload = verify(token, config.JWT_TOKEN!) as IAuthPayload;

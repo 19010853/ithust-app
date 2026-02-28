@@ -49,7 +49,7 @@ export async function create(req: Request, res: Response): Promise<void> {
     };
     await publishDirectMessage(
         authChannel,
-        'jobber-email-notification',
+        'ithust-email-notification',
         'auth-email',
         JSON.stringify(messageDetails),
         'Verify email message has been sent to notification service.'
