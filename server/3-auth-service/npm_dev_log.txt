@@ -6776,3 +6776,3009 @@
 [32mINFO[39m:
     message: "AuthService Mysql database connection has been established successfully."
     service: "authDatabaseServer"
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32mINFO[39m:
+    message: "AuthService connecting to ElasticSearch..."
+    service: "authElasticSearchServer"
+[32mINFO[39m:
+    message: "Authentication server has started with process id 160756"
+    service: "authenticationServer"
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:26:58 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204703.578
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5114726,
+        "external": 8539439,
+        "heapTotal": 410034176,
+        "heapUsed": 380514304,
+        "rss": 458989568
+      },
+      "pid": 160756,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authElasticSearchServer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:26:58 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204703.578
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5122942,
+        "external": 8547695,
+        "heapTotal": 410034176,
+        "heapUsed": 380611160,
+        "rss": 459022336
+      },
+      "pid": 160756,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authDatabaseServer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:26:58 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204703.593
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5122942,
+        "external": 8547695,
+        "heapTotal": 410034176,
+        "heapUsed": 380660896,
+        "rss": 459038720
+      },
+      "pid": 160756,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authQueueConnection"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:26:58 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204703.593
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5131134,
+        "external": 8555887,
+        "heapTotal": 410034176,
+        "heapUsed": 380709656,
+        "rss": 459042816
+      },
+      "pid": 160756,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authServiceProducer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:26:58 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204703.593
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5131134,
+        "external": 8555887,
+        "heapTotal": 410034176,
+        "heapUsed": 380752016,
+        "rss": 459042816
+      },
+      "pid": 160756,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authService"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:26:58 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204703.593
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5139326,
+        "external": 8564079,
+        "heapTotal": 410296320,
+        "heapUsed": 380802904,
+        "rss": 459055104
+      },
+      "pid": 160756,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authenticationServer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[32mINFO[39m:
+    message: "AuthService Elasticsearch health status - yellow"
+    service: "authElasticSearchServer"
+[32mINFO[39m:
+    message: "Auth server connected to queue successfully..."
+    service: "authQueueConnection"
+[32mINFO[39m:
+    message: "AuthService Mysql database connection has been established successfully."
+    service: "authDatabaseServer"
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32mINFO[39m:
+    message: "AuthService connecting to ElasticSearch..."
+    service: "authElasticSearchServer"
+[32mINFO[39m:
+    message: "Authentication server has started with process id 138520"
+    service: "authenticationServer"
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:28:02 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204767.562
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5114171,
+        "external": 8538884,
+        "heapTotal": 410034176,
+        "heapUsed": 380496888,
+        "rss": 459501568
+      },
+      "pid": 138520,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authElasticSearchServer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:28:02 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204767.578
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5122387,
+        "external": 8547140,
+        "heapTotal": 410034176,
+        "heapUsed": 380593744,
+        "rss": 459583488
+      },
+      "pid": 138520,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authDatabaseServer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:28:02 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204767.578
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5122387,
+        "external": 8547140,
+        "heapTotal": 410034176,
+        "heapUsed": 380643480,
+        "rss": 459587584
+      },
+      "pid": 138520,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authQueueConnection"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:28:02 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204767.593
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5130579,
+        "external": 8555332,
+        "heapTotal": 410034176,
+        "heapUsed": 380692176,
+        "rss": 459591680
+      },
+      "pid": 138520,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authServiceProducer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:28:02 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204767.593
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5130579,
+        "external": 8555332,
+        "heapTotal": 410034176,
+        "heapUsed": 380734536,
+        "rss": 459591680
+      },
+      "pid": 138520,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authService"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:28:02 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204767.609
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5138771,
+        "external": 8563524,
+        "heapTotal": 410034176,
+        "heapUsed": 380785424,
+        "rss": 459595776
+      },
+      "pid": 138520,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authenticationServer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[32mINFO[39m:
+    message: "AuthService Elasticsearch health status - yellow"
+    service: "authElasticSearchServer"
+[32mINFO[39m:
+    message: "Auth server connected to queue successfully..."
+    service: "authQueueConnection"
+[32mINFO[39m:
+    message: "AuthService Mysql database connection has been established successfully."
+    service: "authDatabaseServer"
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32mINFO[39m:
+    message: "AuthService connecting to ElasticSearch..."
+    service: "authElasticSearchServer"
+[32mINFO[39m:
+    message: "Authentication server has started with process id 144324"
+    service: "authenticationServer"
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:28:50 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204815.468
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5072109,
+        "external": 8514107,
+        "heapTotal": 410767360,
+        "heapUsed": 373967808,
+        "rss": 459669504
+      },
+      "pid": 144324,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authElasticSearchServer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:28:50 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204815.484
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5080325,
+        "external": 8505078,
+        "heapTotal": 410767360,
+        "heapUsed": 374081064,
+        "rss": 459710464
+      },
+      "pid": 144324,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authDatabaseServer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:28:50 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204815.5
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5080325,
+        "external": 8505078,
+        "heapTotal": 410767360,
+        "heapUsed": 374130800,
+        "rss": 459714560
+      },
+      "pid": 144324,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authQueueConnection"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:28:50 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204815.5
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5088517,
+        "external": 8513270,
+        "heapTotal": 410767360,
+        "heapUsed": 374179520,
+        "rss": 459718656
+      },
+      "pid": 144324,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authServiceProducer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:28:50 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204815.515
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5088517,
+        "external": 8513270,
+        "heapTotal": 410767360,
+        "heapUsed": 374221848,
+        "rss": 459718656
+      },
+      "pid": 144324,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authService"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:28:50 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204815.515
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5096709,
+        "external": 8521462,
+        "heapTotal": 410767360,
+        "heapUsed": 374272784,
+        "rss": 459722752
+      },
+      "pid": 144324,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authenticationServer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[32mINFO[39m:
+    message: "AuthService Elasticsearch health status - yellow"
+    service: "authElasticSearchServer"
+[32mINFO[39m:
+    message: "Auth server connected to queue successfully..."
+    service: "authQueueConnection"
+[32mINFO[39m:
+    message: "AuthService Mysql database connection has been established successfully."
+    service: "authDatabaseServer"
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32mINFO[39m:
+    message: "AuthService connecting to ElasticSearch..."
+    service: "authElasticSearchServer"
+[32mINFO[39m:
+    message: "Authentication server has started with process id 158892"
+    service: "authenticationServer"
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:29:52 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204877.609
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5059723,
+        "external": 8484436,
+        "heapTotal": 412106752,
+        "heapUsed": 381174592,
+        "rss": 460386304
+      },
+      "pid": 158892,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authElasticSearchServer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:29:52 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204877.64
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5067939,
+        "external": 8492692,
+        "heapTotal": 412106752,
+        "heapUsed": 381288776,
+        "rss": 458579968
+      },
+      "pid": 158892,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authDatabaseServer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:29:52 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204877.64
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5067939,
+        "external": 8492692,
+        "heapTotal": 412106752,
+        "heapUsed": 381338560,
+        "rss": 458584064
+      },
+      "pid": 158892,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authQueueConnection"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:29:52 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204877.64
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5076131,
+        "external": 8500884,
+        "heapTotal": 412106752,
+        "heapUsed": 381387288,
+        "rss": 458592256
+      },
+      "pid": 158892,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authServiceProducer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:29:52 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204877.656
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5076131,
+        "external": 8500884,
+        "heapTotal": 412106752,
+        "heapUsed": 381429648,
+        "rss": 458592256
+      },
+      "pid": 158892,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authService"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[31mERROR[39m:
+    date: "Sat Feb 28 2026 16:29:52 GMT+0700 (GMT+07:00)"
+    exception: true
+    message: "uncaughtException: listen EADDRINUSE: address already in use :::4002\nError: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    os: {
+      "loadavg": [
+        0,
+        0,
+        0
+      ],
+      "uptime": 204877.656
+    }
+    process: {
+      "argv": [
+        "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\dist\bin.js",
+        "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts"
+      ],
+      "cwd": "C:\Users\Admin\ithust-app\server\3-auth-service",
+      "execPath": "C:\Program Files\nodejs\node.exe",
+      "gid": null,
+      "memoryUsage": {
+        "arrayBuffers": 5084323,
+        "external": 8509076,
+        "heapTotal": 412106752,
+        "heapUsed": 381480584,
+        "rss": 458596352
+      },
+      "pid": 158892,
+      "uid": null,
+      "version": "v22.14.0"
+    }
+    service: "authenticationServer"
+    stack: "Error: listen EADDRINUSE: address already in use :::4002\n    at Server.setupListenHandle [as _listen2] (node:net:1937:16)\n    at listenInCluster (node:net:1994:12)\n    at Server.listen (node:net:2099:7)\n    at startServer (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:88:20)\n    at start (C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts:28:5)\n    at initialize (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:10:10)\n    at Object.<anonymous> (C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts:13:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Module.m._compile (C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts:1618:23)\n    at node:internal/modules/cjs/loader:1706:10"
+    trace: [
+      {
+        "column": 16,
+        "file": "node:net",
+        "function": "Server.setupListenHandle [as _listen2]",
+        "line": 1937,
+        "method": "setupListenHandle [as _listen2]",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:net",
+        "function": "listenInCluster",
+        "line": 1994,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "node:net",
+        "function": "Server.listen",
+        "line": 2099,
+        "method": "listen",
+        "native": false
+      },
+      {
+        "column": 20,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "startServer",
+        "line": 88,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 5,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\server.ts",
+        "function": "start",
+        "line": 28,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": "initialize",
+        "line": 10,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 1,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\src\app.ts",
+        "function": null,
+        "line": 13,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 14,
+        "file": "node:internal/modules/cjs/loader",
+        "function": "Module._compile",
+        "line": 1554,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 23,
+        "file": "C:\Users\Admin\ithust-app\server\3-auth-service\node_modules\ts-node\src\index.ts",
+        "function": "Module.m._compile",
+        "line": 1618,
+        "method": "_compile",
+        "native": false
+      },
+      {
+        "column": 10,
+        "file": "node:internal/modules/cjs/loader",
+        "function": null,
+        "line": 1706,
+        "method": null,
+        "native": false
+      }
+    ]
+    error: {
+      "address": "::",
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "port": 4002,
+      "syscall": "listen"
+    }
+[32mINFO[39m:
+    message: "AuthService Elasticsearch health status - yellow"
+    service: "authElasticSearchServer"
+[32mINFO[39m:
+    message: "Auth server connected to queue successfully..."
+    service: "authQueueConnection"
+[32mINFO[39m:
+    message: "AuthService Mysql database connection has been established successfully."
+    service: "authDatabaseServer"
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
