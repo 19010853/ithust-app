@@ -9,6 +9,9 @@ import { v4 as uuidV4 } from 'uuid';
 import { sample } from 'lodash';
 import { StatusCodes } from 'http-status-codes';
 
+const browsers = ['Chrome', 'Firefox', 'Safari', 'Edge', 'Opera'];
+const devices = ['Desktop', 'Mobile', 'Tablet'];
+
 export async function create(req: Request, res: Response): Promise<void> {
     const { count } = req.params;
     const usernames: string[] = [];
@@ -38,7 +41,10 @@ export async function create(req: Request, res: Response): Promise<void> {
             country,
             profilePicture,
             emailVerificationToken: randomCharacters,
-            emailVerified: sample([0, 1])
+            emailVerified: sample([0, 1]),
+            // Dùng hàm sample để chọn ngẫu nhiên 1 giá trị trong mảng
+            browserName: sample(browsers) as string, 
+            deviceType: sample(devices) as string
         } as IAuthDocument;
         await createAuthUser(authData);
     }
