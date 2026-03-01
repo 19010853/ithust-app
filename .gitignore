@@ -38,5 +38,5 @@ Thumbs.db
 .env.local
 
 # Docker data volumes (crucial for ignoring large database files)
-volumes/docker-volumes/
+volumes
 apiCalls
