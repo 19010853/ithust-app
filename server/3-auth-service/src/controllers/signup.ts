@@ -24,6 +24,13 @@ export async function create(req: Request, res: Response): Promise<void> {
 
     const profilePublicId = uuidV4();
     const uploadResult: UploadApiResponse = await uploads(profilePicture, `${profilePublicId}`, true, true) as UploadApiResponse;
+
+    // Thêm console.error để in ra lỗi gốc của Cloudinary
+    if (!(uploadResult as UploadApiResponse)?.public_id) {
+        console.error("====== CLOUDINARY ERROR ======", uploadResult);
+        throw new BadRequestError('File upload error. Try again', 'SignUp create() method error');
+    }
+
     if (!uploadResult.public_id) {
         throw new BadRequestError('File upload error. Try again', 'SignUp create() method error');
     }
