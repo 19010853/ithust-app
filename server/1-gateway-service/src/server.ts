@@ -1,26 +1,33 @@
-import { Logger } from "winston";
-import { CustomError, IErrorResponse, winstonLogger } from '@19010853/ithust-shared';
-import { Application, json, urlencoded } from "express";
-import cookieSession from "cookie-session";
-import hpp from "hpp";
-import helmet from "helmet";
-import cors from "cors";
-import compression from "compression";
-import { NextFunction, Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import http from 'http';
-import { isAxiosError } from "axios";
-import { config } from "@gateway/config";
-import { elasticSearch } from "./elasticsearch";
-import { appRoutes } from "./routes";
-import { axiosAuthInstance } from "./services/api/auth.service";
-import { axiosBuyerInstance } from "./services/api/buyer.service";
-import { axiosSellerInstance } from "./services/api/seller.service";
 
+import http from 'http';
+
+import 'express-async-errors';
+import { CustomError, IErrorResponse, winstonLogger } from '@19010853/ithust-shared';
+import { Application, Request, Response, json, urlencoded, NextFunction } from 'express';
+import { Logger } from 'winston';
+import cookieSession from 'cookie-session';
+import cors from 'cors';
+import hpp from 'hpp';
+import helmet from 'helmet';
+import compression from 'compression';
+import { StatusCodes } from 'http-status-codes';
+import { config } from '@gateway/config';
+import { elasticSearch } from '@gateway/elasticsearch';
+import { appRoutes } from '@gateway/routes';
+import { axiosAuthInstance } from '@gateway/services/api/auth.service';
+import { axiosBuyerInstance } from '@gateway/services/api/buyer.service';
+import { axiosSellerInstance } from '@gateway/services/api/seller.service';
+import { axiosGigInstance } from '@gateway/services/api/gig.service';
+import { Server } from 'socket.io';
+import { createClient } from 'redis';
+import { createAdapter } from '@socket.io/redis-adapter';
+import { SocketIOAppHandler } from '@gateway/sockets/socket';
+import { isAxiosError } from 'axios';
 
 const SERVER_PORT = 4000;
 const DEFAULT_ERROR_CODE = 500;
-const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gatewayServer', 'debug');
+const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
+export let socketIO: Server;
 
 export class GatewayServer {
     private app: Application;
@@ -45,7 +52,10 @@ export class GatewayServer {
                 name: 'session',
                 keys: [`${config.SECRET_KEY_ONE}`, `${config.SECRET_KEY_TWO}`],
                 maxAge: 24 * 7 * 3600000,
-                secure: config.NODE_ENV !== 'development'
+                secure: config.NODE_ENV !== 'development',
+                ...(config.NODE_ENV !== 'development' && {
+                    sameSite: 'none'
+                })
             })
         );
         app.use(hpp());
@@ -53,8 +63,7 @@ export class GatewayServer {
         app.use(cors({
             origin: config.CLIENT_URL,
             credentials: true,
-            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-            allowedHeaders: ['Content-Type', 'Authorization']
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
         }));
 
         app.use((req: Request, _res: Response, next: NextFunction) => {
@@ -62,6 +71,7 @@ export class GatewayServer {
                 axiosAuthInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
                 axiosBuyerInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
                 axiosSellerInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
+                axiosGigInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
             }
             next();
         });
@@ -107,10 +117,27 @@ export class GatewayServer {
     private async startServer(app: Application): Promise<void> {
         try {
             const httpServer: http.Server = new http.Server(app);
+            const socketIO: Server = await this.createSocketIO(httpServer);
             this.startHttpServer(httpServer);
+            this.socketIOConnections(socketIO);
         } catch (error) {
             log.log('error', 'GatewayService startServer() error method:', error);
         }
+    }
+
+    private async createSocketIO(httpServer: http.Server): Promise<Server> {
+        const io: Server = new Server(httpServer, {
+            cors: {
+                origin: `${config.CLIENT_URL}`,
+                methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+            }
+        });
+        const pubClient = createClient({ url: config.REDIS_HOST });
+        const subClient = pubClient.duplicate();
+        await Promise.all([pubClient.connect(), subClient.connect()]);
+        io.adapter(createAdapter(pubClient, subClient));
+        socketIO = io;
+        return io;
     }
 
     private async startHttpServer(httpServer: http.Server): Promise<void> {
@@ -122,5 +149,10 @@ export class GatewayServer {
         } catch (error) {
             log.log('error', 'GatewayService startServer() error method:', error);
         }
+    }
+
+    private socketIOConnections(io: Server): void {
+        const socketIoApp = new SocketIOAppHandler(io);
+        socketIoApp.listen();
     }
 }
