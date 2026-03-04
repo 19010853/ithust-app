@@ -7,7 +7,7 @@ const gig = async (req: Request, res: Response): Promise<void> => {
     const { count } = req.params;
     await publishDirectMessage(
         gigChannel,
-        'jobber-gig',
+        'ithust-gig',
         'get-sellers',
         JSON.stringify({ type: 'getSellers', count }),
         'Gig seed message sent to user service.'

@@ -22,7 +22,7 @@ const config: Config.InitialOptions = {
     },
     coverageReporters: ['text-summary', 'lcov'],
     moduleNameMapper: {
-        '@gig/(.*)': ['<rootDir>/src/$1']
+        '@chat/(.*)': ['<rootDir>/src/$1']
     }
 };
 
