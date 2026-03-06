@@ -9,7 +9,7 @@ import hpp from 'hpp';
 import helmet from 'helmet';
 import cors from 'cors';
 import { verify } from 'jsonwebtoken';
-import compression = require('compression');
+import compression from 'compression';
 import { checkConnection } from '@chat/elasticsearch';
 import { appRoutes } from '@chat/routes';
 import { Channel } from 'amqplib';
