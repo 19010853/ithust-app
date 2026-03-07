@@ -12,12 +12,12 @@ export const consumerReviewFanoutMessages = async (channel: Channel): Promise<vo
         if (!channel) {
             channel = (await createConnection()) as Channel;
         }
-        const exchangeName = 'jobber-review';
+        const exchangeName = 'ithust-review';
         const queueName = 'order-review-queue';
         await channel.assertExchange(exchangeName, 'fanout');
-        const jobberQueue: Replies.AssertQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
-        await channel.bindQueue(jobberQueue.queue, exchangeName, '');
-        channel.consume(jobberQueue.queue, async (msg: ConsumeMessage | null) => {
+        const ithustQueue: Replies.AssertQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
+        await channel.bindQueue(ithustQueue.queue, exchangeName, '');
+        channel.consume(ithustQueue.queue, async (msg: ConsumeMessage | null) => {
             await updateOrderReview(JSON.parse(msg!.content.toString()));
             channel.ack(msg!);
         });

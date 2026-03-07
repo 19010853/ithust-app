@@ -37,7 +37,7 @@ export const createOrder = async (data: IOrderDocument): Promise<IOrderDocument>
     // update seller info
     await publishDirectMessage(
         orderChannel,
-        'jobber-seller-update',
+        'ithust-seller-update',
         'user-seller',
         JSON.stringify(messageDetails),
         'Details sent to users service'
@@ -60,7 +60,7 @@ export const createOrder = async (data: IOrderDocument): Promise<IOrderDocument>
     // send email
     await publishDirectMessage(
         orderChannel,
-        'jobber-order-notification',
+        'ithust-order-notification',
         'order-email',
         JSON.stringify(emailMessageDetails),
         'Order email sent to notification service.'
@@ -84,7 +84,7 @@ export const cancelOrder = async (orderId: string, data: IOrderMessage): Promise
     // update seller info
     await publishDirectMessage(
         orderChannel,
-        'jobber-seller-update',
+        'ithust-seller-update',
         'user-seller',
         JSON.stringify({ type: 'cancel-order', sellerId: data.sellerId }),
         'Cancelled order details sent to users service.'
@@ -92,7 +92,7 @@ export const cancelOrder = async (orderId: string, data: IOrderMessage): Promise
     // update buyer info
     await publishDirectMessage(
         orderChannel,
-        'jobber-buyer-update',
+        'ithust-buyer-update',
         'user-buyer',
         JSON.stringify({ type: 'cancel-order', buyerId: data.buyerId, purchasedGigs: data.purchasedGigs }),
         'Cancelled order details sent to users service.'
@@ -125,7 +125,7 @@ export const approveOrder = async (orderId: string, data: IOrderMessage): Promis
     // update seller info
     await publishDirectMessage(
         orderChannel,
-        'jobber-seller-update',
+        'ithust-seller-update',
         'user-seller',
         JSON.stringify(messageDetails),
         'Approved order details sent to users service.'
@@ -133,7 +133,7 @@ export const approveOrder = async (orderId: string, data: IOrderMessage): Promis
     // update buyer info
     await publishDirectMessage(
         orderChannel,
-        'jobber-buyer-update',
+        'ithust-buyer-update',
         'user-buyer',
         JSON.stringify({ type: 'purchased-gigs', buyerId: data.buyerId, purchasedGigs: data.purchasedGigs }),
         'Approved order details sent to users service.'
@@ -170,7 +170,7 @@ export const sellerDeliverOrder = async (orderId: string, delivered: boolean, de
         // send email
         await publishDirectMessage(
             orderChannel,
-            'jobber-order-notification',
+            'ithust-order-notification',
             'order-email',
             JSON.stringify(messageDetails),
             'Order delivered message sent to notification service.'
@@ -207,7 +207,7 @@ export const requestDeliveryExtension = async (orderId: string, data: IExtendedD
         // send email
         await publishDirectMessage(
             orderChannel,
-            'jobber-order-notification',
+            'ithust-order-notification',
             'order-email',
             JSON.stringify(messageDetails),
             'Order delivered message sent to notification service.'
@@ -251,7 +251,7 @@ export const approveDeliveryDate = async (orderId: string, data: IExtendedDelive
         // send email
         await publishDirectMessage(
             orderChannel,
-            'jobber-order-notification',
+            'ithust-order-notification',
             'order-email',
             JSON.stringify(messageDetails),
             'Order request extension approval message sent to notification service.'
@@ -290,7 +290,7 @@ export const rejectDeliveryDate = async (orderId: string): Promise<IOrderDocumen
         // send email
         await publishDirectMessage(
             orderChannel,
-            'jobber-order-notification',
+            'ithust-order-notification',
             'order-email',
             JSON.stringify(messageDetails),
             'Order request extension rejection message sent to notification service.'
