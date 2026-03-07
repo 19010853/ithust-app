@@ -4,7 +4,7 @@ import express, { Express } from 'express';
 import { start } from '@gig/server';
 import { redisConnect } from './redis/redis.connection';
 
-const initilize = (): void => {
+const initialize = (): void => {
     config.cloudinaryConfig();
     databaseConnection();
     const app: Express = express();
@@ -12,4 +12,4 @@ const initilize = (): void => {
     redisConnect();
 };
 
-initilize();
+initialize();
