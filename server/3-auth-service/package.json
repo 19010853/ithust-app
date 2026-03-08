@@ -19,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@19010853/ithust-shared": "^0.0.18",
     "@elastic/elasticsearch": "^8.10.0",
     "@faker-js/faker": "^8.2.0",
     "amqplib": "^0.10.3",
@@ -45,7 +46,6 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
-    "@19010853/ithust-shared": "^0.0.18",
     "@jest/types": "^29.6.3",
     "@types/amqplib": "^0.10.3",
     "@types/bcryptjs": "^2.4.5",

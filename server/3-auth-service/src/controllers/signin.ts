@@ -1,5 +1,4 @@
 import { randomInt } from 'crypto';
-
 import { AuthModel } from '@auth/models/auth.schema';
 import { loginSchema } from '@auth/schemes/signin';
 import { getUserByEmail, getUserByUsername, signToken, updateUserOTP } from '@auth/services/auth.service';

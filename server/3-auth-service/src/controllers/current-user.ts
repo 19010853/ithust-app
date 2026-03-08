@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-
 import { getAuthUserById, getUserByEmail, updateVerifyEmailField } from '@auth/services/auth.service';
 import { BadRequestError, IAuthDocument, IEmailMessageDetails, lowerCase } from '@19010853/ithust-shared';
 import { Request, Response } from 'express';

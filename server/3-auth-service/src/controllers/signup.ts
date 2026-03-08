@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-
 import { signupSchema } from '@auth/schemes/signup';
 import { createAuthUser, getUserByUsernameOrEmail, signToken } from '@auth/services/auth.service';
 import { BadRequestError, IAuthDocument, IEmailMessageDetails, firstLetterToUppercase, lowerCase, uploads } from '@19010853/ithust-shared';

@@ -1,16 +1,16 @@
 import { CustomError, IAuthPayload, IErrorResponse, winstonLogger } from "@19010853/ithust-shared";
 import { Logger } from "winston";
-import { config } from "./config";
+import { config } from "@auth/config";
 import { Application, json, NextFunction, Request, Response, urlencoded } from "express";
 import hpp from "hpp";
 import helmet from "helmet";
 import cors from "cors";
 import { verify } from "jsonwebtoken";
 import compression from "compression";
-import { checkConnection, createIndex } from "./elasticsearch";
+import { checkConnection, createIndex } from "@auth/elasticsearch";
 import http from 'http';
-import { appRoutes } from "./routes";
-import { createConnection } from "./queues/connection";
+import { appRoutes } from "@auth/routes";
+import { createConnection } from "@auth/queues/connection";
 import { Channel } from "amqplib";
 
 const SERVER_PORT = 4002;

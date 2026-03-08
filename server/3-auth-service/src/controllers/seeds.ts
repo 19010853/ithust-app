@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-
 import { createAuthUser, getUserByUsernameOrEmail } from '@auth/services/auth.service';
 import { faker } from '@faker-js/faker';
 import { BadRequestError, IAuthDocument, firstLetterToUppercase, lowerCase } from '@19010853/ithust-shared';
@@ -43,7 +42,7 @@ export async function create(req: Request, res: Response): Promise<void> {
             emailVerificationToken: randomCharacters,
             emailVerified: sample([0, 1]),
             // Dùng hàm sample để chọn ngẫu nhiên 1 giá trị trong mảng
-            browserName: sample(browsers) as string, 
+            browserName: sample(browsers) as string,
             deviceType: sample(devices) as string
         } as IAuthDocument;
         await createAuthUser(authData);

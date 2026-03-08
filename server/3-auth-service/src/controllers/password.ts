@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-
 import { changePasswordSchema, emailSchema, passwordSchema } from '@auth/schemes/password';
 import { getAuthUserByPasswordToken, getUserByEmail, getUserByUsername, updatePassword, updatePasswordToken } from '@auth/services/auth.service';
 import { BadRequestError, IAuthDocument, IEmailMessageDetails } from '@19010853/ithust-shared';
