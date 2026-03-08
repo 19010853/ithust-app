@@ -9,7 +9,7 @@ import { sellerRoutes } from '@gateway/routes/seller';
 import { gigRoutes } from '@gateway/routes/gig';
 import { messageRoutes } from '@gateway/routes/message';
 import { orderRoutes } from '@gateway/routes/order';
-import { reviewRoutes } from './routes/review';
+import { reviewRoutes } from '@gateway/routes/review';
 
 const BASE_PATH = '/api/gateway/v1';
 

@@ -19,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@19010853/ithust-shared": "^0.0.18",
     "@elastic/elasticsearch": "^8.10.0",
     "@socket.io/redis-adapter": "^8.2.1",
     "axios": "^1.6.0",
@@ -44,7 +45,6 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
-    "@19010853/ithust-shared": "^0.0.18",
     "@jest/types": "^29.6.3",
     "@types/bcrypt": "^5.0.2",
     "@types/compression": "^1.7.4",

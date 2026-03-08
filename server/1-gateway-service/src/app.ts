@@ -1,6 +1,6 @@
 import express, { Express } from "express";
-import { GatewayServer } from "./server";
-import { redisConnection } from "./redis/redis.connection";
+import { GatewayServer } from "@gateway/server";
+import { redisConnection } from "@gateway/redis/redis.connection";
 
 class Application {
     public initialize(): void {
