@@ -88,6 +88,29 @@ services:
     depends_on:
       - elasticsearch
 
+  metricbeat:
+    container_name: metricbeat_container
+    # SỬA LỖI 2: Đổi về đúng bản 8.10.4
+    image: docker.elastic.co/beats/metricbeat:8.10.4
+    restart: always
+    user: root
+    ports:
+      - 5066:5066
+    networks:
+      - elastic
+    volumes:
+      # SỬA LỖI 1: Bỏ dấu gạch chéo ở cuối tên file gốc
+      - ./metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      # docker module
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # system module
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
+      - /:/hostfs:ro
+    command: ["--strict.perms=false", "-system.hostfs=/hostfs"]
+    depends_on: 
+      - elasticsearch
+
   gateway:
     container_name: gateway_container
     build:
@@ -233,8 +256,8 @@ services:
       network: host
     restart: always
     ports:
-      - 4004:4004
-    env_file: ../server/5-gig-service/.env
+      - 4005:4005
+    env_file: ../server/6-chat-service/.env
     environment:
       - ENABLE_APM=0
       - DATABASE_URL=mongodb://127.0.0.1:27017/ithust-chat
