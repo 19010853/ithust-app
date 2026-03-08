@@ -56,7 +56,7 @@ const addReview = async (data: IReviewDocument): Promise<IReviewDocument> => {
     };
     await publishFanoutMessage(
         reviewChannel,
-        'jobber-review',
+        'ithust-review',
         JSON.stringify(messageDetails),
         'Review details sent to order and users services'
     );
