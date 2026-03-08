@@ -4,12 +4,11 @@ import { Logger } from 'winston';
 import { config } from '@notifications/config';
 import { Application } from 'express';
 import http from 'http';
-import { healthRoutes } from './routes';
-import { checkConnection } from './elasticsearch';
-import { createConnection } from './queues/connection';
+import { healthRoutes } from '@notifications/routes';
+import { checkConnection } from '@notifications/elasticsearch';
+import { createConnection } from '@notifications/queues/connection';
 import { Channel } from 'amqplib';
-import { consumeAuthEmailMessages, consumeOrderEmailMessages } from './queues/email.consumer';
-
+import { consumeAuthEmailMessages, consumeOrderEmailMessages } from '@notifications/queues/email.consumer';
 
 const SERVER_PORT = 4001;
 
