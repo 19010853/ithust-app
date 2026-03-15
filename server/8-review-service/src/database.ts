@@ -5,11 +5,19 @@ import { Pool } from 'pg';
 
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'reviewDatabaseServer', 'debug');
 
+console.log('DB CONFIG', {
+    host: config.DATABASE_HOST,
+    user: config.DATABASE_USER,
+    password: config.DATABASE_PASSWORD,
+    passwordLength: config.DATABASE_PASSWORD?.length,
+    db: config.DATABASE_NAME
+});
+
 const pool: Pool = new Pool({
     host: `${config.DATABASE_HOST}`,
+    port: parseInt(config.DATABASE_PORT || '5432', 10),
     user: `${config.DATABASE_USER}`,
     password: `${config.DATABASE_PASSWORD}`,
-    port: 5432,
     database: `${config.DATABASE_NAME}`,
     ...(config.NODE_ENV !== 'development' && config.CLUSTER_TYPE === 'AWS' && {
         ssl: {
@@ -51,7 +59,7 @@ const databaseConnection = async (): Promise<void> => {
         log.info('Review service successfully connected to postgresql database.');
         await pool.query(createTableText);
     } catch (error) {
-        log.error('ReviewService - Unable to connecto to database');
+        log.error('ReviewService - Unable to connect to database');
         log.log('error', 'ReviewService () method error:', error);
     }
 };

@@ -18,6 +18,7 @@ if (process.env.ENABLE_APM === '1') {
 
 class Config {
     public DATABASE_HOST: string | undefined;
+    public DATABASE_PORT: string | undefined;
     public DATABASE_USER: string | undefined;
     public DATABASE_PASSWORD: string | undefined;
     public DATABASE_NAME: string | undefined;
@@ -34,6 +35,7 @@ class Config {
 
     constructor() {
         this.DATABASE_HOST = process.env.DATABASE_HOST || '';
+        this.DATABASE_PORT = process.env.DATABASE_PORT || '5432';
         this.DATABASE_USER = process.env.DATABASE_USER || '';
         this.DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || '';
         this.DATABASE_NAME = process.env.DATABASE_NAME || '';
