@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ithust-mysql
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ithust-mysql
+  template:
+    metadata:
+      labels:
+        app: ithust-mysql
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: ithust-mysql
+          image: mysql:8.0.35
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: api
+            - name: MYSQL_PASSWORD
+              value: api
+            - name: MYSQL_DATABASE
+              value: ithust_auth
+            - name: MYSQL_USER
+              value: "ithust"
+          resources:
+            limits:
+              memory: "600Mi"
+              cpu: "0.5"
+            requests:
+              cpu: 100m
+              memory: 90Mi
+          ports:
+            - name: ithust-mysql
+              containerPort: 3307
+          volumeMounts:
+            - name: mysql-local-storage
+              mountPath: /var/lib/mysql
+              subPath: mysql
+          readinessProbe:
+            exec:
+              command:
+                - bash
+                - "-c"
+                - |
+                  mysql -h127.0.0.1 -u$MYSQL_USER -p$MYSQL_PASSWORD -e'SELECT 1'
+            initialDelaySeconds: 120
+            periodSeconds: 300
+            timeoutSeconds: 60
+          livenessProbe:
+            exec:
+              command:
+                - bash
+                - "-c"
+                - |
+                  mysqladmin -u$MYSQL_USER -p$MYSQL_PASSWORD ping
+            initialDelaySeconds: 120
+            periodSeconds: 300
+            timeoutSeconds: 60
+      volumes:
+        - name: mysql-local-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
