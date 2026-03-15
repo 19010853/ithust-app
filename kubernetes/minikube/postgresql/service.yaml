@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ithust-postgres
+  namespace: production
+spec:
+  type: ClusterIP
+  selector:
+    app: ithust-postgres
+  ports:
+    - name: ithust-postgres
+      port: 5433
+      targetPort: 5433

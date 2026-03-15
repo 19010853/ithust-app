@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ithust-postgres
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ithust-postgres
+  template:
+    metadata:
+      labels:
+        app: ithust-postgres
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: ithust-postgres
+          image: postgres:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_USER
+              value: ithust
+            - name: POSTGRES_PASSWORD
+              value: api
+            - name: POSTGRES_DB
+              value: ithust_reviews
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          resources:
+            limits:
+              memory: "600Mi"
+              cpu: "0.5"
+            requests:
+              cpu: 100m
+              memory: 90Mi
+          ports:
+            - name: ithust-postgres
+              containerPort: 5433
+          volumeMounts:
+            - name: postgres-local-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+          readinessProbe:
+            exec:
+              command:
+                [
+                  "psql",
+                  "-w",
+                  "-U",
+                  "ithust",
+                  "-d",
+                  "ithust_reviews",
+                  "-c",
+                  "SELECT 1",
+                ]
+            initialDelaySeconds: 120
+            periodSeconds: 300
+            timeoutSeconds: 60
+          livenessProbe:
+            exec:
+              command:
+                [
+                  "psql",
+                  "-w",
+                  "-U",
+                  "ithust",
+                  "-d",
+                  "ithust_reviews",
+                  "-c",
+                  "SELECT 1",
+                ]
+            initialDelaySeconds: 120
+            periodSeconds: 300
+            timeoutSeconds: 60
+      volumes:
+        - name: postgres-local-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
