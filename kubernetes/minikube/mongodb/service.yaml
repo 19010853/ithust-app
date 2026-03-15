@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ithust-mongo
+  namespace: production
+spec:
+  type: ClusterIP
+  selector:
+    app: ithust-mongo
+  ports:
+    - name: ithust-mongo
+      port: 27017
+      targetPort: 27017
