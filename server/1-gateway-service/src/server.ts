@@ -27,6 +27,16 @@ const DEFAULT_ERROR_CODE = 500;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
 export let socketIO: Server;
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+    let timeoutId: NodeJS.Timeout | undefined;
+    const timeoutPromise = new Promise<T>((_resolve, reject) => {
+        timeoutId = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+    });
+    return Promise.race([promise, timeoutPromise]).finally(() => {
+        if (timeoutId) clearTimeout(timeoutId);
+    }) as Promise<T>;
+}
+
 export class GatewayServer {
     private app: Application;
 
@@ -115,9 +125,14 @@ export class GatewayServer {
     private async startServer(app: Application): Promise<void> {
         try {
             const httpServer: http.Server = new http.Server(app);
-            const socketIO: Server = await this.createSocketIO(httpServer);
             this.startHttpServer(httpServer);
-            this.socketIOConnections(socketIO);
+            try {
+                const io: Server = await this.createSocketIO(httpServer);
+                this.socketIOConnections(io);
+            } catch (error) {
+                // Don't block HTTP server startup if Redis/Socket.IO adapter can't initialize.
+                log.log('error', 'GatewayService createSocketIO() error method:', error);
+            }
         } catch (error) {
             log.log('error', 'GatewayService startServer() error method:', error);
         }
@@ -132,7 +147,12 @@ export class GatewayServer {
         });
         const pubClient = createClient({ url: config.REDIS_HOST });
         const subClient = pubClient.duplicate();
-        await Promise.all([pubClient.connect(), subClient.connect()]);
+        const REDIS_CONNECT_TIMEOUT_MS = 8000;
+        await withTimeout(
+            Promise.all([pubClient.connect(), subClient.connect()]),
+            REDIS_CONNECT_TIMEOUT_MS,
+            'Redis pub/sub connect'
+        );
         io.adapter(createAdapter(pubClient, subClient));
         socketIO = io;
         return io;

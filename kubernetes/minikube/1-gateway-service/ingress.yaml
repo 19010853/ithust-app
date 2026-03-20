@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ithust-gateway-ingress
+  namespace: production
+spec:
+  ingressClassName: nginx
+  defaultBackend:
+    service:
+      name: ithust-gateway
+      port:
+        number: 4000
+  tls:
+    - hosts:
+        - ithustapp.com
+      secretName: gateway-ingress-tls
+  rules:
+    - host: ithustapp.com
+      http:
+        paths:
+          - path: /api/gateway/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: ithust-gateway
+                port:
+                  number: 4000

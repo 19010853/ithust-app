@@ -32,16 +32,16 @@ services:
       - ./docker-volumes/mysql:/var/lib/mysql
   postgres:
     container_name: postgres_container
-    image: postgres:latest
+    image: postgres:16 # SỬA LẠI TỪ latest THÀNH 16
     restart: always
     environment:
       - POSTGRES_USER=ithust
       - POSTGRES_PASSWORD=api
       - POSTGRES_DB=ithust_reviews
     ports:
-      - "5432:5432"
+      - "5433:5432"  # 5433 trên host để tránh conflict với PostgreSQL cài sẵn trên máy (5432)
     volumes:
-      - ./docker-volumes/postgres:/var/lib/postgresql
+      - ./docker-volumes/postgres:/var/lib/postgresql/data
   rabbitmq:
     container_name: rabbitmq_container
     image: rabbitmq:3.13-rc-management-alpine
@@ -50,22 +50,25 @@ services:
       - RABBITMQ_DEFAULT_USER=ithust
       - RABBITMQ_DEFAULT_PASS=ithustpass
     ports:
-     # AMQP Protocol port
-     - '5672:5672'
-     # Management UI port
-     - '15672:15672'
+      - "5672:5672"
+      - "15672:15672"
   elasticsearch:
     container_name: elasticsearch_container
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
     restart: always
     environment:
       ES_JAVA_OPTS: -Xms1g -Xmx1g
       bootstrap.memory_lock: "true"
       discovery.type: single-node
-      xpack.security.enabled: "false"
+      network.host: 0.0.0.0
+      transport.host: 127.0.0.1
+      http.host: 0.0.0.0
+      xpack.security.enabled: "true"
       xpack.security.authc.api_key.enabled: "true"
       xpack.monitoring.collection.enabled: "true"
       xpack.security.enrollment.enabled: "true"
+      xpack.security.authc.token.enabled: "true"
+      ELASTIC_PASSWORD: admin1234
     ports:
       - 9200:9200
       - 9300:9300
@@ -73,12 +76,36 @@ services:
       - ./docker-volumes/elasticsearch-data:/usr/share/elasticsearch/data
     networks:
       - elastic
+  apmServer:
+    image: docker.elastic.co/apm/apm-server:8.11.0
+    container_name: apm_server_container
+    restart: always
+    ports:
+      - 8200:8200
+    volumes:
+      - ./apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
+    networks:
+      - elastic
+    command: >
+      apm-server -e
+        -E apm-server.rum.enabled=true
+        -E setup.kibana.host=kibana_container:5601
+        -E setup.template.settings.index.number_of_replicas=0
+        -E apm-server.kibana.enabled=true
+        -E apm-server.kibana.host=kibana_container:5601
+        -E apm-server.kibana.protocol=http
+        -E strict.perms=false
+        -E apm-server.auth.anonymous.enabled=true
   kibana:
     container_name: kibana_container
-    image: docker.elastic.co/kibana/kibana:8.10.4
+    image: docker.elastic.co/kibana/kibana:8.11.0
     restart: always
     environment:
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=kibana
+      - ELASTICSEARCH_SERVICEACCOUNT_TOKEN=AAEAAWVsYXN0aWMva2liYW5hL2l0aHVzdC1raWJhbmE6c3NTclJfcVdTbUt1cnBaNkpHTGc5UQ
+      - XPACK_FLEET_AGENTS_ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
     ports:
       - 5601:5601
     networks:
@@ -87,28 +114,36 @@ services:
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     depends_on:
       - elasticsearch
-
   metricbeat:
     container_name: metricbeat_container
-    # SỬA LỖI 2: Đổi về đúng bản 8.10.4
-    image: docker.elastic.co/beats/metricbeat:8.10.4
+    image: docker.elastic.co/beats/metricbeat:8.11.0
     restart: always
-    user: root
     ports:
       - 5066:5066
     networks:
       - elastic
     volumes:
-      # SỬA LỖI 1: Bỏ dấu gạch chéo ở cuối tên file gốc
       - ./metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
-      # docker module
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      # system module
       - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
       - /proc:/hostfs/proc:ro
       - /:/hostfs:ro
     command: ["--strict.perms=false", "-system.hostfs=/hostfs"]
-    depends_on: 
+    depends_on:
+      - elasticsearch
+  heartbeat:
+    container_name: heartbeat_container
+    image: docker.elastic.co/beats/heartbeat:8.11.0
+    restart: always
+    hostname: heartbeat
+    cap_add:
+      - NET_RAW
+    networks:
+      - elastic
+    command: ["--strict.perms=false"]
+    volumes:
+      - ./heartbeat.yml:/usr/share/heartbeat/heartbeat.yml:ro
+    depends_on:
       - elasticsearch
 
   gateway:
@@ -116,37 +151,36 @@ services:
     build:
       context: ../server/1-gateway-service
       dockerfile: Dockerfile.dev
-    restart: always
+    # restart: always
     ports:
       - 4000:4000
     env_file: ../server/1-gateway-service/.env
     environment:
-        - ENABLE_APM=0
-        - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
-        - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
-        - NODE_ENV=development
-        - SECRET_KEY_ONE=115179afbb25d7e0607053c2a5a00d3d
-        - SECRET_KEY_TWO=d8c2a398015c7534431afb798617ce94
-        - CLIENT_URL=http://localhost:3000
-        - AUTH_BASE_URL=http://localhost:4002
-        - USERS_BASE_URL=http://localhost:4003
-        - GIG_BASE_URL=http://localhost:4004
-        - MESSAGE_BASE_URL=http://localhost:4005
-        - ORDER_BASE_URL=http://localhost:4006
-        - REVIEW_BASE_URL=http://localhost:4007
-        - REDIS_HOST=redis://redis_container:6379
-        - ELASTIC_SEARCH_URL=http://elasticsearch_container:9200
-        - ELASTIC_APM_SERVER_URL=http://localhost:8200
-        - ELASTIC_APM_SECRET_TOKEN=
+      - ENABLE_APM=0
+      - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
+      - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
+      - NODE_ENV=development
+      - SECRET_KEY_ONE=115179afbb25d7e0607053c2a5a00d3d
+      - SECRET_KEY_TWO=d8c2a398015c7534431afb798617ce94
+      - CLIENT_URL=http://localhost:3000
+      - AUTH_BASE_URL=http://localhost:4002
+      - USERS_BASE_URL=http://localhost:4003
+      - GIG_BASE_URL=http://localhost:4004
+      - MESSAGE_BASE_URL=http://localhost:4005
+      - ORDER_BASE_URL=http://localhost:4006
+      - REVIEW_BASE_URL=http://localhost:4007
+      - REDIS_HOST=redis://redis_container:6379
+      - ELASTIC_SEARCH_URL=http://elasticsearch_container:9200
+      - ELASTIC_APM_SERVER_URL=http://localhost:8200
+      - ELASTIC_APM_SECRET_TOKEN=
     depends_on:
       - elasticsearch
-
   notifications:
     container_name: notifications_container
     build:
       context: ../server/2-notification-service
       dockerfile: Dockerfile.dev
-    restart: always
+    # restart: always
     ports:
       - 4001:4001
     env_file: ../server/2-notification-service/.env
@@ -162,13 +196,12 @@ services:
       - ELASTIC_APM_SECRET_TOKEN=
     depends_on:
       - elasticsearch
-
   auth:
     container_name: auth_container
     build:
       context: ../server/3-auth-service
       dockerfile: Dockerfile.dev
-    restart: always
+    # restart: always
     ports:
       - 4002:4002
     env_file: ../server/3-auth-service/.env
@@ -190,13 +223,12 @@ services:
     depends_on:
       - elasticsearch
       - mysql
-
   users:
     container_name: users_container
     build:
       context: ../server/4-users-service
       dockerfile: Dockerfile.dev
-    restart: always
+    # restart: always
     ports:
       - 4003:4003
     env_file: ../server/4-users-service/.env
@@ -218,14 +250,12 @@ services:
     depends_on:
       - elasticsearch
       - mongodb
-
   gig:
     container_name: gig_container
     build:
       context: ../server/5-gig-service
       dockerfile: Dockerfile.dev
-      network: host
-    restart: always
+    # restart: always
     ports:
       - 4004:4004
     env_file: ../server/5-gig-service/.env
@@ -247,14 +277,12 @@ services:
     depends_on:
       - elasticsearch
       - mongodb
-
   chat:
     container_name: chat_container
     build:
       context: ../server/6-chat-service
       dockerfile: Dockerfile.dev
-      network: host
-    restart: always
+    # restart: always
     ports:
       - 4005:4005
     env_file: ../server/6-chat-service/.env
@@ -275,13 +303,12 @@ services:
     depends_on:
       - elasticsearch
       - mongodb
-
   order:
     container_name: order_container
     build:
       context: ../server/7-order-service
       dockerfile: Dockerfile.dev
-    restart: always
+    # restart: always
     ports:
       - 4006:4006
     env_file: ../server/7-order-service/.env
@@ -300,19 +327,19 @@ services:
       - ELASTIC_SEARCH_URL=http://localhost:9200
       - ELASTIC_APM_SERVER_URL=http://localhost:8200
       - ELASTIC_APM_SECRET_TOKEN=
-
   review:
     container_name: review_container
     build:
       context: ../server/8-review-service
       dockerfile: Dockerfile.dev
-    restart: always
+    # restart: always
     ports:
       - 4007:4007
     env_file: ../server/8-review-service/.env
     environment:
-      - ENABLE_APM=0
-      - DATABASE_HOST=127.0.0.1
+      - ENABLE_APM=1
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5433
       - DATABASE_USER=ithust
       - DATABASE_PASSWORD=api
       - DATABASE_NAME=ithust_reviews
@@ -321,11 +348,17 @@ services:
       - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
       - NODE_ENV=development
       - AP_GATEWAY_URL=http://localhost:4000
-      - RABBITMQ_ENDPOINT=amqp://ithust:ithustpass@localhost:5672
-      - ELASTIC_SEARCH_URL=http://localhost:9200
-      - ELASTIC_APM_SERVER_URL=http://localhost:8200
+      - RABBITMQ_ENDPOINT=amqp://ithust:ithustpass@rabbitmq_container:5672
+      - ELASTIC_SEARCH_URL=http://elasticsearch_container:9200
+      - ELASTIC_APM_SERVER_URL=http://apm_server_container:8200
       - ELASTIC_APM_SECRET_TOKEN=
-    
+    depends_on:
+      - elasticsearch
+      - postgres
+      - rabbitmq
+    networks:
+      - elastic
+
 networks:
   elastic:
     name: elastic

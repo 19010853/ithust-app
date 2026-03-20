@@ -29,10 +29,10 @@ spec:
                   key: ithust-rabbitmq-password
           resources:
             limits:
-              memory: "600Mi"
+              memory: "800Mi"
               cpu: "0.5"
             requests:
-              memory: 90Mi
+              memory: 120Mi
               cpu: 100m
           ports:
             - name: queue

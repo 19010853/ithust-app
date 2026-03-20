@@ -23,10 +23,15 @@ spec:
           image: busybox
           imagePullPolicy: Always
           command:
-            ["sh", "-c", "chown -R 1000:1000 /usr/share/elasticsearch/data"]
+            [
+              "sh",
+              "-c",
+              "mkdir -p /usr/share/elasticsearch/data && chown -R 1000:1000 /usr/share/elasticsearch/data",
+            ]
           volumeMounts:
             - name: elasticsearch-local-storage
               mountPath: /usr/share/elasticsearch/data
+              subPath: data
       containers:
         - name: ithust-elastic
           image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
@@ -34,31 +39,31 @@ spec:
           resources:
             limits:
               cpu: 1500m
-              memory: 3500Mi
+              memory: 5Gi
             requests:
               cpu: 250m
-              memory: 3500Mi
+              memory: 5Gi
           env:
             - name: discovery.type
               value: single-node
             - name: ES_JAVA_OPTS
-              value: "-Xmx1g -Xms1g"
+              value: '-Xmx1g -Xms1g'
             - name: bootstrap.memory_lock
-              value: "true"
+              value: 'true'
             - name: xpack.security.enabled
-              value: "true"
+              value: 'true'
             - name: xpack.security.http.ssl.enabled
-              value: "false"
+              value: 'false'
             - name: xpack.security.transport.ssl.enabled
-              value: "false"
+              value: 'false'
             - name: xpack.security.authc.api_key.enabled
-              value: "true"
+              value: 'true'
             - name: xpack.monitoring.collection.enabled
-              value: "true"
+              value: 'true'
             - name: xpack.security.enrollment.enabled
-              value: "true"
+              value: 'true'
             - name: xpack.security.authc.token.enabled
-              value: "true"
+              value: 'true'
             - name: ELASTIC_PASSWORD
               valueFrom:
                 secretKeyRef:

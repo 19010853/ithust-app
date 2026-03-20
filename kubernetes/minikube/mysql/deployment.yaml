@@ -28,11 +28,11 @@ spec:
               value: "ithust"
           resources:
             limits:
-              memory: "600Mi"
+              memory: "800Mi"
               cpu: "0.5"
             requests:
               cpu: 100m
-              memory: 90Mi
+              memory: 120Mi
           ports:
             - name: ithust-mysql
               containerPort: 3307

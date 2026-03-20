@@ -6,17 +6,17 @@ server.host: "0.0.0.0"
 server.port: 5601
 
 # Elasticsearch Connection
-elasticsearch.hosts: ["http://elasticsearch:9200"]
+elasticsearch.hosts: ["http://elasticsearch_container:9200"]
 
 monitoring.ui.container.elasticsearch.enabled: true
 xpack.fleet.enabled: true
 xpack.fleet.agents.enabled: true
-xpack.fleet.agents.elasticsearch.hosts: ["http://elasticsearch:9200"]
+xpack.fleet.agents.elasticsearch.hosts: ["http://elasticsearch_container:9200"]
 xpack.reporting.roles.enabled: true
 xpack.fleet.agentIdVerificationEnabled: false
-xpack.security.encryptionKey: fhjskloppd678ehkdfdlliverpoolfcr
-xpack.encryptedSavedObjects.encryptionKey: fhjskloppd678ehkdfdlliverpoolfcr
-# xpack.reporting.kibanaServer.hostname: localhost
+xpack.security.encryptionKey: b3531355e72b1c9d7ea984f07f32e98241997c5b70477d9740b0aa72f00c442f
+xpack.encryptedSavedObjects.encryptionKey: b3531355e72b1c9d7ea984f07f32e98241997c5b70477d9740b0aa72f00c442f
+xpack.reporting.kibanaServer.hostname: localhost
 
 ## Add policy for apm-server integration
 xpack.fleet.packages:

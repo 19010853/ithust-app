@@ -18,14 +18,14 @@ spec:
           image: docker.elastic.co/kibana/kibana:8.11.0
           resources:
             limits:
-              memory: "600Mi"
+              memory: "1Gi"
               cpu: "1500m"
             requests:
               cpu: 250m
-              memory: 600Mi
+              memory: 1Gi
           ports:
-            - name: ithust-kibana
-              containerPort: 5601
+          - name: ithust-kibana
+            containerPort: 5601
           env:
             - name: ELASTICSEARCH_HOSTS
               # http://<service-name>.<namespace>.svc.cluster.local:<port-number>
@@ -36,11 +36,11 @@ spec:
               # add to secret file
               value: kibana
             - name: ELASTICSEARCH_SERVICEACCOUNT_TOKEN
-              value: AAEAAWVsYXN0aWMva2liYW5hL2pvYmJlci1raWJhbmE6b1dZRjBpd3JTUG1NejNtb1ZQbHFaZw
+              value: AAEAAWVsYXN0aWMva2liYW5hL2l0aHVzdC1raWJhbmE6U1FJZTVxVGpRcTJUWjc2T05Lak1Ddw
           volumeMounts:
             - name: kibana-config
               mountPath: /usr/share/kibana/config
       volumes:
-        - name: kibana-config
-          configMap:
-            name: kibana-config
+      - name: kibana-config
+        configMap:
+          name: kibana-config

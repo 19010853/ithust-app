@@ -1,0 +1,3 @@
+kubernetes/minikube/1-gateway-service/certs/
+kubernetes/minikube/apply-all.ps1
+kubernetes/minikube/secrets/
