@@ -1,7 +1,7 @@
 def namespace = "production"
 def serviceName = "ithust-review"
 def service = "ITHust Reviews"
-fn = null
+def fn
 
 pipeline {
     agent {
@@ -18,6 +18,8 @@ pipeline {
         DOCKER_CREDENTIALS = credentials('dockerhub')
         IMAGE_NAME = "minhkhoi779/ithust-review"
         IMAGE_TAG = "stable-${BUILD_NUMBER}"
+        // Secret text credential id: jenkins-slack-webhook (Manage Jenkins → Credentials)
+        SLACK_WEBHOOK_URL = credentials('jenkins-slack-webhook')
     }
 
     stages {
@@ -32,7 +34,10 @@ pipeline {
                 // Clone the root git repository
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/19010853/ithust-app.git'
                 script {
-                    // Load shared pipeline helpers from repository workspace
+                    // File phải có trên branch đã push (commit Jenkins checkout được)
+                    if (!fileExists('server/functions.groovy')) {
+                        error 'Thiếu server/functions.groovy trong workspace. Hãy commit + push file này lên GitHub (không chứa webhook/secret trong code).'
+                    }
                     fn = load 'server/functions.groovy'
                 }
             }
