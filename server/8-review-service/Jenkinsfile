@@ -1,7 +1,25 @@
-def namespace = "production"
-def serviceName = "ithust-review"
-def service = "ITHust Reviews"
-def fn
+// =============================================================================
+// ITHust — Review service (Declarative Pipeline)
+// =============================================================================
+// Yêu cầu Jenkins:
+//   - Plugins: Pipeline, Workspace Cleanup (cleanWs), Credentials, Kubernetes CLI (kubectl trên agent)
+//   - Credentials: github, dockerhub, jenkins-slack-webhook (Secret text)
+//   - github-npm-token (Secret text): GitHub PAT có quyền read:packages (tải @19010853/ithust-shared từ GitHub Packages)
+//   - Tuỳ chọn: Secret file kubeconfig (id khớp kubeconfigCredentialId) để restart pod trên K8s
+// =============================================================================
+
+// --- Tham số triển khai (đổi theo service khác nếu cần) ---
+def namespace = 'production'
+def serviceName = 'ithust-review'
+def service = 'ITHust Reviews'
+def slackChannel = 'ithust-jenkins'
+
+// Jenkins credential id kiểu "Secret file" chứa nội dung kubeconfig (kubectl config view --raw)
+// Đặt '' để bỏ qua stage restart pod (build vẫn chạy bình thường)
+def kubeconfigCredentialId = 'kubeconfig'
+
+def groovyMethods
+def m1 = System.currentTimeMillis()
 
 pipeline {
     agent {
@@ -9,50 +27,65 @@ pipeline {
     }
 
     tools {
-        nodejs "NodeJS"
-        dockerTool "Docker"
+        nodejs 'NodeJS'
+        dockerTool 'Docker'
     }
 
     environment {
-        // This automatically sets $DOCKER_CREDENTIALS_USR and $DOCKER_CREDENTIALS_PSW
+        // credentials('dockerhub') tạo thêm DOCKER_CREDENTIALS_USR / DOCKER_CREDENTIALS_PSW
         DOCKER_CREDENTIALS = credentials('dockerhub')
-        IMAGE_NAME = "minhkhoi779/ithust-review"
+        IMAGE_NAME = 'minhkhoi779/ithust-review'
         IMAGE_TAG = "stable-${BUILD_NUMBER}"
-        // Secret text credential id: jenkins-slack-webhook (Manage Jenkins → Credentials)
         SLACK_WEBHOOK_URL = credentials('jenkins-slack-webhook')
     }
 
     stages {
-        stage("Cleanup Workspace") {
+        // ---------------------------------------------------------------------
+        // Dọn workspace trước khi clone (tránh file cũ làm bẩn build)
+        // ---------------------------------------------------------------------
+        stage('Cleanup Workspace') {
             steps {
                 cleanWs()
             }
         }
 
-        stage("Prepare Environment") {
+        // ---------------------------------------------------------------------
+        // Clone monorepo + load helper Groovy dùng chung (Slack, kubectl, duration…)
+        // ---------------------------------------------------------------------
+        stage('Prepare Environment') {
             steps {
-                // Clone the root git repository
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/19010853/ithust-app.git'
                 script {
-                    // File phải có trên branch đã push (commit Jenkins checkout được)
                     if (!fileExists('server/functions.groovy')) {
-                        error 'Thiếu server/functions.groovy trong workspace. Hãy commit + push file này lên GitHub (không chứa webhook/secret trong code).'
+                        error 'Thiếu server/functions.groovy — commit và push lên GitHub.'
                     }
-                    fn = load 'server/functions.groovy'
+                    groovyMethods = load 'server/functions.groovy'
                 }
             }
         }
 
-        stage("Install Dependencies") {
+        // ---------------------------------------------------------------------
+        // Build & kiểm tra mã nguồn (chạy trong thư mục service)
+        // ---------------------------------------------------------------------
+        stage('Install Dependencies') {
             steps {
-                // Change into the service directory
-                dir('server/8-review-service') {
-                    sh 'npm install --legacy-peer-deps'
+                // Chỉ bind token tại stage cần dùng, tránh fail toàn pipeline nếu credential thiếu
+                withCredentials([string(credentialsId: 'github-npm-token', variable: 'NPM_TOKEN')]) {
+                    dir('server/8-review-service') {
+                        sh '''#!/bin/bash
+                            set -e
+                            # Ensure npm always has auth for GitHub Packages on Jenkins agent
+                            npm config set @19010853:registry https://npm.pkg.github.com
+                            npm config set //npm.pkg.github.com/:_authToken "$NPM_TOKEN"
+                            npm config set //npm.pkg.github.com/:always-auth true
+                            npm install --legacy-peer-deps --userconfig .npmrc
+                        '''
+                    }
                 }
             }
         }
 
-        stage("Lint Check") {
+        stage('Lint Check') {
             steps {
                 dir('server/8-review-service') {
                     sh 'npm run lint:check'
@@ -60,7 +93,7 @@ pipeline {
             }
         }
 
-        stage("Code Format Check") {
+        stage('Code Format Check') {
             steps {
                 dir('server/8-review-service') {
                     sh 'npm run prettier:check'
@@ -68,7 +101,7 @@ pipeline {
             }
         }
 
-        stage("Unit Test") {
+        stage('Unit Test') {
             steps {
                 dir('server/8-review-service') {
                     sh 'npm run test'
@@ -76,28 +109,105 @@ pipeline {
             }
         }
 
-        stage("Build and Push") {
+        // ---------------------------------------------------------------------
+        // Docker: build image cục bộ rồi push lên Docker Hub (tag build + stable)
+        // ---------------------------------------------------------------------
+        stage('Build and Push') {
             steps {
-                dir('server/8-review-service') {
-                    // Use the correct variables generated by the credentials() binding. 
-                    // Using --password-stdin is the recommended Docker best practice to hide warnings.
-                    sh 'echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin'
-                    
-                    sh "docker build -t $IMAGE_NAME ."
-                    sh "docker tag $IMAGE_NAME $IMAGE_NAME:$IMAGE_TAG"
-                    sh "docker tag $IMAGE_NAME $IMAGE_NAME:stable"
-                    
-                    sh "docker push $IMAGE_NAME:$IMAGE_TAG"
-                    sh "docker push $IMAGE_NAME:stable"
+                withCredentials([string(credentialsId: 'github-npm-token', variable: 'NPM_TOKEN')]) {
+                    dir('server/8-review-service') {
+                        sh 'echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin'
+                        // Dockerfile dùng ARG NPM_TOKEN cho npm ci (GitHub Packages)
+                        sh "docker build --build-arg NPM_TOKEN=\$NPM_TOKEN -t ${IMAGE_NAME} ."
+                        sh "docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${IMAGE_TAG}"
+                        sh "docker tag ${IMAGE_NAME} ${IMAGE_NAME}:stable"
+                        sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
+                        sh "docker push ${IMAGE_NAME}:stable"
+                    }
                 }
             }
         }
 
-        stage("Clean Artifacts") {
+        stage("Create New Pods") {
             steps {
-                sh "docker rmi $IMAGE_NAME:$IMAGE_TAG"
-                sh "docker rmi $IMAGE_NAME:stable"
-                sh "docker rmi $IMAGE_NAME" // Cleans up the base tag created by `docker build`
+                withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'jenkins-k8s-token', namespace: '', serverUrl: 'https://172.25.241.111:8443']]) {
+                    script {
+                        def pods = groovyMethods.findPodsFromName("${namespace}", "${serviceName}")
+                        for (podName in pods) {
+                            sh """
+                                kubectl delete -n ${namespace} pod ${podName}
+                                sleep 10s
+                            """
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            script {
+                if (groovyMethods == null) {
+                    echo 'post/success: groovyMethods chưa được load, bỏ qua notifySlack.'
+                    return
+                }
+                def m2 = System.currentTimeMillis()
+                def durTime = groovyMethods.durationTime(m1, m2)
+                def author = groovyMethods.readCommitAuthor()
+                groovyMethods.notifySlack("", slackChannel, [
+                    [
+                        title: "BUILD SUCCEEDED: ${service} Service with build number ${env.BUILD_NUMBER}",
+                        title_link: "${env.BUILD_URL}",
+                        color: "good",
+                        text: "Created by: ${author}",
+                        "mrkdwn_in": ["fields"],
+                        fields: [
+                            [
+                                title: "Duration Time",
+                                value: "${durTime}",
+                                short: true
+                            ],
+                            [
+                                title: "Stage Name",
+                                value: "Production",
+                                short: true
+                            ],
+                        ]
+                    ]
+                ])
+            }
+        }
+        failure {
+            script {
+                if (groovyMethods == null) {
+                    echo 'post/failure: groovyMethods chưa được load, bỏ qua notifySlack.'
+                    return
+                }
+                def m2 = System.currentTimeMillis()
+                def durTime = groovyMethods.durationTime(m1, m2)
+                def author = groovyMethods.readCommitAuthor()
+                groovyMethods.notifySlack("", slackChannel, [
+                    [
+                        title: "BUILD FAILED: ${service} Service with build number ${env.BUILD_NUMBER}",
+                        title_link: "${env.BUILD_URL}",
+                        color: "danger",
+                        text: "Created by: ${author}",
+                        "mrkdwn_in": ["fields"],
+                        fields: [
+                            [
+                                title: "Duration Time",
+                                value: "${durTime}",
+                                short: true
+                            ],
+                            [
+                                title: "Stage Name",
+                                value: "Production",
+                                short: true
+                            ],
+                        ]
+                    ]
+                ])
             }
         }
     }
