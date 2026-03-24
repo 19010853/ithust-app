@@ -146,4 +146,3 @@ dist
 Dockerfile
 Dockerfile.dev
 .dockerignore
-.npmrc

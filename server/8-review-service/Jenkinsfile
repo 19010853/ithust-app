@@ -74,11 +74,9 @@ pipeline {
                     dir('server/8-review-service') {
                         sh '''#!/bin/bash
                             set -e
-                            # Ensure npm always has auth for GitHub Packages on Jenkins agent
-                            npm config set @19010853:registry https://npm.pkg.github.com
-                            npm config set //npm.pkg.github.com/:_authToken "$NPM_TOKEN"
-                            npm config set //npm.pkg.github.com/:always-auth true
-                            npm install --legacy-peer-deps --userconfig .npmrc
+                            # Force npm to use project .npmrc and inject token from Jenkins secret
+                            export NPM_CONFIG_USERCONFIG="$(pwd)/.npmrc"
+                            npm install --legacy-peer-deps
                         '''
                     }
                 }
