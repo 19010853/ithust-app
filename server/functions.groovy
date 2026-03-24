@@ -31,14 +31,12 @@ def findPodsFromName(String namespace, String name) {
 }
 
 def notifySlack(text, channel, attachments) {
-    // Không hardcode URL trong repo (GitHub Push Protection sẽ chặn).
-    // Trong Jenkins: thêm biến môi trường SLACK_WEBHOOK_URL (Secret text) hoặc
-    // withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK_URL')]) { ... }
-    def slackURL = env.SLACK_WEBHOOK_URL?.trim()
-    if (!slackURL) {
+    // Check directly against env to avoid storing in local string first
+    if (!env.SLACK_WEBHOOK_URL) {
         echo 'notifySlack: SLACK_WEBHOOK_URL chưa được set, bỏ qua gửi Slack.'
         return
     }
+    
     def jenkinsIcon = 'https://a.slack-edge.com/205a/img/services/jenkins-ci_72.png'
 
     def payload = JsonOutput.toJson([
@@ -49,7 +47,17 @@ def notifySlack(text, channel, attachments) {
         attachments: attachments
     ])
 
-    sh "curl -s -X POST ${slackURL} -H 'Cache-Control: no-cache' -H 'Content-Type: application/json;charset=UTF-8' -d '${payload}'"
+    // Use withEnv to safely inject the JSON payload as an environment variable
+    withEnv(["SLACK_PAYLOAD=${payload}"]) {
+        // Use SINGLE QUOTES (''') so Groovy doesn't interpolate the secret.
+        // Bash will securely read $SLACK_WEBHOOK_URL and $SLACK_PAYLOAD
+        sh '''
+            curl -s -X POST "$SLACK_WEBHOOK_URL" \
+                 -H "Cache-Control: no-cache" \
+                 -H "Content-Type: application/json;charset=UTF-8" \
+                 -d "$SLACK_PAYLOAD"
+        '''
+    }
 }
 
 return this

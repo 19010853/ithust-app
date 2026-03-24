@@ -54,14 +54,21 @@ pipeline {
         // ---------------------------------------------------------------------
         stage('Prepare Environment') {
             steps {
-                git branch: 'main', credentialsId: 'github', url: 'https://github.com/19010853/ithust-app.git'
-                script {
-                    if (!fileExists('server/functions.groovy')) {
-                        error 'Thiếu server/functions.groovy — commit và push lên GitHub.'
-                    }
-                    groovyMethods = load 'server/functions.groovy'
-                }
+        // Sử dụng checkout scm với Shallow Clone (depth: 1)
+        checkout([
+            $class: 'GitSCM', 
+            branches: [[name: '*/main']], 
+            extensions: [[$class: 'CloneOption', depth: 1, noTags: true, reference: '', shallow: true]], 
+            userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/19010853/ithust-app.git']]
+        ])
+        
+        script {
+            if (!fileExists('server/functions.groovy')) {
+                error 'Thiếu server/functions.groovy — commit và push lên GitHub.'
             }
+            groovyMethods = load 'server/functions.groovy'
+        }
+    }
         }
 
         // ---------------------------------------------------------------------
@@ -69,15 +76,11 @@ pipeline {
         // ---------------------------------------------------------------------
         stage('Install Dependencies') {
             steps {
-                // Chỉ bind token tại stage cần dùng, tránh fail toàn pipeline nếu credential thiếu
                 withCredentials([string(credentialsId: 'github-npm-token', variable: 'NPM_TOKEN')]) {
                     dir('server/8-review-service') {
-                        sh '''#!/bin/bash
-                            set -e
-                            # Force npm to use project .npmrc and inject token from Jenkins secret
-                            export NPM_CONFIG_USERCONFIG="$(pwd)/.npmrc"
-                            npm install --legacy-peer-deps
-                        '''
+                        // Forcefully remove the bad line from .npmrc if it exists
+                        sh 'sed -i "/always-auth/d" .npmrc || true'
+                        sh 'npm install --legacy-peer-deps'
                     }
                 }
             }
@@ -114,7 +117,10 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'github-npm-token', variable: 'NPM_TOKEN')]) {
                     dir('server/8-review-service') {
-                        sh 'echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin'
+                        sh '''
+                            set +x
+                            docker login -u "$DOCKER_CREDENTIALS_USR" -p "$DOCKER_CREDENTIALS_PSW"
+                        '''
                         // Dockerfile dùng ARG NPM_TOKEN cho npm ci (GitHub Packages)
                         sh "docker build --build-arg NPM_TOKEN=\$NPM_TOKEN -t ${IMAGE_NAME} ."
                         sh "docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${IMAGE_TAG}"
