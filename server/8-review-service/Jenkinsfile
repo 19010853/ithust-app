@@ -16,7 +16,7 @@ def slackChannel = 'ithust-jenkins'
 
 // Jenkins credential id kiểu "Secret file" chứa nội dung kubeconfig (kubectl config view --raw)
 // Đặt '' để bỏ qua stage restart pod (build vẫn chạy bình thường)
-def kubeconfigCredentialId = 'kubeconfig'
+def kubeconfigCredentialId = 'jenkins-k8s-token'
 
 def groovyMethods
 def m1 = System.currentTimeMillis()
@@ -133,15 +133,23 @@ pipeline {
         }
 
         stage("Create New Pods") {
+            when {
+                expression { kubeconfigCredentialId != '' }
+            }
             steps {
-                withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'jenkins-k8s-token', namespace: '', serverUrl: 'https://172.25.241.111:8443']]) {
+                withKubeCredentials(kubectlCredentials: [[credentialsId: kubeconfigCredentialId]]) {
                     script {
-                        def pods = groovyMethods.findPodsFromName("${namespace}", "${serviceName}")
-                        for (podName in pods) {
-                            sh """
-                                kubectl delete -n ${namespace} pod ${podName}
-                                sleep 10s
-                            """
+                        try {
+                            def pods = groovyMethods.findPodsFromName("${namespace}", "${serviceName}")
+                            for (podName in pods) {
+                                sh """
+                                    kubectl delete -n ${namespace} pod ${podName}
+                                    sleep 10s
+                                """
+                            }
+                        } catch (Exception e) {
+                            echo "⚠️ Lỗi khi kết nối Kubernetes (minikube có thể đang tắt hoặc IP bị đổi): ${e.message}"
+                            echo "⚠️ Bỏ qua stage restart pod để pipeline có thể kết thúc thành công (vì build/push image đã hoàn thành)."
                         }
                     }
                 }
