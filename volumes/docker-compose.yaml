@@ -39,7 +39,7 @@ services:
       - POSTGRES_PASSWORD=api
       - POSTGRES_DB=ithust_reviews
     ports:
-      - "5433:5432"  # 5433 trên host để tránh conflict với PostgreSQL cài sẵn trên máy (5432)
+      - "5433:5432" # 5433 trên host để tránh conflict với PostgreSQL cài sẵn trên máy (5432)
     volumes:
       - ./docker-volumes/postgres:/var/lib/postgresql/data
   rabbitmq:
@@ -145,6 +145,39 @@ services:
       - ./heartbeat.yml:/usr/share/heartbeat/heartbeat.yml:ro
     depends_on:
       - elasticsearch
+  jenkins:
+    container_name: jenkins_container
+    image: jenkins/jenkins:lts
+    restart: always
+    privileged: true
+    user: root
+    # Tương đương: docker run ... --dns 8.8.8.8 (giúp DNS trong container khi mạng Docker lỗi)
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    ports:
+      - 8080:8080
+      - 50000:50000
+    volumes:
+      - ./docker-volumes/jenkins_compose/jenkins_configuration:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+  jenkins-agent:
+    container_name: jenkins_agent_container
+    # Phải khớp với Jenkins controller: remoting.jar LTS cần Java 17+ (jdk11 → UnsupportedClassVersionError 61 vs 55)
+    build:
+      context: ./jenkins-agent
+      dockerfile: Dockerfile
+    privileged: true
+    user: root
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    expose:
+      - 22
+    environment:
+      - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDN/9cxsMuufr06SSShLQHSglYiLUwcZPSr8fjwCrKCG3i4pqzB0CV8hWIhOqO7FlsnKRA1dk138CHf0l5EGNdYyNcqRFpTPrErj+d+BJ1LbrZ7TiMwWAC8gK6eDF/+ytSO15igvupjVBT7hSa/9RPPqCsLo3+u5qbDZNybxX4pVpRh1j/v9Uaqs3B7qNfv77wG/g2RoUAo7olzJuhY/Ck0Ipay2SysCsObT4MqQARnUpDqzIJ/AWlu+WDx7lJ3qjcdYcDCNdm3cWVWU6YvubzKNsGM6rH2s4pH7JAQMAkgsWZ2ilyfMTMy2TDwANG6FmgBN3F192x5tLD4ht2pp1P9YtnfoQn5dRQAQwhBbkGiHOKSyZmuYRVXghfueXa7cDTajbL1dGa/hhJb3JIMc8hdgy/u14X4mQwpmpQ/6Yp+NnDRF/hBfnU+gE/HW37pQDB4BS6xeA0jEQLgn73itjgH8pAC8ZhfdyAGjsD2mMeT3SLfc1pOEjIhfh3h2Z978z8= admin@Admin-PC
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
   gateway:
     container_name: gateway_container

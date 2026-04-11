@@ -10,7 +10,8 @@ Write-Host "Base: $base" -ForegroundColor Cyan
 
 # 1. Namespace
 Write-Host "`n[1/16] Creating namespace production..." -ForegroundColor Yellow
-kubectl create namespace production 2>$null; if ($LASTEXITCODE -ne 0) { Write-Host "  (namespace may already exist)" -ForegroundColor Gray }
+# Tạo namespace theo kiểu idempotent: dùng --dry-run=client để tránh lỗi AlreadyExists
+kubectl create namespace production --dry-run=client -o yaml | kubectl apply -f - | Out-Null
 
 # 2. Secret (chỉ file thật; bỏ qua example)
 $secretPath = "$base\secrets\backend-secrets.yaml"

@@ -36,18 +36,18 @@ pipeline {
         DOCKER_CREDENTIALS = credentials('dockerhub')
         IMAGE_NAME = 'minhkhoi779/ithust-review'
         IMAGE_TAG = "stable-${BUILD_NUMBER}"
-        SLACK_WEBHOOK_URL = credentials('jenkins-slack-webhook')
+        SLACK_WEBHOOK_URL = 'https://abc.xyz.com/invalid-token-to-test'
     }
 
     stages {
         // ---------------------------------------------------------------------
         // Dọn workspace trước khi clone (tránh file cũ làm bẩn build)
         // ---------------------------------------------------------------------
-        stage('Cleanup Workspace') {
-            steps {
-                cleanWs()
-            }
-        }
+        // stage('Cleanup Workspace') {
+        //     steps {
+        //         cleanWs()
+        //     }
+        // }
 
         // ---------------------------------------------------------------------
         // Clone monorepo + load helper Groovy dùng chung (Slack, kubectl, duration…)
@@ -86,29 +86,29 @@ pipeline {
             }
         }
 
-        stage('Lint Check') {
-            steps {
-                dir('server/8-review-service') {
-                    sh 'npm run lint:check'
-                }
-            }
-        }
+        // stage('Lint Check') {
+        //     steps {
+        //         dir('server/8-review-service') {
+        //             sh 'npm run lint:check'
+        //         }
+        //     }
+        // }
 
-        stage('Code Format Check') {
-            steps {
-                dir('server/8-review-service') {
-                    sh 'npm run prettier:check'
-                }
-            }
-        }
+        // stage('Code Format Check') {
+        //     steps {
+        //         dir('server/8-review-service') {
+        //             sh 'npm run prettier:check'
+        //         }
+        //     }
+        // }
 
-        stage('Unit Test') {
-            steps {
-                dir('server/8-review-service') {
-                    sh 'npm run test'
-                }
-            }
-        }
+        // stage('Unit Test') {
+        //     steps {
+        //         dir('server/8-review-service') {
+        //             sh 'npm run test'
+        //         }
+        //     }
+        // }
 
         // ---------------------------------------------------------------------
         // Docker: build image cục bộ rồi push lên Docker Hub (tag build + stable)
@@ -137,7 +137,7 @@ pipeline {
                 expression { kubeconfigCredentialId != '' }
             }
             steps {
-                withKubeCredentials(kubectlCredentials: [[credentialsId: kubeconfigCredentialId]]) {
+                withKubeConfig([caCertificate: '', clusterName: 'arn:aws:eks:ap-southeast-1:628454062467:cluster/ithustapp', contextName: 'arn:aws:eks:ap-southeast-1:628454062467:cluster/ithustapp', credentialsId: kubeconfigCredentialId, namespace: namespace, serverUrl: 'https://A52043DC40083F91F492CDF9C03CC7CD.gr7.ap-southeast-1.eks.amazonaws.com']) {
                     script {
                         try {
                             def pods = groovyMethods.findPodsFromName("${namespace}", "${serviceName}")

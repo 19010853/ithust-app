@@ -6,8 +6,8 @@ import { orderRoutes } from '@order/routes/order';
 const BASE_PATH = '/api/v1/order';
 
 const appRoutes = (app: Application): void => {
-    app.use('', healthRoutes());
-    app.use(BASE_PATH, verifyGatewayRequest, orderRoutes());
+  app.use('', healthRoutes());
+  app.use(BASE_PATH, verifyGatewayRequest, orderRoutes());
 };
 
 export { appRoutes };

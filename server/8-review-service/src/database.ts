@@ -21,10 +21,10 @@ const pool: Pool = new Pool({
   database: `${config.DATABASE_NAME}`,
   ...(config.NODE_ENV !== 'development' &&
     config.CLUSTER_TYPE === 'AWS' && {
-      ssl: {
-        rejectUnauthorized: false
-      }
-    })
+    ssl: {
+      rejectUnauthorized: false
+    }
+  })
 });
 
 pool.on('error', (error: Error) => {

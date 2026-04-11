@@ -1,0 +1,54 @@
+﻿[
+    {
+        "ID": "subnet-071f3010bc2ab02b2",
+        "Tags": [
+            {
+                "Key": "Name",
+                "Value": "ithust-private-subnet-3"
+            }
+        ]
+    },
+    {
+        "ID": "subnet-0d6690d32ec4e8213",
+        "Tags": [
+            {
+                "Key": "Name",
+                "Value": "ithust-private-subnet-4"
+            }
+        ]
+    },
+    {
+        "ID": "subnet-0bfb460ed34f20faf",
+        "Tags": [
+            {
+                "Key": "kubernetes.io/cluster/ithustapp",
+                "Value": "owned"
+            },
+            {
+                "Key": "Name",
+                "Value": "ithust-public-subnet-1"
+            },
+            {
+                "Key": "kubernetes.io/role/internal-elb",
+                "Value": "1"
+            }
+        ]
+    },
+    {
+        "ID": "subnet-0d030ff4c2872dade",
+        "Tags": [
+            {
+                "Key": "Name",
+                "Value": "ithust-public-subnet-2"
+            },
+            {
+                "Key": "kubernetes.io/cluster/ithustapp",
+                "Value": "owned"
+            },
+            {
+                "Key": "kubernetes.io/role/internal-elb",
+                "Value": "1"
+            }
+        ]
+    }
+]

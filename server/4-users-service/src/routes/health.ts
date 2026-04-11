@@ -4,9 +4,9 @@ import express, { Router } from 'express';
 const router: Router = express.Router();
 
 const healthRoutes = (): Router => {
-    router.get('/user-health', health);
+  router.get('/user-health', health);
 
-    return router;
+  return router;
 };
 
 export { healthRoutes };

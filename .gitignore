@@ -40,7 +40,9 @@ Thumbs.db
 # Docker data volumes (crucial for ignoring large database files)
 apiCalls
 
-# Kubernetes secrets (chứa mật khẩu/token thật - dùng backend-secrets.example.yaml làm mẫu)
+# Kubernetes secrets (mật khẩu thật; mẫu: kubernetes/minikube/backend-secrets.example.yaml)
 kubernetes/minikube/secrets/backend-secrets.yaml
 
 volumes/docker-volumes
+
+volumes\secrets.md

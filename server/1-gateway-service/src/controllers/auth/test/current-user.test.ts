@@ -17,76 +17,82 @@ const USERNAME = 'Manny';
 const PASSWORD = 'manny1';
 
 Object.defineProperties(socketServer, {
-    socketIO: {
-        value: new Server(),
-        writable: true
-    }
+  socketIO: {
+    value: new Server(),
+    writable: true
+  }
 });
 
 describe('CurrentUser', () => {
-    beforeEach(async () => {
-        jest.resetAllMocks();
+  beforeEach(async () => {
+    jest.resetAllMocks();
+  });
+
+  afterEach(async () => {
+    jest.clearAllMocks();
+  });
+
+  describe('read method', () => {
+    it('should return authenticated user', async () => {
+      const req: Request = authMockRequest({}, { username: USERNAME, password: PASSWORD }, authUserPayload) as unknown as Request;
+      const res: Response = authMockResponse();
+      jest
+        .spyOn(authService, 'getCurrentUser')
+        .mockResolvedValue({ data: { message: 'Current user data', user: authMock } } as unknown as AxiosResponse);
+
+      await CurrentUser.prototype.read(req, res);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Current user data',
+        user: authMock
+      });
     });
+  });
 
-    afterEach(async () => {
-        jest.clearAllMocks();
+  describe('resendEmail method', () => {
+    it('should return correct response', async () => {
+      const req: Request = authMockRequest({}, { username: USERNAME, password: PASSWORD }, authUserPayload) as unknown as Request;
+      const res: Response = authMockResponse();
+      jest
+        .spyOn(authService, 'resendEmail')
+        .mockResolvedValue({ data: { message: 'Email sent successfully.', user: authMock } } as unknown as AxiosResponse);
+
+      await CurrentUser.prototype.resendEmail(req, res);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Email sent successfully.',
+        user: authMock
+      });
     });
+  });
 
-    describe('read method', () => {
-        it('should return authenticated user', async () => {
-            const req: Request = authMockRequest({}, { username: USERNAME, password: PASSWORD }, authUserPayload) as unknown as Request;
-            const res: Response = authMockResponse();
-            jest.spyOn(authService, 'getCurrentUser').mockResolvedValue({ data: { message: 'Current user data', user: authMock } } as unknown as AxiosResponse);
+  describe('getLoggedInUsers method', () => {
+    it('should return correct response', async () => {
+      const req: Request = authMockRequest({}, { username: USERNAME, password: PASSWORD }, authUserPayload) as unknown as Request;
+      const res: Response = authMockResponse();
+      jest.spyOn(GatewayCache.prototype, 'getLoggedInUsersFromCache').mockResolvedValue(['Manny', 'Danny']);
+      jest.spyOn(socketServer.socketIO, 'emit');
 
-            await CurrentUser.prototype.read(req, res);
-            expect(res.status).toHaveBeenCalledWith(200);
-            expect(res.json).toHaveBeenCalledWith({
-                message: 'Current user data',
-                user: authMock
-            });
-        });
+      await CurrentUser.prototype.getLoggedInUsers(req, res);
+      expect(socketServer.socketIO.emit).toHaveBeenCalledWith('online', ['Manny', 'Danny']);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ message: 'User is online' });
     });
+  });
 
-    describe('resendEmail method', () => {
-        it('should return correct response', async () => {
-            const req: Request = authMockRequest({}, { username: USERNAME, password: PASSWORD }, authUserPayload) as unknown as Request;
-            const res: Response = authMockResponse();
-            jest.spyOn(authService, 'resendEmail').mockResolvedValue({ data: { message: 'Email sent successfully.', user: authMock } } as unknown as AxiosResponse);
+  describe('removeLoggedInUser method', () => {
+    it('should return correct response', async () => {
+      const req: Request = authMockRequest({}, { username: USERNAME, password: PASSWORD }, authUserPayload, {
+        username: 'Manny'
+      }) as unknown as Request;
+      const res: Response = authMockResponse();
+      jest.spyOn(GatewayCache.prototype, 'removeLoggedInUserFromCache').mockResolvedValue(['Manny']);
+      jest.spyOn(socketServer.socketIO, 'emit');
 
-            await CurrentUser.prototype.resendEmail(req, res);
-            expect(res.status).toHaveBeenCalledWith(200);
-            expect(res.json).toHaveBeenCalledWith({
-                message: 'Email sent successfully.',
-                user: authMock
-            });
-        });
+      await CurrentUser.prototype.removeLoggedInUser(req, res);
+      expect(socketServer.socketIO.emit).toHaveBeenCalledWith('online', ['Manny']);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ message: 'User is offline' });
     });
-
-    describe('getLoggedInUsers method', () => {
-        it('should return correct response', async () => {
-            const req: Request = authMockRequest({}, { username: USERNAME, password: PASSWORD }, authUserPayload) as unknown as Request;
-            const res: Response = authMockResponse();
-            jest.spyOn(GatewayCache.prototype, 'getLoggedInUsersFromCache').mockResolvedValue(['Manny', 'Danny']);
-            jest.spyOn(socketServer.socketIO, 'emit');
-
-            await CurrentUser.prototype.getLoggedInUsers(req, res);
-            expect(socketServer.socketIO.emit).toHaveBeenCalledWith('online', ['Manny', 'Danny']);
-            expect(res.status).toHaveBeenCalledWith(200);
-            expect(res.json).toHaveBeenCalledWith({ message: 'User is online' });
-        });
-    });
-
-    describe('removeLoggedInUser method', () => {
-        it('should return correct response', async () => {
-            const req: Request = authMockRequest({}, { username: USERNAME, password: PASSWORD }, authUserPayload, { username: 'Manny' }) as unknown as Request;
-            const res: Response = authMockResponse();
-            jest.spyOn(GatewayCache.prototype, 'removeLoggedInUserFromCache').mockResolvedValue(['Manny']);
-            jest.spyOn(socketServer.socketIO, 'emit');
-
-            await CurrentUser.prototype.removeLoggedInUser(req, res);
-            expect(socketServer.socketIO.emit).toHaveBeenCalledWith('online', ['Manny']);
-            expect(res.status).toHaveBeenCalledWith(200);
-            expect(res.json).toHaveBeenCalledWith({ message: 'User is offline' });
-        });
-    });
+  });
 });
