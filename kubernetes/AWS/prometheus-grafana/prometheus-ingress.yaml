@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ithust-prometheus-ingress
+  namespace: prometheus
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-name: ithust-prometheus-ingress
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    # Use service traffic port to avoid mismatch between Service port/targetPort.
+    # alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/healthcheck-path: /-/healthy
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "120"
+    alb.ingress.kubernetes.io/success-codes: "200"
+    alb.ingress.kubernetes.io/healthy-threshold-count: "2"
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: "10"
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/subnets: subnet-0bfb460ed34f20faf, subnet-0d030ff4c2872dade
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/security-groups: sg-0e9ea9d13e0df4f78
+    external-dns.alpha.kubernetes.io/hostname: prometheus.ithust.store
+
+spec:
+  ingressClassName: alb
+  defaultBackend:
+    service:
+      name: prometheus-server
+      port:
+        number: 80
+  tls:
+    - hosts:
+        - "*.ithust.store"
+  rules:
+    - host: prometheus.ithust.store
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-server
+                port:
+                  number: 80
