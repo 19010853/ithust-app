@@ -60,6 +60,9 @@ export class GatewayCache {
       if (!this.client.isOpen) {
         await this.client.connect();
       }
+      if (!value || typeof value !== 'string') {
+        return await this.client.LRANGE(key, 0, -1);
+      }
       await this.client.LREM(key, 1, value);
       log.info(`User ${value} removed`);
       const response: string[] = await this.client.LRANGE(key, 0, -1);

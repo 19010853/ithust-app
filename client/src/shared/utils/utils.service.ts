@@ -110,7 +110,7 @@ export const applicationLogout = (dispatch: Dispatch, navigate: NavigateFunction
     dispatch(authApi.endpoints.removeLoggedInUser.initiate(`${loggedInUsername}`, { track: false }) as never);
   }
   dispatch(api.util.resetApiState());
-  dispatch(authApi.endpoints.logout.initiate() as never);
+  dispatch(authApi.endpoints.logout.initiate(loggedInUsername) as never);
   saveToSessionStorage(JSON.stringify(false), JSON.stringify(''));
   deleteFromLocalStorage('becomeASeller');
   navigate('/');

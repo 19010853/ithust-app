@@ -58,7 +58,10 @@ export async function gigsSearch(
     },
     sort: [
       {
-        sortId: type === 'forward' ? 'asc' : 'desc'
+        sortId: {
+          order: type === 'forward' ? 'asc' : 'desc',
+          unmapped_type: 'long'
+        }
       }
     ],
     ...(from !== '0' && { search_after: [from] })

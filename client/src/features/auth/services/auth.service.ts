@@ -25,12 +25,11 @@ export const authApi = api.injectEndpoints({
       },
       invalidatesTags: ['Auth']
     }),
-    logout: build.mutation<IResponse, void>({
-      query() {
+    logout: build.mutation<IResponse, string | undefined>({
+      query(username) {
         return {
-          url: 'auth/signout',
-          method: 'POST',
-          body: {}
+          url: username ? `auth/currentuser/offline/${username}` : 'auth/currentuser',
+          method: username ? 'DELETE' : 'GET'
         };
       },
       invalidatesTags: ['Auth']

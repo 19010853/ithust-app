@@ -116,7 +116,16 @@ export class GatewayServer {
       }
 
       if (isAxiosError(error)) {
-        log.log('error', `GatewayService Axios Error - ${error?.response?.data?.comingFrom}:`, error);
+        const safeAxiosError = {
+          comingFrom: error?.response?.data?.comingFrom ?? 'unknown',
+          message: error?.response?.data?.message ?? error.message,
+          statusCode: error?.response?.status ?? error?.response?.data?.statusCode ?? DEFAULT_ERROR_CODE,
+          code: error.code,
+          method: error.config?.method,
+          url: error.config?.url,
+          baseURL: error.config?.baseURL
+        };
+        log.log('error', `GatewayService Axios Error - ${safeAxiosError.comingFrom}:`, safeAxiosError);
         res
           .status(error?.response?.data?.statusCode ?? DEFAULT_ERROR_CODE)
           .json({ message: error?.response?.data?.message ?? 'Error occurred.' });

@@ -128,7 +128,7 @@ services:
       - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
       - /proc:/hostfs/proc:ro
       - /:/hostfs:ro
-    command: ["--strict.perms=false", "-system.hostfs=/hostfs"]
+    command: [ "--strict.perms=false", "-system.hostfs=/hostfs" ]
     depends_on:
       - elasticsearch
   heartbeat:
@@ -140,7 +140,7 @@ services:
       - NET_RAW
     networks:
       - elastic
-    command: ["--strict.perms=false"]
+    command: [ "--strict.perms=false" ]
     volumes:
       - ./heartbeat.yml:/usr/share/heartbeat/heartbeat.yml:ro
     depends_on:
@@ -175,7 +175,9 @@ services:
     expose:
       - 22
     environment:
-      - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDN/9cxsMuufr06SSShLQHSglYiLUwcZPSr8fjwCrKCG3i4pqzB0CV8hWIhOqO7FlsnKRA1dk138CHf0l5EGNdYyNcqRFpTPrErj+d+BJ1LbrZ7TiMwWAC8gK6eDF/+ytSO15igvupjVBT7hSa/9RPPqCsLo3+u5qbDZNybxX4pVpRh1j/v9Uaqs3B7qNfv77wG/g2RoUAo7olzJuhY/Ck0Ipay2SysCsObT4MqQARnUpDqzIJ/AWlu+WDx7lJ3qjcdYcDCNdm3cWVWU6YvubzKNsGM6rH2s4pH7JAQMAkgsWZ2ilyfMTMy2TDwANG6FmgBN3F192x5tLD4ht2pp1P9YtnfoQn5dRQAQwhBbkGiHOKSyZmuYRVXghfueXa7cDTajbL1dGa/hhJb3JIMc8hdgy/u14X4mQwpmpQ/6Yp+NnDRF/hBfnU+gE/HW37pQDB4BS6xeA0jEQLgn73itjgH8pAC8ZhfdyAGjsD2mMeT3SLfc1pOEjIhfh3h2Z978z8= admin@Admin-PC
+      - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDN/9cxsMuufr06SSShLQHSglYiLUwcZPSr8fjwCrKCG3i4pqzB0CV8hWIhOqO7FlsnKRA1dk138CHf0l5EGNdYyNcqRFpTPrErj+d+BJ1LbrZ7TiMwWAC8gK6eDF/+ytSO15igvupjVBT7hSa/9RPPqCsLo3+u5qbDZNybxX4pVpRh1j/v9Uaqs3B7qNfv77wG/g2RoUAo7olzJuhY/Ck0Ipay2SysCsObT4MqQARnUpDqzIJ/AWlu+WDx7lJ3qjcdYcDCNdm3cWVWU6YvubzKNsGM6rH2s4pH7JAQMAkgsWZ2ilyfMTMy2TDwANG6FmgBN3F192x5tLD4ht2pp1P9YtnfoQn5dRQAQwhBbkGiHOKSyZmuYRVXghfueXa7cDTajbL1dGa/hhJb3JIMc8hdgy/u14X4mQwpmpQ/6Yp+NnDRF/hBfnU+gE/HW37pQDB4BS6xeA0jEQLgn73itjgH8pAC8ZhfdyAGjsD2mMeT3SLfc1pOEjIhfh3h2Z978z8=
+        admin@Admin-PC
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
@@ -243,7 +245,7 @@ services:
       - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
       - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
       - NODE_ENV=development
-      - AP_GATEWAY_URL=http://localhost:4000
+      - API_GATEWAY_URL=http://localhost:4000
       - CLIENT_URL=http://localhost:3000
       - RABBITMQ_ENDPOINT=amqp://ithust:ithustpass@localhost:5672
       - MYSQL_DB=mysql://ithust:api@localhost:3307/ithust_auth
@@ -271,7 +273,7 @@ services:
       - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
       - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
       - NODE_ENV=development
-      - AP_GATEWAY_URL=http://localhost:4000
+      - API_GATEWAY_URL=http://localhost:4000
       - RABBITMQ_ENDPOINT=amqp://ithust:ithustpass@localhost:5672
       - CLOUD_NAME=dbxa1k1w1
       - CLOUD_API_KEY=973917574881987
@@ -298,7 +300,7 @@ services:
       - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
       - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
       - NODE_ENV=development
-      - AP_GATEWAY_URL=http://localhost:4000
+      - API_GATEWAY_URL=http://localhost:4000
       - RABBITMQ_ENDPOINT=amqp://ithust:ithustpass@localhost:5672
       - CLOUD_NAME=dbxa1k1w1
       - CLOUD_API_KEY=973917574881987
@@ -325,7 +327,7 @@ services:
       - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
       - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
       - NODE_ENV=development
-      - AP_GATEWAY_URL=http://localhost:4000
+      - API_GATEWAY_URL=http://localhost:4000
       - RABBITMQ_ENDPOINT=amqp://ithust:ithustpass@localhost:5672
       - CLOUD_NAME=dbxa1k1w1
       - CLOUD_API_KEY=973917574881987
@@ -351,7 +353,7 @@ services:
       - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
       - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
       - NODE_ENV=development
-      - AP_GATEWAY_URL=http://localhost:4000
+      - API_GATEWAY_URL=http://localhost:4000
       - RABBITMQ_ENDPOINT=amqp://ithust:ithustpass@localhost:5672
       - STRIPE_API_KEY=
       - CLOUD_NAME=dbxa1k1w1
@@ -380,7 +382,7 @@ services:
       - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
       - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
       - NODE_ENV=development
-      - AP_GATEWAY_URL=http://localhost:4000
+      - API_GATEWAY_URL=http://localhost:4000
       - RABBITMQ_ENDPOINT=amqp://ithust:ithustpass@rabbitmq_container:5672
       - ELASTIC_SEARCH_URL=http://elasticsearch_container:9200
       - ELASTIC_APM_SERVER_URL=http://apm_server_container:8200
