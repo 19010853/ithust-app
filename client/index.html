@@ -9,5 +9,17 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      require('elastic-apm-node').start({
+        serviceName: 'ithust-gateway',
+        serverUrl: process.env.ELASTIC_APM_SERVER_URL,
+        secretToken: process.env.ELASTIC_APM_SECRET_TOKEN,
+        environment: process.env.NODE_ENV,
+        active: true,
+        captureBody: 'all',
+        errorOnAbortedRequests: true,
+        captureErrorLogStackTraces: 'always'
+      });
+    </script>
   </body>
 </html>
