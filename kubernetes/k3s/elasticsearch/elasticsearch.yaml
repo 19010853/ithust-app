@@ -47,7 +47,7 @@ spec:
             - name: discovery.type
               value: single-node
             - name: ES_JAVA_OPTS
-              value: '-Xmx1g -Xms1g'
+              value: '-Xmx2g -Xms2g'
             - name: bootstrap.memory_lock
               value: 'true'
             - name: xpack.security.enabled

@@ -1,14 +1,14 @@
-# Secrets (Minikube)
+# Secrets (k3s)
 
 ## Apply đúng cách
 
 Chỉ apply file **có giá trị base64 thật**, không apply cả thư mục nếu trong đó có file mẫu/placeholder.
 
-```powershell
-kubectl apply --validate=false -f kubernetes/minikube/secrets/backend-secrets.yaml
+```bash
+kubectl apply --validate=false -f kubernetes/k3s/secrets/backend-secrets.yaml
 ```
 
-File mẫu nằm ngoài thư mục này: `kubernetes/minikube/backend-secrets.example.yaml` (copy → `secrets/backend-secrets.yaml`).
+File mẫu nằm ngoài thư mục này: `kubernetes/k3s/backend-secrets.example.yaml` (copy → `secrets/backend-secrets.yaml`).
 
 ## `default-secret-token.yaml`
 

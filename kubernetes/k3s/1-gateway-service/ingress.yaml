@@ -3,8 +3,12 @@ kind: Ingress
 metadata:
   name: ithust-gateway-ingress
   namespace: production
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   defaultBackend:
     service:
       name: ithust-gateway
@@ -13,7 +17,6 @@ spec:
   tls:
     - hosts:
         - ithustapp.com
-      secretName: gateway-ingress-tls
   rules:
     - host: ithustapp.com
       http:
