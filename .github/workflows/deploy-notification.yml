@@ -1,0 +1,17 @@
+﻿name: Deploy ITHust Notification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/2-notification-service/**'
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-backend.yml
+    with:
+      service_name: ithust-notification
+      service_label: "ITHust Notification"
+      image_name: minhkhoi779/ithust-notification
+      service_dir: server/2-notification-service
+    secrets: inherit

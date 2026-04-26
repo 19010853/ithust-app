@@ -1,0 +1,155 @@
+# =============================================================================
+# ITHust — Reusable workflow: Build & Deploy một backend service
+# =============================================================================
+# Được gọi bởi các workflow cụ thể của từng service (deploy-*.yml)
+# Inputs:
+#   service_name  : tên Kubernetes label, vd: ithust-gateway
+#   service_label : tên hiển thị, vd: "ITHust Gateway"
+#   image_name    : full Docker Hub image, vd: minhkhoi779/ithust-gateway
+#   service_dir   : thư mục chứa source, vd: server/1-gateway-service
+# =============================================================================
+
+name: "[Reusable] Deploy Backend Service"
+
+on:
+  workflow_call:
+    inputs:
+      service_name:
+        required: true
+        type: string
+      service_label:
+        required: true
+        type: string
+      image_name:
+        required: true
+        type: string
+      service_dir:
+        required: true
+        type: string
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_PASSWORD:
+        required: true
+      NPM_TOKEN:
+        required: true
+      KUBECONFIG_B64:
+        required: true
+      SLACK_WEBHOOK_URL:
+        required: false
+
+jobs:
+  build-and-deploy:
+    name: "Build & Deploy ${{ inputs.service_label }}"
+    runs-on: ubuntu-latest
+
+    steps:
+      # ------------------------------------------------------------------
+      # 1. Checkout (shallow clone depth=1, giống Jenkins)
+      # ------------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # ------------------------------------------------------------------
+      # 2. Cài Node.js
+      # ------------------------------------------------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # ------------------------------------------------------------------
+      # 3. Install dependencies (dùng GitHub NPM token cho @19010853/* packages)
+      # ------------------------------------------------------------------
+      - name: Install Dependencies
+        working-directory: ${{ inputs.service_dir }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # Xóa dòng always-auth nếu có (giống Jenkins: sed -i "/always-auth/d" .npmrc)
+          sed -i "/always-auth/d" .npmrc 2>/dev/null || true
+          npm install --legacy-peer-deps
+
+      # ------------------------------------------------------------------
+      # 4. Build Docker image và push lên Docker Hub
+      # ------------------------------------------------------------------
+      - name: Build & Push Docker Image
+        working-directory: ${{ inputs.service_dir }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          IMAGE_NAME: ${{ inputs.image_name }}
+          IMAGE_TAG: stable-${{ github.run_number }}
+        run: |
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          docker build --build-arg NPM_TOKEN="$NPM_TOKEN" -t "$IMAGE_NAME" .
+          docker tag "$IMAGE_NAME" "$IMAGE_NAME:$IMAGE_TAG"
+          docker tag "$IMAGE_NAME" "$IMAGE_NAME:stable"
+          docker push "$IMAGE_NAME:$IMAGE_TAG"
+          docker push "$IMAGE_NAME:stable"
+
+      # ------------------------------------------------------------------
+      # 5. Restart pod trên K3s (kubectl delete pod → K8s tự tạo lại)
+      # ------------------------------------------------------------------
+      - name: Deploy to K3s (Restart Pod)
+        env:
+          KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+        run: |
+          mkdir -p ~/.kube
+          echo "$KUBECONFIG_B64" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+          # Xóa pod cũ, K3s sẽ tự pull image:stable mới và tạo lại
+          kubectl delete pod -n production -l app=${{ inputs.service_name }} --wait=false || true
+
+      # ------------------------------------------------------------------
+      # 6. Thông báo Slack — Thành công
+      # ------------------------------------------------------------------
+      - name: Notify Slack (Success)
+        if: success() && secrets.SLACK_WEBHOOK_URL != ''
+        uses: slackapi/slack-github-action@v2
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "attachments": [
+                {
+                  "color": "good",
+                  "title": "✅ BUILD SUCCEEDED: ${{ inputs.service_label }} Service #${{ github.run_number }}",
+                  "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                  "text": "Triggered by: *${{ github.actor }}*",
+                  "fields": [
+                    { "title": "Branch", "value": "${{ github.ref_name }}", "short": true },
+                    { "title": "Stage", "value": "Production", "short": true }
+                  ],
+                  "mrkdwn_in": ["text", "fields"]
+                }
+              ]
+            }
+
+      # ------------------------------------------------------------------
+      # 7. Thông báo Slack — Thất bại
+      # ------------------------------------------------------------------
+      - name: Notify Slack (Failure)
+        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
+        uses: slackapi/slack-github-action@v2
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "attachments": [
+                {
+                  "color": "danger",
+                  "title": "❌ BUILD FAILED: ${{ inputs.service_label }} Service #${{ github.run_number }}",
+                  "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                  "text": "Triggered by: *${{ github.actor }}*",
+                  "fields": [
+                    { "title": "Branch", "value": "${{ github.ref_name }}", "short": true },
+                    { "title": "Stage", "value": "Production", "short": true }
+                  ],
+                  "mrkdwn_in": ["text", "fields"]
+                }
+              ]
+            }

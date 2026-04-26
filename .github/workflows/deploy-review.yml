@@ -1,0 +1,17 @@
+﻿name: Deploy ITHust Reviews
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/8-review-service/**'
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-backend.yml
+    with:
+      service_name: ithust-review
+      service_label: "ITHust Reviews"
+      image_name: minhkhoi779/ithust-review
+      service_dir: server/8-review-service
+    secrets: inherit

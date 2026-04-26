@@ -1,0 +1,17 @@
+﻿name: Deploy ITHust Gateway
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/1-gateway-service/**'
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-backend.yml
+    with:
+      service_name: ithust-gateway
+      service_label: "ITHust Gateway"
+      image_name: minhkhoi779/ithust-gateway
+      service_dir: server/1-gateway-service
+    secrets: inherit

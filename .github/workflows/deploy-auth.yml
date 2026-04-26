@@ -1,0 +1,17 @@
+﻿name: Deploy ITHust Auth
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/3-auth-service/**'
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-backend.yml
+    with:
+      service_name: ithust-auth
+      service_label: "ITHust Auth"
+      image_name: minhkhoi779/ithust-auth
+      service_dir: server/3-auth-service
+    secrets: inherit

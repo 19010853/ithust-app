@@ -1,0 +1,17 @@
+﻿name: Deploy ITHust Order
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/7-order-service/**'
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-backend.yml
+    with:
+      service_name: ithust-order
+      service_label: "ITHust Order"
+      image_name: minhkhoi779/ithust-order
+      service_dir: server/7-order-service
+    secrets: inherit

@@ -1,0 +1,17 @@
+﻿name: Deploy ITHust Gig
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/5-gig-service/**'
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-backend.yml
+    with:
+      service_name: ithust-gig
+      service_label: "ITHust Gig"
+      image_name: minhkhoi779/ithust-gig
+      service_dir: server/5-gig-service
+    secrets: inherit

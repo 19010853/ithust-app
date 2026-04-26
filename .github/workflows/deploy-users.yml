@@ -1,0 +1,17 @@
+﻿name: Deploy ITHust Users
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/4-users-service/**'
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-backend.yml
+    with:
+      service_name: ithust-users
+      service_label: "ITHust Users"
+      image_name: minhkhoi779/ithust-users
+      service_dir: server/4-users-service
+    secrets: inherit

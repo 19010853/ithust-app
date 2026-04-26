@@ -1,0 +1,17 @@
+﻿name: Deploy ITHust Chat
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/6-chat-service/**'
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-backend.yml
+    with:
+      service_name: ithust-chat
+      service_label: "ITHust Chat"
+      image_name: minhkhoi779/ithust-chat
+      service_dir: server/6-chat-service
+    secrets: inherit
