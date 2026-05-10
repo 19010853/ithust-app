@@ -38,7 +38,7 @@ const CurrentSellerProfile: FC = (): ReactElement => {
     reviews = sellerData.reviews as IReviewDocument[];
   }
 
-  const isDataLoading: boolean = isSellerGigLoading && isGigReviewLoading && !isSellerGigSuccess && !isGigReviewSuccess;
+  const isDataLoading: boolean = isSellerGigLoading || isGigReviewLoading || !isSellerGigSuccess || !isGigReviewSuccess;
 
   const onUpdateSeller = async (): Promise<void> => {
     try {

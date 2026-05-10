@@ -108,6 +108,6 @@ AuthModel.prototype.hashPassword = async function (password: string): Promise<st
   return hash(password, SALT_ROUND);
 };
 
-// force: true always deletes the table when there is a server restart
-AuthModel.sync({ force: true });
+// alter: true updates the table structure when there is a server restart
+AuthModel.sync({ alter: true });
 export { AuthModel };

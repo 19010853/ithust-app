@@ -25,7 +25,7 @@ describe('CurrentUser', () => {
         multipleStatements: true
       }
     });
-    await mockConnection.sync({ force: true });
+    await mockConnection.sync({ alter: true });
   });
 
   afterEach(async () => {

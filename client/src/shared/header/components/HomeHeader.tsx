@@ -285,7 +285,11 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                         onClick={toggleDropdown}
                         label={
                           <>
-                            <img src={`${authUser.profilePicture}`} alt="profile" className="h-7 w-7 rounded-full object-cover" />
+                            <img
+                              src={authUser?.profilePicture || seller?.profilePicture || buyer?.profilePicture || 'https://placehold.co/150x150?text=Profile'}
+                              alt="profile"
+                              className="h-7 w-7 rounded-full object-cover"
+                            />
                             {authUsername === authUser.username && (
                               <span className="absolute bottom-0 left-8 h-2.5 w-2.5 rounded-full border-2 border-white bg-green-400"></span>
                             )}

@@ -7,6 +7,9 @@ import millify from 'millify';
 import { NavigateFunction } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { logout } from 'src/features/auth/reducers/logout.reducer';
+import { clearAuthUser } from 'src/features/auth/reducers/auth.reducer';
+import { emptyBuyer } from 'src/features/buyer/reducers/buyer.reducer';
+import { emptySeller } from 'src/features/sellers/reducers/seller.reducer';
 import { authApi } from 'src/features/auth/services/auth.service';
 import { IOrderDocument } from 'src/features/order/interfaces/order.interface';
 import { api } from 'src/store/api';
@@ -106,6 +109,9 @@ export const deleteFromLocalStorage = (key: string): void => {
 export const applicationLogout = (dispatch: Dispatch, navigate: NavigateFunction) => {
   const loggedInUsername: string = getDataFromSessionStorage('loggedInuser');
   dispatch(logout({}));
+  dispatch(clearAuthUser());
+  dispatch(emptyBuyer());
+  dispatch(emptySeller());
   if (loggedInUsername) {
     dispatch(authApi.endpoints.removeLoggedInUser.initiate(`${loggedInUsername}`, { track: false }) as never);
   }

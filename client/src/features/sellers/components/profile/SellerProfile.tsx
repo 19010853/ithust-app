@@ -31,7 +31,7 @@ const SellerProfile: FC = (): ReactElement => {
   }
 
   const isLoading: boolean =
-    isSellerGigLoading && isSellerLoading && isGigReviewLoading && !isSellerSuccess && !isSellerGigSuccess && !isGigReviewSuccess;
+    isSellerGigLoading || isSellerLoading || isGigReviewLoading || !isSellerSuccess || !isSellerGigSuccess || !isGigReviewSuccess;
 
   return (
     <div className="relative w-full pb-6">
