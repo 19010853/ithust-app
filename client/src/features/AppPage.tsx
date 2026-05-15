@@ -128,7 +128,7 @@ const AppPage: FC = (): ReactElement => {
 
   if (authUser) {
 
-    return !tokenIsValid && !authUser.id ? (
+    return !authUser.id ? (
 
       <Index />
 

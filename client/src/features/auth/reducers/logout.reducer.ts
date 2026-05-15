@@ -13,7 +13,7 @@ const logoutSlice: Slice = createSlice({
       return state;
     },
     logout: (state: boolean): boolean => {
-      return state;
+      return true;
     }
   }
 });

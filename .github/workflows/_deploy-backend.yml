@@ -35,8 +35,10 @@ on:
         required: true
       KUBECONFIG_B64:
         required: true
-      SLACK_WEBHOOK_URL:
-        required: false
+      TELEGRAM_TO:
+        required: true
+      TELEGRAM_TOKEN:
+        required: true
 
 jobs:
   build-and-deploy:
@@ -44,38 +46,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ------------------------------------------------------------------
-      # 1. Checkout (shallow clone depth=1, giống Jenkins)
-      # ------------------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      # ------------------------------------------------------------------
-      # 2. Cài Node.js
-      # ------------------------------------------------------------------
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      # ------------------------------------------------------------------
-      # 3. Install dependencies (dùng GitHub NPM token cho @19010853/* packages)
-      # ------------------------------------------------------------------
       - name: Install Dependencies
         working-directory: ${{ inputs.service_dir }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          # Xóa dòng always-auth nếu có (giống Jenkins: sed -i "/always-auth/d" .npmrc)
           sed -i "/always-auth/d" .npmrc 2>/dev/null || true
           npm install --legacy-peer-deps
 
-      # ------------------------------------------------------------------
-      # 4. Build Docker image và push lên Docker Hub
-      # ------------------------------------------------------------------
-      - name: Build & Push Docker Image
+      - name: Build Docker Image
         working-directory: ${{ inputs.service_dir }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -89,9 +78,6 @@ jobs:
           docker push "$IMAGE_NAME:$IMAGE_TAG"
           docker push "$IMAGE_NAME:stable"
 
-      # ------------------------------------------------------------------
-      # 5. Restart pod trên K3s (kubectl delete pod → K8s tự tạo lại)
-      # ------------------------------------------------------------------
       - name: Deploy to K3s (Restart Pod)
         env:
           KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
@@ -99,57 +85,30 @@ jobs:
           mkdir -p ~/.kube
           echo "$KUBECONFIG_B64" | base64 -d > ~/.kube/config
           chmod 600 ~/.kube/config
-          # Xóa pod cũ, K3s sẽ tự pull image:stable mới và tạo lại
           kubectl delete pod -n production -l app=${{ inputs.service_name }} --wait=false || true
 
-      # ------------------------------------------------------------------
-      # 6. Thông báo Slack — Thành công
-      # ------------------------------------------------------------------
-      - name: Notify Slack (Success)
-        if: success() && secrets.SLACK_WEBHOOK_URL != ''
-        uses: slackapi/slack-github-action@v2
+      - name: Notify Telegram (Success)
+        if: success()
+        uses: appleboy/telegram-action@master
         with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: |
-            {
-              "attachments": [
-                {
-                  "color": "good",
-                  "title": "✅ BUILD SUCCEEDED: ${{ inputs.service_label }} Service #${{ github.run_number }}",
-                  "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                  "text": "Triggered by: *${{ github.actor }}*",
-                  "fields": [
-                    { "title": "Branch", "value": "${{ github.ref_name }}", "short": true },
-                    { "title": "Stage", "value": "Production", "short": true }
-                  ],
-                  "mrkdwn_in": ["text", "fields"]
-                }
-              ]
-            }
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ✅ Deploy completed successfully (${{ inputs.service_label }})
+            👤 Actor: ${{ github.actor }}
+            📝 Commit message: ${{ github.event.head_commit.message }}
+            📂 Repository: ${{ github.repository }}
+            🔗 See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
 
-      # ------------------------------------------------------------------
-      # 7. Thông báo Slack — Thất bại
-      # ------------------------------------------------------------------
-      - name: Notify Slack (Failure)
-        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
-        uses: slackapi/slack-github-action@v2
+      - name: Notify Telegram (Failure)
+        if: failure()
+        uses: appleboy/telegram-action@master
         with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: |
-            {
-              "attachments": [
-                {
-                  "color": "danger",
-                  "title": "❌ BUILD FAILED: ${{ inputs.service_label }} Service #${{ github.run_number }}",
-                  "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                  "text": "Triggered by: *${{ github.actor }}*",
-                  "fields": [
-                    { "title": "Branch", "value": "${{ github.ref_name }}", "short": true },
-                    { "title": "Stage", "value": "Production", "short": true }
-                  ],
-                  "mrkdwn_in": ["text", "fields"]
-                }
-              ]
-            }
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ❌ Deploy failed (${{ inputs.service_label }})
+            👤 Actor: ${{ github.actor }}
+            📝 Commit message: ${{ github.event.head_commit.message }}
+            📂 Repository: ${{ github.repository }}
+            🔗 See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}

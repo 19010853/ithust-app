@@ -13,7 +13,8 @@
     "prettier:check": "prettier --check 'src/**/*.{ts,json}'",
     "prettier:fix": "prettier --write 'src/**/*.{ts,json}'",
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
-    "test": "jest --coverage=true -w=1 --forceExit --detectOpenHandles --watchAll=false"
+    "test": "jest --coverage=true -w=1 --forceExit --detectOpenHandles --watchAll=false",
+    "seed": "node ../../run-seed.mjs --count 10"
   },
   "keywords": [],
   "author": "",

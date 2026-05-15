@@ -4,7 +4,6 @@ import HomeHeader from 'src/shared/header/components/HomeHeader';
 import { applicationLogout, saveToSessionStorage } from 'src/shared/utils/utils.service';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
 import { IReduxState } from 'src/store/store.interface';
-
 import { addAuthUser } from './auth/reducers/auth.reducer';
 import { useCheckCurrentUserQuery } from './auth/services/auth.service';
 
@@ -38,7 +37,7 @@ const ProtectedRoute: FC<IProtectedRouteProps> = ({ children }): ReactElement =>
     checkUser();
   }, [checkUser]);
 
-  if ((data && data.user) || authUser) {
+  if ((data && data.user) || authUser.id) {
     if (tokenIsValid) {
       return (
         <>

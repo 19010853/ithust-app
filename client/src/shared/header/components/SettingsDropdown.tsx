@@ -91,7 +91,22 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
         )}
         <li>
           <Link
-            to={`${lowerCase(`${buyer?.username}/edit`)}`}
+            to="/inbox"
+            className="block px-4 py-2 hover:text-sky-400"
+            onClick={() => {
+              if (setIsDropdownOpen) {
+                setIsDropdownOpen(false);
+              }
+              dispatch(updateHeader('home'));
+              dispatch(updateCategoryContainer(false));
+            }}
+          >
+            Inbox
+          </Link>
+        </li>
+        <li>
+          <Link
+            to={`/${lowerCase(`${buyer?.username}`)}/edit`}
             className="block px-4 py-2 hover:text-sky-400"
             onClick={() => {
               if (setIsDropdownOpen) {

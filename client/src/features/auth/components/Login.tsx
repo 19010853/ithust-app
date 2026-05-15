@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, ReactElement, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useEffect, useState } from 'react';
 import { useDeviceData, useMobileOrientation } from 'react-device-detect';
 import { FaEye, FaEyeSlash, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -33,8 +33,16 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
   });
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [schemaValidation] = useAuthSchema({ schema: loginUserSchema, userInfo });
+  const [schemaValidation, validationErrors] = useAuthSchema({ schema: loginUserSchema, userInfo });
   const [signIn, { isLoading }] = useSignInMutation();
+
+  useEffect(() => {
+    if (validationErrors.length > 0) {
+      const firstError = validationErrors[0];
+      const errorMessage = typeof firstError === 'string' ? firstError : Object.values(firstError)[0];
+      setAlertMessage(errorMessage as string);
+    }
+  }, [validationErrors]);
 
   const onLoginUser = async (): Promise<void> => {
     try {

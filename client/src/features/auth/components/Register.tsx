@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, ReactElement, useRef, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useEffect, useRef, useState } from 'react';
 import { useDeviceData, useMobileOrientation } from 'react-device-detect';
 import { FaCamera, FaChevronLeft, FaEye, FaEyeSlash, FaTimes } from 'react-icons/fa';
 import Alert from 'src/shared/alert/Alert';
@@ -41,8 +41,16 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
-  const [schemaValidation] = useAuthSchema({ schema: registerUserSchema, userInfo });
+  const [schemaValidation, validationErrors] = useAuthSchema({ schema: registerUserSchema, userInfo });
   const [signUp, { isLoading }] = useSignUpMutation();
+
+  useEffect(() => {
+    if (validationErrors.length > 0) {
+      const firstError = validationErrors[0];
+      const errorMessage = typeof firstError === 'string' ? firstError : Object.values(firstError)[0];
+      setAlertMessage(errorMessage as string);
+    }
+  }, [validationErrors]);
 
   const handleFileChange = async (event: ChangeEvent): Promise<void> => {
     const target: HTMLInputElement = event.target as HTMLInputElement;
@@ -176,11 +184,24 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
               </div>
             </div>
             <Button
-              disabled={!userInfo.username || !userInfo.email || !userInfo.password}
-              className={`text-md block w-full cursor-pointer rounded bg-sky-500 px-8 py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none ${!userInfo.username || !userInfo.email || !userInfo.password ? 'cursor-not-allowed' : 'cursor-pointer'
-                }`}
+              className="text-md block w-full cursor-pointer rounded bg-sky-500 px-8 py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none"
               label="Continue"
-              onClick={() => setStep(2)}
+              onClick={() => {
+                if (!userInfo.username) {
+                  setAlertMessage('Username is a required field');
+                  return;
+                }
+                if (!userInfo.email) {
+                  setAlertMessage('Email is a required field');
+                  return;
+                }
+                if (!userInfo.password) {
+                  setAlertMessage('Password is a required field');
+                  return;
+                }
+                setAlertMessage('');
+                setStep(2);
+              }}
             />
           </div>
         )}

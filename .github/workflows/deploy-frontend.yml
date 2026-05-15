@@ -2,7 +2,7 @@ name: Deploy Frontend
 
 on:
   push:
-    branches: [main]
+    branches: ['dev']
     paths:
       - 'client/**'
 
@@ -31,18 +31,18 @@ jobs:
           echo "VITE_STRIPE_KEY=${{ secrets.STRIPE_API_KEY }}" >> .env.production
           echo "VITE_ELASTIC_APM_SERVER=${{ secrets.VITE_ELASTIC_APM_SERVER }}" >> .env.production
           echo "VITE_ELASTIC_APM_SERVER_TOKEN=${{ secrets.VITE_ELASTIC_APM_SERVER_TOKEN }}" >> .env.production
-          cat .env.production
 
       - name: Install Dependencies
         working-directory: client
         run: npm install
 
-      - name: Build & Push Docker Image
+      - name: Build Docker Image
         working-directory: client
         env:
           IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/ithust-frontend
           IMAGE_TAG: stable-${{ github.run_number }}
         run: |
+          npm run build
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
           docker build -t "$IMAGE_NAME" .
           docker tag "$IMAGE_NAME" "$IMAGE_NAME:$IMAGE_TAG"
@@ -59,48 +59,28 @@ jobs:
           chmod 600 ~/.kube/config
           kubectl delete pod -n production -l app=ithust-frontend --wait=false || true
 
-      - name: Notify Slack (Success)
-        if: success() && secrets.SLACK_WEBHOOK_URL != ''
-        uses: slackapi/slack-github-action@v2
+      - name: Send Telegram message on deploy success
+        if: success()
+        uses: appleboy/telegram-action@master
         with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: |
-            {
-              "attachments": [
-                {
-                  "color": "good",
-                  "title": "✅ BUILD SUCCEEDED: ITHust Frontend #${{ github.run_number }}",
-                  "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                  "text": "Triggered by: *${{ github.actor }}*",
-                  "fields": [
-                    { "title": "Branch", "value": "${{ github.ref_name }}", "short": true },
-                    { "title": "Stage", "value": "Production", "short": true }
-                  ],
-                  "mrkdwn_in": ["text", "fields"]
-                }
-              ]
-            }
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            🚀 Deploy completed successfully (Client)
+            👤 Actor: ${{ github.actor }}
+            📝 Commit message: ${{ github.event.head_commit.message }}
+            📂 Repository: ${{ github.repository }}
+            🔗 See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
 
-      - name: Notify Slack (Failure)
-        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
-        uses: slackapi/slack-github-action@v2
+      - name: Send Telegram message on deploy failure
+        if: failure()
+        uses: appleboy/telegram-action@master
         with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: |
-            {
-              "attachments": [
-                {
-                  "color": "danger",
-                  "title": "❌ BUILD FAILED: ITHust Frontend #${{ github.run_number }}",
-                  "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                  "text": "Triggered by: *${{ github.actor }}*",
-                  "fields": [
-                    { "title": "Branch", "value": "${{ github.ref_name }}", "short": true },
-                    { "title": "Stage", "value": "Production", "short": true }
-                  ],
-                  "mrkdwn_in": ["text", "fields"]
-                }
-              ]
-            }
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ❌ Deploy failed (Client)
+            👤 Actor: ${{ github.actor }}
+            📝 Commit message: ${{ github.event.head_commit.message }}
+            📂 Repository: ${{ github.repository }}
+            🔗 See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}

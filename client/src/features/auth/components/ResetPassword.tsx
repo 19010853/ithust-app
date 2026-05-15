@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, FormEvent, ReactElement, useState } from 'react';
+import { ChangeEvent, FC, FormEvent, ReactElement, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Alert from 'src/shared/alert/Alert';
 import Button from 'src/shared/button/Button';
@@ -18,9 +18,18 @@ const ResetPassword: FC = (): ReactElement => {
     confirmPassword: ''
   });
   const [status, setStatus] = useState<string>(AUTH_FETCH_STATUS.IDLE);
-  const [schemaValidation] = useAuthSchema({ schema: resetPasswordSchema, userInfo });
+  const [schemaValidation, validationErrors] = useAuthSchema({ schema: resetPasswordSchema, userInfo });
   const [searchParams] = useSearchParams({});
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
+
+  useEffect(() => {
+    if (validationErrors.length > 0) {
+      const firstError = validationErrors[0];
+      const errorMessage = typeof firstError === 'string' ? firstError : Object.values(firstError)[0];
+      setAlertMessage(errorMessage as string);
+      setStatus(AUTH_FETCH_STATUS.ERROR);
+    }
+  }, [validationErrors]);
 
   const onResetPassword = async (event: FormEvent): Promise<void> => {
     event.preventDefault();

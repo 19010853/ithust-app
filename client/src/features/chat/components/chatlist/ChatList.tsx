@@ -81,9 +81,8 @@ const ChatList: FC = (): ReactElement => {
           <div
             key={uuidv4()}
             onClick={() => selectUserFromList(data)}
-            className={`flex w-full cursor-pointer items-center space-x-4 px-5 py-4 hover:bg-gray-50 ${
-              index !== chatList.length - 1 ? 'border-grey border-b' : ''
-            } ${!data.isRead ? 'bg-[#f5fbff]' : ''} ${data.conversationId === conversationId ? 'bg-[#f5fbff]' : ''}`}
+            className={`flex w-full cursor-pointer items-center space-x-4 px-5 py-4 hover:bg-gray-50 ${index !== chatList.length - 1 ? 'border-grey border-b' : ''
+              } ${!data.isRead ? 'bg-[#f5fbff]' : ''} ${data.conversationId === conversationId ? 'bg-[#f5fbff]' : ''}`}
           >
             <LazyLoadImage
               src={data.receiverUsername !== authUser?.username ? data.receiverPicture : data.senderPicture}

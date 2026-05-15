@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: [main]
+    branches: ['dev']
     paths:
       - 'server/1-gateway-service/**'
 
