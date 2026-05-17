@@ -11,9 +11,9 @@ spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - kibana.ithustapp.com
+        - kibana.ithust.store
   rules:
-  - host: kibana.ithustapp.com
+  - host: kibana.ithust.store
     http:
       paths:
       - pathType: Prefix
@@ -22,4 +22,4 @@ spec:
           service:
             name: ithust-kibana
             port:
-              number: 5601
+              number: 5601

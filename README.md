@@ -114,12 +114,34 @@ metadata:
 spec:
   valuesContent: |-
     additionalArguments:
-      - "--certificatesresolvers.letsencrypt.acme.email=YOUR_EMAIL@domain.com"
+      - "--certificatesresolvers.letsencrypt.acme.email=khoinguyenminhk37@gmail.com"
       - "--certificatesresolvers.letsencrypt.acme.storage=/data/acme.json"
       - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
 ```
 
-Trỏ tên miền (ví dụ: `ithustapp.com`, `api.ithustapp.com`) tại DNS Provider của bạn bằng `A Record` về IP của VPS.
+### Phase 2 — DNS, Traefik & TLS
+
+Mô hình domain chuẩn của dự án:
+
+- `main` → production
+  - frontend: `ithust.shop`
+  - backend: `ithust.store`
+- `dev` → development
+  - frontend: `dev.ithust.shop`
+  - backend: `dev.ithust.store`
+
+Trên Namecheap, trỏ các bản ghi `A Record` về IP VPS:
+
+- `ithust.shop` → frontend production
+- `ithust.store` → backend production
+- `dev.ithust.shop` → frontend development
+- `dev.ithust.store` → backend development
+
+Nếu dùng Kibana riêng cho production, có thể thêm:
+
+- `kibana.ithust.store` → VPS IP
+
+Sau khi DNS trỏ đúng, copy file `kubernetes/k3s/traefik-config.yaml` vào `/var/lib/rancher/k3s/server/manifests/traefik-config.yaml`, mở port 80/443 và kiểm tra Traefik logs để xác nhận Let's Encrypt hoạt động.
 
 ### Bước 5.3: Cài đặt Secret Keys (Quan trọng)
 Lấy repo về và giải mã các Base64 keys:

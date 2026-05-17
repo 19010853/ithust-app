@@ -16,9 +16,9 @@ spec:
         number: 4000
   tls:
     - hosts:
-        - ithustapp.com
+        - ithust.store
   rules:
-    - host: ithustapp.com
+    - host: ithust.store
       http:
         paths:
           - path: /api/gateway/v1
