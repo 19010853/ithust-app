@@ -76,6 +76,21 @@ spec:
               value: "https://ithustapp.info"
             - name: API_GATEWAY_URL
               value: "http://ithust-gateway.production.svc.cluster.local:4000"
+            - name: PLATFORM_OWNER_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: ithust-backend-secret
+                  key: platform-owner-email
+            - name: PLATFORM_OWNER_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: ithust-backend-secret
+                  key: platform-owner-username
+            - name: PLATFORM_OWNER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ithust-backend-secret
+                  key: platform-owner-password
             - name: ELASTIC_SEARCH_URL
               valueFrom:
                 secretKeyRef:

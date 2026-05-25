@@ -94,3 +94,8 @@ spec:
                 secretKeyRef:
                   name: ithust-backend-secret
                   key: ithust-elastic-apm-secret-token
+            - name: PLATFORM_OWNER_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: ithust-backend-secret
+                  key: platform-owner-email

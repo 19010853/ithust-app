@@ -59,6 +59,8 @@ spec:
                 secretKeyRef:
                   name: ithust-backend-secret
                   key: ithust-postgres-host
+            - name: DATABASE_PORT
+              value: "5432"
             - name: DATABASE_USER
               valueFrom:
                 secretKeyRef:
