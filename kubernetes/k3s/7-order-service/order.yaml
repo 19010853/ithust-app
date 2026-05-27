@@ -34,7 +34,7 @@ spec:
               containerPort: 4006
           env:
             - name: ENABLE_APM
-              value: "1"
+              value: "0"
             - name: NODE_ENV
               value: "production"
             - name: GATEWAY_JWT_TOKEN
@@ -75,7 +75,7 @@ spec:
             - name: API_GATEWAY_URL
               value: "http://ithust-gateway.production.svc.cluster.local:4000"
             - name: CLIENT_URL
-              value: "https://ithustapp.info"
+              value: "https://ithust.shop"
             - name: STRIPE_API_KEY
               valueFrom:
                 secretKeyRef:

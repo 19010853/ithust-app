@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: ['dev']
+    branches: ['dev/se-pay']
     paths:
       - 'server/2-notification-service/**'
 
@@ -14,4 +14,5 @@ jobs:
       service_label: "ITHust Notification"
       image_name: minhkhoi779/ithust-notification
       service_dir: server/2-notification-service
+      k8s_dir: kubernetes/k3s/2-notifications-service
     secrets: inherit

@@ -46,36 +46,72 @@ Hệ thống bao gồm 8 backend services và 1 frontend client độc lập:
 
 Để chạy dự án ở localhost, bạn không cần cài Kubernetes. Các cơ sở hạ tầng (Database, RabbitMQ, ElasticSearch) sẽ chạy bằng **Docker container**, còn mã nguồn Node.js/React sẽ chạy trực tiếp qua quá trình giám sát (Nodemon/Vite).
 
-### Bước 4.1: Khởi động Hạ tầng Docker
-Bạn cần tải các image và khởi tạo container từ file cấu hình (nếu có) hoặc dùng lệnh start nhanh nếu container đã từng tạo:
+### Bước 4.0: Cài công cụ bắt buộc
+Máy local cần có:
+
+- Node.js 20+ hoặc 22+
+- Docker và Docker Compose
+- GitHub/NPM token có quyền đọc package `@19010853/ithust-shared`
+
+Trước khi chạy `npm ci` trong các service backend, tạo file `.npmrc` tạm trong thư mục service nếu dependency private chưa tải được:
 
 ```bash
-# Khởi động Database & Cache
-docker start postgres_container mongodb_container mysql_container redis_container
-
-# Khởi động Message Broker
-docker start rabbitmq_container
-
-# Khởi động Elastic Stack (Tìm kiếm/Giám sát)
-docker start elasticsearch_container kibana_container apm_server_container heartbeat_container metricbeat_container
+printf '@19010853:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=YOUR_NPM_TOKEN\n' > .npmrc
 ```
-*(Nếu muốn chạy tắt mọi thứ, dùng: `docker start postgres_container mongodb_container mysql_container redis_container rabbitmq_container elasticsearch_container kibana_container apm_server_container heartbeat_container metricbeat_container`)*
+
+### Bước 4.1: Khởi động Hạ tầng Docker
+Khởi động hạ tầng local bằng Docker Compose:
+
+```bash
+docker compose -f volumes/docker-compose.yaml up -d redis mongodb mysql postgres rabbitmq elasticsearch kibana apmServer
+```
+
+Nếu container đã tồn tại và chỉ muốn bật lại nhanh:
+
+```bash
+docker start postgres_container mongodb_container mysql_container redis_container rabbitmq_container elasticsearch_container kibana_container apm_server_container
+```
 
 ### Bước 4.2: Khởi động Microservices và Client
-Trong môi trường phát triển, hãy mở từng terminal riêng:
+Tạo file môi trường local trước:
+
+```bash
+cp client/.env.local.example client/.env.local
+
+cp server/1-gateway-service/.env.local.example server/1-gateway-service/.env
+cp server/2-notification-service/.env.local.example server/2-notification-service/.env
+cp server/3-auth-service/.env.local.example server/3-auth-service/.env
+cp server/4-users-service/.env.local.example server/4-users-service/.env
+cp server/5-gig-service/.env.local.example server/5-gig-service/.env
+cp server/6-chat-service/.env.local.example server/6-chat-service/.env
+cp server/7-order-service/.env.local.example server/7-order-service/.env
+cp server/8-review-service/.env.local.example server/8-review-service/.env
+```
+
+Build nhanh trước khi chạy:
+
+```bash
+cd client && npm ci && npm run build
+
+cd ../server/1-gateway-service && npm ci --legacy-peer-deps && npm run build
+```
+
+Lặp lại `npm ci --legacy-peer-deps && npm run build` cho toàn bộ thư mục `server/*-service`.
+
+Khi chạy dev, mở từng terminal riêng:
 
 ```bash
 # Frontend
 cd client
-npm install
+npm ci
 npm run dev
 
-# Backend (Thực hiện tương tự cho cả 8 service)
+# Backend (thực hiện tương tự cho cả 8 service)
 cd server/1-gateway-service
-npm install
-npm run dev:watch
+npm ci --legacy-peer-deps
+npm run dev
 ```
-> **Lưu ý**: Cần thêm thư mục `.env` theo `backend-secrets.example.yaml` tương ứng cho từng môi trường local.
+> **Lưu ý**: Backend script đúng là `npm run dev`, không dùng `dev:watch`.
 
 Khi xong việc, có thể dừng docker để tiết kiệm RAM:
 `docker stop postgres_container mongodb_container mysql_container redis_container rabbitmq_container elasticsearch_container kibana_container apm_server_container heartbeat_container metricbeat_container`
@@ -173,16 +209,23 @@ Sau bước này, các DBs, Caches, Elastic, và Message Broker sẽ được đ
 
 Mọi tác vụ biên dịch ảnh Docker và cập nhật mã nguồn sẽ được tự động hoàn thành bởi **GitHub Actions**, không cần thủ công.
 
-1. **Khái quát**: Khi code được push/merge vào `main`, GitHub Actions sẽ tự động phát hiện module nào có thay đổi qua Path Filtering. (VD: sửa `server/1-gateway-service` thì chỉ mỗi Gateway Service được build lại).
+1. **Khái quát**: Khi code được push/merge vào `dev/se-pay`, GitHub Actions sẽ tự động phát hiện module nào có thay đổi qua Path Filtering. (VD: sửa `server/1-gateway-service` thì chỉ mỗi Gateway Service được build lại).
 2. **Quy trình Action**:
     - **Lint & Test**: (Mở rộng trong tương lai)
     - **Docker Build & Push**: Tự động tải NPM dependencies, đóng gói docker image dưới tag `stable-<build-number>` và đẩy thẳng lên Docker Hub.
-    - **Deployment (Rolling Update)**: GitHub connect tới VPS bằng TLS (KubeConfig base64), xoá pods hiển tại báo hiệu K3s tải hình ảnh `latest/stable` trên docker hub. Hệ thống không gây gián đoạn down-time thông qua K8s.
+    - **Deployment (Rolling Update)**: GitHub connect tới VPS bằng `KUBECONFIG_B64`, apply manifest K3s tương ứng, rồi `rollout restart/status` deployment để kéo image `stable` mới nhất.
 3. **Cấu hình trên GitHub Repo**: Để pipeline chạy thành công, chủ repo phải cập nhật các Credentials vào Github **Settings > Secrets**:
     - `DOCKERHUB_USERNAME`, `DOCKERHUB_PASSWORD`: Token đăng nhập hệ thống docker để đẩy image.
     - `NPM_TOKEN`: GitHub personal PAT để tải chung các package public (@19010853/ithust-shared) dưới dạng registry.
     - `KUBECONFIG_B64`: String Base64 của file `~/.kube/config` trích từ nội VPS. *(Dùng lệnh `cat ~/.kube/config | base64` ở Server)*.
-    - Các khoá cấu hình Frontend: `VITE_BASE_ENDPOINT`, `STRIPE_API_KEY`, v.v...
+    - Các khoá cấu hình Frontend: `VITE_BASE_ENDPOINT=https://ithust.store`, `VITE_CLIENT_ENDPOINT=https://ithust.shop`, `VITE_STRIPE_KEY=pk_live_...`.
+    - Thông báo deploy: `TELEGRAM_TOKEN`, `TELEGRAM_TO`.
+
+Branch deploy hiện dùng cho workflow là `dev/se-pay`. Git không cho tạo đồng thời branch `dev` khi remote đang có các branch dạng `dev/*`, vì vậy cứ push trực tiếp lên `dev/se-pay`:
+
+```bash
+git push origin dev/se-pay
+```
 
 ---
 

@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: ['dev']
+    branches: ['dev/se-pay']
     paths:
       - 'server/3-auth-service/**'
 
@@ -14,4 +14,5 @@ jobs:
       service_label: "ITHust Auth"
       image_name: minhkhoi779/ithust-auth
       service_dir: server/3-auth-service
+      k8s_dir: kubernetes/k3s/3-auth-service
     secrets: inherit

@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: ['dev']
+    branches: ['dev/se-pay']
     paths:
       - 'server/6-chat-service/**'
 
@@ -14,4 +14,5 @@ jobs:
       service_label: "ITHust Chat"
       image_name: minhkhoi779/ithust-chat
       service_dir: server/6-chat-service
+      k8s_dir: kubernetes/k3s/6-chat-service
     secrets: inherit

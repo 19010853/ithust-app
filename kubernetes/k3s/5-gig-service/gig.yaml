@@ -34,7 +34,7 @@ spec:
               containerPort: 4004
           env:
             - name: ENABLE_APM
-              value: "1"
+              value: "0"
             - name: NODE_ENV
               value: "production"
             - name: GATEWAY_JWT_TOKEN

@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: ['dev']
+    branches: ['dev/se-pay']
     paths:
       - 'server/5-gig-service/**'
 
@@ -14,4 +14,5 @@ jobs:
       service_label: "ITHust Gig"
       image_name: minhkhoi779/ithust-gig
       service_dir: server/5-gig-service
+      k8s_dir: kubernetes/k3s/5-gig-service
     secrets: inherit

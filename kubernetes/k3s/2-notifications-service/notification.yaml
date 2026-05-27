@@ -34,11 +34,11 @@ spec:
               containerPort: 4001
           env:
             - name: ENABLE_APM
-              value: "1"
+              value: "0"
             - name: NODE_ENV
               value: "production"
             - name: CLIENT_URL
-              value: "http://localhost:3000"
+              value: "https://ithust.shop"
             - name: RABBITMQ_ENDPOINT
               valueFrom:
                 secretKeyRef:

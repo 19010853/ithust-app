@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: ['dev']
+    branches: ['dev/se-pay']
     paths:
       - 'server/1-gateway-service/**'
 
@@ -14,4 +14,5 @@ jobs:
       service_label: "ITHust Gateway"
       image_name: minhkhoi779/ithust-gateway
       service_dir: server/1-gateway-service
+      k8s_dir: kubernetes/k3s/1-gateway-service
     secrets: inherit

@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: ['dev']
+    branches: ['dev/se-pay']
     paths:
       - 'server/8-review-service/**'
 
@@ -14,4 +14,5 @@ jobs:
       service_label: "ITHust Reviews"
       image_name: minhkhoi779/ithust-review
       service_dir: server/8-review-service
+      k8s_dir: kubernetes/k3s/8-review-service
     secrets: inherit

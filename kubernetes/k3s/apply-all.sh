@@ -83,6 +83,7 @@ apply_service() {
   kubectl apply -f "$dir/"
 }
 
+apply_service 0-frontend              "Frontend"
 apply_service 1-gateway-service       "Gateway Service"
 apply_service 2-notifications-service "Notifications Service"
 apply_service 3-auth-service           "Auth Service"

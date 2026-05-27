@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: ['dev']
+    branches: ['dev/se-pay']
     paths:
       - 'server/7-order-service/**'
 
@@ -14,4 +14,5 @@ jobs:
       service_label: "ITHust Order"
       image_name: minhkhoi779/ithust-order
       service_dir: server/7-order-service
+      k8s_dir: kubernetes/k3s/7-order-service
     secrets: inherit

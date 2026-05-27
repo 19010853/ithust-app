@@ -42,6 +42,7 @@ apiCalls
 
 # Kubernetes secrets (mật khẩu thật; mẫu: kubernetes/minikube/backend-secrets.example.yaml)
 kubernetes/minikube/secrets/backend-secrets.yaml
+kubernetes/k3s/secrets/backend-secrets.yaml
 
 volumes/docker-volumes
 

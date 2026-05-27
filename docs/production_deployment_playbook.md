@@ -139,6 +139,7 @@ Khi hạ tầng và các Secrets đã sẵn sàng, chúng ta tiến hành triể
 
 1. **Apply các manifest của từng service**:
    ```bash
+   kubectl apply -f 0-frontend/
    kubectl apply -f 1-gateway-service/
    kubectl apply -f 2-notifications-service/
    kubectl apply -f 3-auth-service/
@@ -163,19 +164,21 @@ Thay vì build Docker image thủ công trên VPS tốn tài nguyên và gây gi
 
 ```mermaid
 sequenceDiagram
-    developer->>github: Push code lên nhánh dev/main
+    developer->>github: Push code lên nhánh dev/se-pay
     github->>github actions: Trigger Workflow
     github actions->>dockerhub: Build & Push Docker Image (tag: stable)
-    github actions->>VPS K3s: SSH & cập nhật (kubectl delete pod / rollout restart)
+    github actions->>VPS K3s: Apply manifest & rollout restart
     VPS K3s->>dockerhub: Pull Image mới nhất và Rolling Update (Không downtime)
 ```
 
 1. Mỗi lần push code lên nhánh release (như `dev` hoặc `main`), GitHub Actions Runner sẽ tự đóng gói ứng dụng thành Docker image với tag `stable` và đẩy lên Docker Hub.
-2. Actions kết nối tới VPS bằng cấu hình `KUBECONFIG` và ra lệnh:
+2. Actions kết nối tới VPS bằng cấu hình `KUBECONFIG`, apply lại manifest tương ứng rồi restart deployment:
    ```bash
-   kubectl delete pod -n production -l app=<tên-dịch-vụ> --wait=false
+   kubectl apply -f kubernetes/k3s/<tên-thư-mục-service>/
+   kubectl rollout restart deployment/<tên-deployment> -n production
+   kubectl rollout status deployment/<tên-deployment> -n production --timeout=180s
    ```
-   Do trong manifest K8s cài đặt `imagePullPolicy: Always` nên khi Pod cũ bị xóa, Pod mới sẽ được khởi tạo và tự động kéo Docker image `stable` mới nhất từ Docker Hub về chạy. Điều này giúp hệ thống cập nhật tự động không gián đoạn dịch vụ (Zero-Downtime Rolling Update).
+   Do trong manifest K8s cài đặt `imagePullPolicy: Always` nên khi rollout tạo Pod mới, Pod sẽ tự động kéo Docker image `stable` mới nhất từ Docker Hub về chạy. Điều này giúp hệ thống cập nhật tự động qua Rolling Update.
 
 ---
 
@@ -187,6 +190,7 @@ Khi chuyển dịch từ chạy thử nghiệm sang môi trường thương mạ
 | Tên biến (K8s Secret Key / Env) | Môi trường Sandbox / Local | Môi trường Production thực tế | Giải thích & Hành động |
 | :--- | :--- | :--- | :--- |
 | `NODE_ENV` | `development` / `test` | `production` | Bật các tối ưu hóa production của Node.js, tắt verbose logging không cần thiết. |
+| `ENABLE_APM` | `0` | `0` mặc định, đổi sang `1` khi đã có APM server thật | Tránh lỗi cấu hình rỗng khi chưa triển khai Elastic APM. |
 | `CLIENT_URL` / `VITE_CLIENT_ENDPOINT` | `http://localhost:3000` | `https://ithust.shop` | Domain chính thức của giao diện người dùng frontend (cần cấu hình HTTPS). |
 | `VITE_BASE_ENDPOINT` | `http://localhost:4000` | `https://ithust.store` | Điểm truy cập API Gateway bên ngoài. Client sẽ gửi toàn bộ API request tới đây qua HTTPS. |
 
@@ -209,11 +213,11 @@ Dự án đã tích hợp SePay thay thế cho Stripe để phù hợp với tha
 Trên localhost, các dịch vụ kết nối với DB qua cổng map ra máy vật lý (ví dụ MySQL port 3307, Redis 6379). Trên K3s Production, các dịch vụ gọi nhau thông qua hệ thống phân giải tên miền nội bộ của Kubernetes (CoreDNS) để tối đa hóa bảo mật (không mở cổng DB ra internet).
 | Tên biến (K8s Secret Key) | Cấu hình Sandbox/Local | Cấu hình Production trên K3s | Giải thích & Hành động |
 | :--- | :--- | :--- | :--- |
-| `mongo-database-url` | `mongodb://localhost:27017/ithust` | `mongodb://ithust-mongodb.production.svc.cluster.local:27017/ithust` | Kết nối nội bộ tới StatefulSet MongoDB trong cụm K3s. |
+| `mongo-database-url` | `mongodb://localhost:27017/ithust` | `mongodb://ithust-mongo.production.svc.cluster.local:27017/ithust` | Kết nối nội bộ tới StatefulSet MongoDB trong cụm K3s. |
 | `ithust-mysql-db` | `mysql://root:api@localhost:3307/ithust_auth` | `mysql://ithust:api@ithust-mysql.production.svc.cluster.local:3307/ithust_auth` | Kết nối nội bộ tới service MySQL. Lưu ý port mặc định khai báo trong service K3s là `3307`. |
-| `ithust-postgres-host` | `localhost` | `ithust-postgres.production.svc.cluster.local` | Hostname của dịch vụ PostgreSQL dùng cho Review Service. |
+| `ithust-postgres-host` / `DATABASE_PORT` | `localhost` / `5432` | `ithust-postgres.production.svc.cluster.local` / `5432` | Hostname và port của dịch vụ PostgreSQL dùng cho Review Service. |
 | `ithust-redis-host` | `redis://127.0.0.1:6379` | `redis://ithust-redis.production.svc.cluster.local:6379` | Kết nối Redis làm cache và quản lý session chat thời gian thực. |
-| `ithust-rabbitmq-endpoint` | `amqp://guest:guest@localhost:5672` | `amqp://guest:guest@ithust-rabbitmq.production.svc.cluster.local:5672` | Endpoint kết nối RabbitMQ để truyền tin nhắn bất đồng bộ giữa các microservices. |
+| `ithust-rabbitmq-endpoint` | `amqp://guest:guest@localhost:5672` | `amqp://ithust:ithustpass@ithust-queue.production.svc.cluster.local:5672` | Endpoint kết nối RabbitMQ để truyền tin nhắn bất đồng bộ giữa các microservices. |
 | `ithust-elasticsearch-url` | `http://localhost:9200` | `http://elastic:mật-khẩu-thật@ithust-elastic.production.svc.cluster.local:9200` | Đường dẫn kết nối Elasticsearch phục vụ cho việc tìm kiếm gig/dịch vụ nhanh. |
 
 ### 5. Dịch vụ lưu trữ hình ảnh Cloudinary
@@ -243,7 +247,9 @@ Trên localhost, các dịch vụ kết nối với DB qua cổng map ra máy v�
 | `KUBECONFIG_B64` | Chuỗi mã hóa Base64 của file cấu hình Kubernetes trên VPS | **Đây là cầu nối giúp GitHub điều khiển cụm K3s trên VPS**. Hãy đăng nhập SSH vào VPS và chạy lệnh:<br>`cat ~/.kube/config \| base64 -w 0`<br>Copy toàn bộ chuỗi ký tự hiển thị trên màn hình dán vào giá trị Secret này. |
 | `VITE_BASE_ENDPOINT` | `https://ithust.store` | Địa chỉ URL API Gateway chính thức cho môi trường Production. |
 | `VITE_CLIENT_ENDPOINT` | `https://ithust.shop` | Địa chỉ URL trang giao diện người dùng Frontend Production. |
-| `STRIPE_API_KEY` | `pk_live_...` | Khóa công khai Stripe Live Mode (nếu sử dụng Stripe thanh toán quốc tế). |
+| `VITE_STRIPE_KEY` | `pk_live_...` | Khóa công khai Stripe Live Mode dùng trong frontend (nếu sử dụng Stripe thanh toán quốc tế). |
+| `VITE_ELASTIC_APM_SERVER` | URL APM frontend, có thể để trống nếu chưa dùng | Chỉ điền khi đã triển khai APM server thật. |
+| `VITE_ELASTIC_APM_SERVER_TOKEN` | Token APM frontend, có thể để trống nếu chưa dùng | Chỉ điền khi APM server yêu cầu token. |
 | `TELEGRAM_TOKEN` | Token của Telegram Bot thông báo | Chat với `@BotFather` trên Telegram để tạo Bot mới và lấy Token thông báo trạng thái Deploy thành công/thất bại. |
 | `TELEGRAM_TO` | ID phòng chat nhận thông báo | ID của tài khoản Telegram cá nhân của bạn hoặc Group ID nơi add Bot vào nhận tin nhắn trạng thái deploy. |
 
@@ -274,4 +280,4 @@ Trên localhost, các dịch vụ kết nối với DB qua cổng map ra máy v�
 ---
 
 > [!TIP]
-> **Khuyến nghị bảo mật**: Không bao giờ commit file `secrets/backend-secrets.yaml` lên GitHub. Chỉ lưu trữ nó an toàn trên VPS của bạn hoặc cấu hình qua các giải pháp quản lý khóa tập trung như HashiCorp Vault sau này nếu hệ thống phát triển lớn hơn.
+> **Khuyến nghị bảo mật**: Không bao giờ commit file `kubernetes/k3s/secrets/backend-secrets.yaml` lên GitHub. File này phải nằm trong `.gitignore`; nếu đã từng commit credential thật, hãy rotate toàn bộ secret trước khi deploy production. Chỉ lưu trữ file thật an toàn trên VPS hoặc dùng giải pháp quản lý khóa tập trung như HashiCorp Vault sau này.

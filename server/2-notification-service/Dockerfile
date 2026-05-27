@@ -12,6 +12,7 @@ RUN set -eux; \
     npm ci --legacy-peer-deps; \
     rm -f .npmrc
 COPY src ./src
+COPY tools ./tools
 RUN npm run build
 
 FROM node:22-alpine3.18
@@ -31,6 +32,6 @@ RUN set -eux; \
     rm -f .npmrc
 COPY --from=builder /app/build ./build
 
-EXPOSE 4007
+EXPOSE 4001
 
 CMD ["npm", "run", "start"]

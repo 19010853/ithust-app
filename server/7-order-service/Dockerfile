@@ -31,6 +31,6 @@ RUN set -eux; \
     rm -f .npmrc
 COPY --from=builder /app/build ./build
 
-EXPOSE 4007
+EXPOSE 4006
 
 CMD ["npm", "run", "start"]

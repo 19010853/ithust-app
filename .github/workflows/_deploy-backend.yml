@@ -7,6 +7,7 @@
 #   service_label : tên hiển thị, vd: "ITHust Gateway"
 #   image_name    : full Docker Hub image, vd: minhkhoi779/ithust-gateway
 #   service_dir   : thư mục chứa source, vd: server/1-gateway-service
+#   k8s_dir       : thư mục Kubernetes manifest, vd: kubernetes/k3s/1-gateway-service
 # =============================================================================
 
 name: "[Reusable] Deploy Backend Service"
@@ -24,6 +25,9 @@ on:
         required: true
         type: string
       service_dir:
+        required: true
+        type: string
+      k8s_dir:
         required: true
         type: string
     secrets:
@@ -61,8 +65,9 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          sed -i "/always-auth/d" .npmrc 2>/dev/null || true
-          npm install --legacy-peer-deps
+          printf '@19010853:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "$NPM_TOKEN" > .npmrc
+          npm ci --legacy-peer-deps
+          rm -f .npmrc
 
       - name: Build Docker Image
         working-directory: ${{ inputs.service_dir }}
@@ -78,14 +83,16 @@ jobs:
           docker push "$IMAGE_NAME:$IMAGE_TAG"
           docker push "$IMAGE_NAME:stable"
 
-      - name: Deploy to K3s (Restart Pod)
+      - name: Deploy to K3s
         env:
           KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
         run: |
           mkdir -p ~/.kube
           echo "$KUBECONFIG_B64" | base64 -d > ~/.kube/config
           chmod 600 ~/.kube/config
-          kubectl delete pod -n production -l app=${{ inputs.service_name }} --wait=false || true
+          kubectl apply -f ${{ inputs.k8s_dir }}/
+          kubectl rollout restart deployment/${{ inputs.service_name }} -n production
+          kubectl rollout status deployment/${{ inputs.service_name }} -n production --timeout=180s
 
       - name: Notify Telegram (Success)
         if: success()

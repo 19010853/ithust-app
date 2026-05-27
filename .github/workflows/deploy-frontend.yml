@@ -2,7 +2,7 @@ name: Deploy Frontend
 
 on:
   push:
-    branches: ['dev']
+    branches: ['dev/se-pay']
     paths:
       - 'client/**'
 
@@ -28,7 +28,7 @@ jobs:
           echo "VITE_NODE_ENV=production" > .env.production
           echo "VITE_BASE_ENDPOINT=${{ secrets.VITE_BASE_ENDPOINT }}" >> .env.production
           echo "VITE_CLIENT_ENDPOINT=${{ secrets.VITE_CLIENT_ENDPOINT }}" >> .env.production
-          echo "VITE_STRIPE_KEY=${{ secrets.STRIPE_API_KEY }}" >> .env.production
+          echo "VITE_STRIPE_KEY=${{ secrets.VITE_STRIPE_KEY }}" >> .env.production
           echo "VITE_ELASTIC_APM_SERVER=${{ secrets.VITE_ELASTIC_APM_SERVER }}" >> .env.production
           echo "VITE_ELASTIC_APM_SERVER_TOKEN=${{ secrets.VITE_ELASTIC_APM_SERVER_TOKEN }}" >> .env.production
 
@@ -39,7 +39,7 @@ jobs:
       - name: Build Docker Image
         working-directory: client
         env:
-          IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/ithust-frontend
+          IMAGE_NAME: minhkhoi779/ithust-frontend
           IMAGE_TAG: stable-${{ github.run_number }}
         run: |
           npm run build
@@ -50,14 +50,16 @@ jobs:
           docker push "$IMAGE_NAME:$IMAGE_TAG"
           docker push "$IMAGE_NAME:stable"
 
-      - name: Deploy to K3s (Restart Pod)
+      - name: Deploy to K3s
         env:
           KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
         run: |
           mkdir -p ~/.kube
           echo "$KUBECONFIG_B64" | base64 -d > ~/.kube/config
           chmod 600 ~/.kube/config
-          kubectl delete pod -n production -l app=ithust-frontend --wait=false || true
+          kubectl apply -f kubernetes/k3s/0-frontend/
+          kubectl rollout restart deployment/ithust-frontend -n production
+          kubectl rollout status deployment/ithust-frontend -n production --timeout=180s
 
       - name: Send Telegram message on deploy success
         if: success()

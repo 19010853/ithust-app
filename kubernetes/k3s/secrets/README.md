@@ -10,6 +10,8 @@ kubectl apply --validate=false -f kubernetes/k3s/secrets/backend-secrets.yaml
 
 File mẫu nằm ngoài thư mục này: `kubernetes/k3s/backend-secrets.example.yaml` (copy → `secrets/backend-secrets.yaml`).
 
+`backend-secrets.yaml` là file thật và đã được ignore khỏi Git. Nếu file này từng bị commit, hãy rotate toàn bộ giá trị trước khi deploy production.
+
 ## `default-secret-token.yaml`
 
 - Secret loại `kubernetes.io/service-account-token` có field **`type` không đổi được** sau khi tạo.
