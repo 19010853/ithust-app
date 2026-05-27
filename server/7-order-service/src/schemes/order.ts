@@ -31,7 +31,7 @@ const orderSchema: ObjectSchema = Joi.object().keys({
   price: Joi.number().required(),
   serviceFee: Joi.number().optional(),
   requirements: Joi.string().optional().allow(null, ''),
-  paymentIntent: Joi.string().required(),
+  paymentIntent: Joi.string().optional().allow(null, ''),
   requestExtension: Joi.object({
     originalDate: Joi.string().required(),
     newDate: Joi.string().required(),
@@ -76,4 +76,13 @@ const orderUpdateSchema: ObjectSchema = Joi.object().keys({
   deliveryDateUpdate: Joi.string().optional()
 });
 
-export { orderSchema, orderUpdateSchema };
+const refundRequestSchema: ObjectSchema = Joi.object().keys({
+  reason: Joi.string().trim().min(10).max(1000).required(),
+  bankInfo: Joi.object({
+    bankName: Joi.string().trim().required(),
+    accountNumber: Joi.string().trim().required(),
+    accountName: Joi.string().trim().required()
+  }).required()
+});
+
+export { orderSchema, orderUpdateSchema, refundRequestSchema };

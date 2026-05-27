@@ -3,16 +3,28 @@ import { IOrderMessage, IRatingTypes, IReviewMessageDetails, ISellerDocument } f
 import mongoose from 'mongoose';
 import { updateBuyerIsSellerProp } from '@users/services/buyer.service';
 
+const backfillAvailableBalance = async (seller: ISellerDocument | null): Promise<ISellerDocument | null> => {
+  if (!seller || seller.availableBalance !== undefined) {
+    return seller;
+  }
+
+  const availableBalance = Math.max(Number(seller.totalEarnings || 0) - Number(seller.pendingWithdrawals || 0), 0);
+  await SellerModel.updateOne({ _id: seller._id, availableBalance: { $exists: false } }, { $set: { availableBalance } }).exec();
+  seller.availableBalance = availableBalance;
+
+  return seller;
+};
+
 const getSellerById = async (sellerId: string): Promise<ISellerDocument | null> => {
   const seller: ISellerDocument | null = (await SellerModel.findOne({
     _id: new mongoose.Types.ObjectId(sellerId)
   }).exec()) as ISellerDocument;
-  return seller;
+  return backfillAvailableBalance(seller);
 };
 
 const getSellerByUsername = async (username: string): Promise<ISellerDocument | null> => {
   const seller: ISellerDocument | null = (await SellerModel.findOne({ username }).exec()) as ISellerDocument;
-  return seller;
+  return backfillAvailableBalance(seller);
 };
 
 const getSellerByEmail = async (email: string): Promise<ISellerDocument | null> => {
@@ -48,7 +60,8 @@ const updateSeller = async (sellerId: string, sellerData: ISellerDocument): Prom
         experience: sellerData.experience,
         education: sellerData.education,
         socialLinks: sellerData.socialLinks,
-        certificates: sellerData.certificates
+        certificates: sellerData.certificates,
+        bankAccount: sellerData.bankAccount
       }
     },
     { new: true }
@@ -76,7 +89,8 @@ const updateSellerCompletedJobsProp = async (data: IOrderMessage): Promise<void>
       $inc: {
         ongoingJobs,
         completedJobs,
-        totalEarnings
+        totalEarnings,
+        availableBalance: totalEarnings
       },
       $set: { recentDelivery: new Date(recentDelivery!) }
     }

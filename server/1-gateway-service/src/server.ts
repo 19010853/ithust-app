@@ -30,6 +30,10 @@ const DEFAULT_ERROR_CODE = 500;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
 export let socketIO: Server;
 
+type RawBodyRequest = Request & {
+  rawBody?: Buffer;
+};
+
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
   let timeoutId: NodeJS.Timeout | undefined;
   const timeoutPromise = new Promise<T>((_resolve, reject) => {
@@ -75,7 +79,7 @@ export class GatewayServer {
       cors({
         origin: config.CLIENT_URL,
         credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
       })
     );
 
@@ -95,7 +99,16 @@ export class GatewayServer {
 
   private standardMiddleware(app: Application): void {
     app.use(compression());
-    app.use(json({ limit: '200mb' }));
+    app.use(
+      json({
+        limit: '200mb',
+        verify: (req: RawBodyRequest, _res: Response, buffer: Buffer) => {
+          if (req.originalUrl.includes('/sepay/webhook')) {
+            req.rawBody = Buffer.from(buffer);
+          }
+        }
+      })
+    );
     app.use(urlencoded({ extended: true, limit: '200mb' }));
   }
 
@@ -133,7 +146,7 @@ export class GatewayServer {
         };
         log.log('error', `GatewayService Axios Error - ${safeAxiosError.comingFrom}:`, safeAxiosError);
         res
-          .status(error?.response?.data?.statusCode ?? DEFAULT_ERROR_CODE)
+          .status(error?.response?.data?.statusCode ?? error?.response?.status ?? DEFAULT_ERROR_CODE)
           .json({ message: error?.response?.data?.message ?? 'Error occurred.' });
       }
 
@@ -161,7 +174,7 @@ export class GatewayServer {
     const io: Server = new Server(httpServer, {
       cors: {
         origin: `${config.CLIENT_URL}`,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
       }
     });
     const pubClient = createClient({ url: config.REDIS_HOST });

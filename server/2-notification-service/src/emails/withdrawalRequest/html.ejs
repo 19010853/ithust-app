@@ -1,0 +1,37 @@
+<div style="font-family: Arial, sans-serif; background: #f7f7f7; padding: 24px; color: #1f2937;">
+  <div style="max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid #e5e7eb;">
+    <h2 style="margin: 0 0 12px; font-size: 22px;">Withdrawal request received</h2>
+    <p style="margin: 0 0 16px; line-height: 1.6;">
+      Seller <strong><%= sellerFullName %></strong> (<%= sellerUsername %>) has requested a withdrawal.
+    </p>
+    <table style="width: 100%; border-collapse: collapse; margin: 16px 0 20px;">
+      <tr>
+        <td style="padding: 8px 0; font-weight: 700; width: 180px;">Amount</td>
+        <td style="padding: 8px 0;"><%= amount %></td>
+      </tr>
+      <tr>
+        <td style="padding: 8px 0; font-weight: 700;">Bank</td>
+        <td style="padding: 8px 0;"><%= bankName %></td>
+      </tr>
+      <tr>
+        <td style="padding: 8px 0; font-weight: 700;">Account number</td>
+        <td style="padding: 8px 0;"><%= accountNumber %></td>
+      </tr>
+      <tr>
+        <td style="padding: 8px 0; font-weight: 700;">Account name</td>
+        <td style="padding: 8px 0;"><%= accountName %></td>
+      </tr>
+      <tr>
+        <td style="padding: 8px 0; font-weight: 700;">Withdrawal ID</td>
+        <td style="padding: 8px 0;"><%= withdrawalId %></td>
+      </tr>
+      <tr>
+        <td style="padding: 8px 0; font-weight: 700;">Requested at</td>
+        <td style="padding: 8px 0;"><%= requestDate %></td>
+      </tr>
+    </table>
+    <p style="margin: 0; line-height: 1.6;">
+      Please review this request in the admin workflow and perform the payout batch when ready.
+    </p>
+  </div>
+</div>

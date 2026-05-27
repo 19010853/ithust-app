@@ -1,6 +1,14 @@
 import dotenv from 'dotenv';
+import { existsSync } from 'fs';
+import { resolve } from 'path';
 
-dotenv.config({});
+const gatewayEnvPath: string | undefined = [
+  resolve(process.cwd(), '.env'),
+  resolve(__dirname, '..', '.env'),
+  resolve(__dirname, '..', '..', '.env')
+].find((envPath: string) => existsSync(envPath));
+
+dotenv.config(gatewayEnvPath ? { path: gatewayEnvPath } : {});
 
 if (process.env.ENABLE_APM === '1') {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -31,6 +39,7 @@ class Config {
   public REVIEW_BASE_URL: string | undefined;
   public REDIS_HOST: string | undefined;
   public ELASTIC_SEARCH_URL: string | undefined;
+  public SEPAY_WEBHOOK_SECRET: string | undefined;
 
   constructor() {
     this.JWT_TOKEN = process.env.JWT_TOKEN || '1234';
@@ -47,6 +56,7 @@ class Config {
     this.REVIEW_BASE_URL = process.env.REVIEW_BASE_URL || '';
     this.REDIS_HOST = process.env.REDIS_HOST || '';
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
+    this.SEPAY_WEBHOOK_SECRET = (process.env.SEPAY_WEBHOOK_SECRET || '').split('#')[0].trim();
   }
 }
 

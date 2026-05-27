@@ -10,6 +10,7 @@ import { gigRoutes } from '@gateway/routes/gig';
 import { messageRoutes } from '@gateway/routes/message';
 import { orderRoutes } from '@gateway/routes/order';
 import { reviewRoutes } from '@gateway/routes/review';
+import { webhookRoutes } from '@gateway/routes/webhook';
 
 const BASE_PATH = '/api/gateway/v1';
 
@@ -17,6 +18,7 @@ export const appRoutes = (app: Application) => {
   app.use('', healthRoutes.routes());
   app.use(BASE_PATH, authRoutes.routes());
   app.use(BASE_PATH, searchRoutes.routes());
+  app.use(BASE_PATH, webhookRoutes.routes());
 
   app.use(BASE_PATH, authMiddleware.verifyUser, currentUserRoutes.routes());
   app.use(BASE_PATH, authMiddleware.verifyUser, buyerRoutes.routes());

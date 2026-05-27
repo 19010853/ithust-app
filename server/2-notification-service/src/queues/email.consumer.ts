@@ -74,7 +74,14 @@ async function consumeOrderEmailMessages(channel: Channel): Promise<void> {
         serviceFee,
         total
       } = JSON.parse(msg!.content.toString());
-      const locals: IEmailLocals = {
+      const {
+        buyerEmail,
+        bankName,
+        accountNumber,
+        accountName,
+        refundRequestId
+      } = JSON.parse(msg!.content.toString());
+      const locals: IEmailLocals & any = {
         appLink: `${config.CLIENT_URL}`,
         appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
         username,
@@ -98,7 +105,12 @@ async function consumeOrderEmailMessages(channel: Channel): Promise<void> {
         type,
         message,
         serviceFee,
-        total
+        total,
+        buyerEmail,
+        bankName,
+        accountNumber,
+        accountName,
+        refundRequestId
       };
       if (template === 'orderPlaced') {
         await sendEmail('orderPlaced', receiverEmail, locals);
@@ -113,4 +125,57 @@ async function consumeOrderEmailMessages(channel: Channel): Promise<void> {
   }
 }
 
-export { consumeAuthEmailMessages, consumeOrderEmailMessages };
+async function consumeWithdrawalEmailMessages(channel: Channel): Promise<void> {
+  try {
+    if (!channel) {
+      channel = (await createConnection()) as Channel;
+    }
+    const exchangeName = 'ithust-withdrawal-notification';
+    const routingKey = 'withdrawal-email';
+    const queueName = 'withdrawal-email-queue';
+    await channel.assertExchange(exchangeName, 'direct');
+    const jobQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
+    await channel.bindQueue(jobQueue.queue, exchangeName, routingKey);
+    channel.consume(jobQueue.queue, async (msg: ConsumeMessage | null) => {
+      const {
+        receiverEmail,
+        template,
+        sellerUsername,
+        sellerFullName,
+        amount,
+        bankName,
+        accountNumber,
+        accountName,
+        withdrawalId,
+        requestDate,
+        status,
+        processedDate,
+        adminNote,
+        paymentReference
+      } = JSON.parse(msg!.content.toString());
+      const locals: IEmailLocals & any = {
+        appLink: `${config.CLIENT_URL}`,
+        appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
+        username: sellerUsername,
+        sellerUsername,
+        sellerFullName,
+        amount,
+        bankName,
+        accountNumber,
+        accountName,
+        withdrawalId,
+        requestDate,
+        status,
+        processedDate,
+        adminNote,
+        paymentReference
+      };
+      await sendEmail(template, receiverEmail, locals);
+      channel.ack(msg!);
+    });
+  } catch (error) {
+    log.log('error', 'NotificationService EmailConsumer consumeWithdrawalEmailMessages() method error:', error);
+  }
+}
+
+export { consumeAuthEmailMessages, consumeOrderEmailMessages, consumeWithdrawalEmailMessages };

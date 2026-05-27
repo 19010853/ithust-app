@@ -1,7 +1,7 @@
 import { randomInt } from 'crypto';
 import { AuthModel } from '@auth/models/auth.schema';
 import { loginSchema } from '@auth/schemes/signin';
-import { getUserByEmail, getUserByUsername, signToken, updateUserOTP } from '@auth/services/auth.service';
+import { getUserByEmail, getUserByUsername, signToken, syncAuthRole, updateUserOTP } from '@auth/services/auth.service';
 import { BadRequestError, IAuthDocument, IEmailMessageDetails, isEmail } from '@19010853/ithust-shared';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -29,7 +29,14 @@ export async function read(req: Request, res: Response): Promise<void> {
   let message = 'User login successfully';
   let userBrowserName = '';
   let userDeviceType = '';
-  if (browserName !== existingUser.browserName || deviceType !== existingUser.deviceType) {
+  const role = await syncAuthRole(existingUser.id!, existingUser.email!);
+  (existingUser as IAuthDocument & { role?: string }).role = role;
+
+  if (role === 'admin') {
+    userJWT = signToken(existingUser.id!, existingUser.email!, existingUser.username!, role);
+    userData = omit(existingUser, ['password']);
+    await updateUserOTP(existingUser.id!, '', new Date(), browserName, deviceType);
+  } else if (browserName !== existingUser.browserName || deviceType !== existingUser.deviceType) {
     // min 6 digits and max 6 digits
     // 100000 - 999999
     const otpCode = randomInt(10 ** 5, 10 ** 6 - 1);
@@ -54,7 +61,7 @@ export async function read(req: Request, res: Response): Promise<void> {
     date.setMinutes(date.getMinutes() + 10);
     await updateUserOTP(existingUser.id!, `${otpCode}`, date, '', '');
   } else {
-    userJWT = signToken(existingUser.id!, existingUser.email!, existingUser.username!);
+    userJWT = signToken(existingUser.id!, existingUser.email!, existingUser.username!, role);
     userData = omit(existingUser, ['password']);
   }
   res.status(StatusCodes.OK).json({ message, user: userData, token: userJWT, browserName: userBrowserName, deviceType: userDeviceType });

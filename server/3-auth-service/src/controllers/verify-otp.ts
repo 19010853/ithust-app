@@ -1,4 +1,4 @@
-import { getAuthUserByOTP, signToken, updateUserOTP } from '@auth/services/auth.service';
+import { getAuthUserByOTP, signToken, syncAuthRole, updateUserOTP } from '@auth/services/auth.service';
 import { BadRequestError, IAuthDocument } from '@19010853/ithust-shared';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -11,8 +11,10 @@ export async function updateOTP(req: Request, res: Response): Promise<void> {
   if (!checkIfUserExist) {
     throw new BadRequestError('OTP is invalid.', 'VerifyOTP updateOTP() method error');
   }
+  const role = await syncAuthRole(checkIfUserExist.id!, checkIfUserExist.email!);
+  (checkIfUserExist as IAuthDocument & { role?: string }).role = role;
   await updateUserOTP(checkIfUserExist.id!, '', new Date(), browserName, deviceType);
-  const userJWT = signToken(checkIfUserExist.id!, checkIfUserExist.email!, checkIfUserExist.username!);
+  const userJWT = signToken(checkIfUserExist.id!, checkIfUserExist.email!, checkIfUserExist.username!, role);
   const userData = omit(checkIfUserExist, ['password']);
   res.status(StatusCodes.OK).json({ message: 'OTP verified successfully.', user: userData, token: userJWT });
 }

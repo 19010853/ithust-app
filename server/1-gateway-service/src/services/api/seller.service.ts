@@ -36,6 +36,21 @@ class SellerService {
     return response;
   }
 
+  async withdraw(sellerId: string, body: unknown): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosSellerInstance.post(`/${sellerId}/withdraw`, body);
+    return response;
+  }
+
+  async getWithdrawals(status?: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosSellerInstance.get('/withdrawals', { params: { status } });
+    return response;
+  }
+
+  async updateWithdrawalStatus(withdrawalId: string, body: unknown): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosSellerInstance.patch(`/withdrawals/${withdrawalId}/status`, body);
+    return response;
+  }
+
   async seed(count: string): Promise<AxiosResponse> {
     const response: AxiosResponse = await axiosSellerInstance.put(`/seed/${count}`);
     return response;

@@ -32,12 +32,15 @@ const orderSchema: Schema = new Schema(
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
     serviceFee: { type: Number, default: 0 },
+    paymentAmountVnd: { type: Number },
+    paymentCurrency: { type: String, enum: ['VND'] },
     requirements: { type: String, default: '' },
     approved: { type: Boolean, default: false },
     delivered: { type: Boolean, default: false },
     cancelled: { type: Boolean, default: false },
     approvedAt: { type: Date },
-    paymentIntent: { type: String },
+    paymentStatus: { type: String, enum: ['PENDING', 'HELD', 'RELEASED', 'REFUND_REQUESTED'], default: 'PENDING' },
+    paymentTransactionId: { type: String, unique: true, sparse: true },
     deliveredWork: [
       {
         message: { type: String },

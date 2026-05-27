@@ -16,7 +16,8 @@ class OrderRoutes {
     this.router.get('/order/seller/:sellerId', Get.prototype.sellerOrders);
     this.router.get('/order/buyer/:buyerId', Get.prototype.buyerOrders);
     this.router.post('/order', Create.prototype.order);
-    this.router.post('/order/create-payment-intent', Create.prototype.intent);
+    this.router.post('/order/:orderId/refund', Create.prototype.refund);
+
     this.router.put('/order/cancel/:orderId', Update.prototype.cancel);
     this.router.put('/order/extension/:orderId', Update.prototype.requestExtension);
     this.router.put('/order/deliver-order/:orderId', Update.prototype.deliverOrder);

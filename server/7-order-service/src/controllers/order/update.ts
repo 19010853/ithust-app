@@ -1,7 +1,5 @@
 import crypto from 'crypto';
-import Stripe from 'stripe';
 import { Request, Response } from 'express';
-import { config } from '@order/config';
 import { StatusCodes } from 'http-status-codes';
 import {
   approveDeliveryDate,
@@ -15,14 +13,7 @@ import { orderUpdateSchema } from '@order/schemes/order';
 import { BadRequestError, IDeliveredWork, IOrderDocument, uploads } from '@19010853/ithust-shared';
 import { UploadApiResponse } from 'cloudinary';
 
-const stripe: Stripe = new Stripe(config.STRIPE_API_KEY!, {
-  typescript: true
-});
-
 const cancel = async (req: Request, res: Response): Promise<void> => {
-  await stripe.refunds.create({
-    payment_intent: `${req.body.paymentIntent}`
-  });
   const { orderId } = req.params;
   await cancelOrder(orderId, req.body.orderData);
   res.status(StatusCodes.OK).json({ message: 'Order cancelled successfully.' });

@@ -29,6 +29,9 @@ class Config {
   public API_GATEWAY_URL: string | undefined;
   public CLIENT_URL: string | undefined;
   public ELASTIC_SEARCH_URL: string | undefined;
+  public PLATFORM_OWNER_EMAIL: string | undefined;
+  public PLATFORM_OWNER_USERNAME: string | undefined;
+  public PLATFORM_OWNER_PASSWORD: string | undefined;
 
   constructor() {
     this.NODE_ENV = process.env.NODE_ENV || '';
@@ -42,6 +45,9 @@ class Config {
     this.API_GATEWAY_URL = process.env.API_GATEWAY_URL || '';
     this.CLIENT_URL = process.env.CLIENT_URL || '';
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
+    this.PLATFORM_OWNER_EMAIL = process.env.PLATFORM_OWNER_EMAIL || '';
+    this.PLATFORM_OWNER_USERNAME = process.env.PLATFORM_OWNER_USERNAME || '';
+    this.PLATFORM_OWNER_PASSWORD = process.env.PLATFORM_OWNER_PASSWORD || '';
   }
 
   public cloudinaryConfig(): void {

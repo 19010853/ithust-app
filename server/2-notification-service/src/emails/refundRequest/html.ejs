@@ -1,0 +1,20 @@
+<div style="font-family: Arial, sans-serif; background: #f7f7f7; padding: 24px; color: #1f2937;">
+  <div style="max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid #e5e7eb;">
+    <h2 style="margin: 0 0 12px; font-size: 22px;">Refund request received</h2>
+    <p style="margin: 0 0 16px; line-height: 1.6;">
+      Buyer <strong><%= buyerUsername %></strong> (<%= buyerEmail %>) requested a manual refund review.
+    </p>
+    <table style="width: 100%; border-collapse: collapse; margin: 16px 0 20px;">
+      <tr><td style="padding: 8px 0; font-weight: 700; width: 180px;">Order</td><td style="padding: 8px 0;"><%= orderId %></td></tr>
+      <tr><td style="padding: 8px 0; font-weight: 700;">Amount</td><td style="padding: 8px 0;"><%= amount %></td></tr>
+      <tr><td style="padding: 8px 0; font-weight: 700;">Reason</td><td style="padding: 8px 0;"><%= reason %></td></tr>
+      <tr><td style="padding: 8px 0; font-weight: 700;">Bank</td><td style="padding: 8px 0;"><%= bankName %></td></tr>
+      <tr><td style="padding: 8px 0; font-weight: 700;">Account number</td><td style="padding: 8px 0;"><%= accountNumber %></td></tr>
+      <tr><td style="padding: 8px 0; font-weight: 700;">Account name</td><td style="padding: 8px 0;"><%= accountName %></td></tr>
+      <tr><td style="padding: 8px 0; font-weight: 700;">Refund request ID</td><td style="padding: 8px 0;"><%= refundRequestId %></td></tr>
+    </table>
+    <p style="margin: 0; line-height: 1.6;">
+      Open <a href="<%= orderUrl %>">the order</a>, review the case, transfer funds manually when approved, and keep the request record for reconciliation.
+    </p>
+  </div>
+</div>

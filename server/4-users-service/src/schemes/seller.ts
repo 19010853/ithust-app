@@ -110,6 +110,11 @@ const sellerSchema: ObjectSchema = Joi.object().keys({
     )
     .optional()
     .allow(null, ''),
+  bankAccount: Joi.object({
+    bankName: Joi.string().allow('', null).optional(),
+    accountNumber: Joi.string().allow('', null).optional(),
+    accountName: Joi.string().allow('', null).optional()
+  }).optional(),
   ratingsCount: Joi.number().optional(),
   ratingCategories: Joi.object({
     five: { value: Joi.number(), count: Joi.number() },

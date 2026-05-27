@@ -60,6 +60,6 @@ export async function create(req: Request, res: Response): Promise<void> {
     JSON.stringify(messageDetails),
     'Verify email message has been sent to notification service.'
   );
-  const userJWT: string = signToken(result.id!, result.email!, result.username!);
+  const userJWT: string = signToken(result.id!, result.email!, result.username!, (result as IAuthDocument & { role?: string }).role);
   res.status(StatusCodes.CREATED).json({ message: 'User created successfully', user: result, token: userJWT });
 }

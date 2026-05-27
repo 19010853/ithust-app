@@ -12,6 +12,7 @@ import http from 'http';
 import { appRoutes } from '@auth/routes';
 import { createConnection } from '@auth/queues/connection';
 import { Channel } from 'amqplib';
+import { ensurePlatformAdmin } from '@auth/services/platform-admin.service';
 
 const SERVER_PORT = 4002;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'authenticationServer', 'debug');
@@ -22,6 +23,7 @@ export function start(app: Application): void {
   securityMiddleware(app);
   standardMiddleware(app);
   routesMiddleware(app);
+  void ensurePlatformAdmin();
   startQueues();
   startElasticSearch();
   authErrorHandler(app);

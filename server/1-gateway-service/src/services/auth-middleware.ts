@@ -27,6 +27,18 @@ class AuthMiddleware {
     }
     next();
   }
+
+  public checkAdmin(req: Request, _res: Response, next: NextFunction): void {
+    if (!req.currentUser) {
+      throw new BadRequestError('Authentication is required to access this route.', 'GatewayService checkAdmin() method error');
+    }
+
+    if ((req.currentUser as IAuthPayload & { role?: string }).role !== 'admin') {
+      throw new NotAuthorizedError('Admin access is required.', 'GatewayService checkAdmin() method error');
+    }
+
+    next();
+  }
 }
 
 export const authMiddleware: AuthMiddleware = new AuthMiddleware();

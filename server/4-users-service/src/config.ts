@@ -29,6 +29,7 @@ class Config {
   public API_GATEWAY_URL: string | undefined;
   public REDIS_HOST: string | undefined;
   public ELASTIC_SEARCH_URL: string | undefined;
+  public PLATFORM_OWNER_EMAIL: string | undefined;
 
   constructor() {
     this.DATABASE_URL = process.env.DATABASE_URL || '';
@@ -42,6 +43,7 @@ class Config {
     this.API_GATEWAY_URL = process.env.API_GATEWAY_URL || '';
     this.REDIS_HOST = process.env.REDIS_HOST || '';
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
+    this.PLATFORM_OWNER_EMAIL = process.env.PLATFORM_OWNER_EMAIL || '';
   }
 
   public cloudinaryConfig(): void {

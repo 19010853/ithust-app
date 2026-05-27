@@ -22,7 +22,8 @@ const seller = async (req: Request, res: Response): Promise<void> => {
     experience: req.body.experience,
     education: req.body.education,
     socialLinks: req.body.socialLinks,
-    certificates: req.body.certificates
+    certificates: req.body.certificates,
+    bankAccount: req.body.bankAccount
   };
   const updatedSeller: ISellerDocument = await updateSeller(req.params.sellerId, seller);
   res.status(StatusCodes.OK).json({ message: 'Seller created successfully.', seller: updatedSeller });

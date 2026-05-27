@@ -108,6 +108,7 @@ export const approveOrder = async (orderId: string, data: IOrderMessage): Promis
       $set: {
         approved: true,
         status: 'Completed',
+        paymentStatus: 'RELEASED',
         approvedAt: new Date()
       }
     },

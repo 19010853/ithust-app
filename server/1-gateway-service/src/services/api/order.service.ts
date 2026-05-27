@@ -25,13 +25,18 @@ class OrderService {
     return response;
   }
 
-  async createOrderIntent(price: number, buyerId: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await axiosOrderInstance.post('/create-payment-intent', { price, buyerId });
+  async sepayWebhook(body: any): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosOrderInstance.post('/sepay/webhook', body);
     return response;
   }
 
   async createOrder(body: IOrderDocument): Promise<AxiosResponse> {
     const response: AxiosResponse = await axiosOrderInstance.post('/', body);
+    return response;
+  }
+
+  async createRefundRequest(orderId: string, body: unknown): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosOrderInstance.post(`/refund/${orderId}`, body);
     return response;
   }
 

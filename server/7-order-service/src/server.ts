@@ -43,7 +43,7 @@ const securityMiddleware = (app: Application): void => {
     })
   );
   app.use((req: Request, _res: Response, next: NextFunction) => {
-    if (req.headers.authorization) {
+    if (req.headers.authorization && !req.originalUrl.includes('/sepay/webhook')) {
       const token = req.headers.authorization.split(' ')[1];
       const payload: IAuthPayload = verify(token, config.JWT_TOKEN!) as IAuthPayload;
       req.currentUser = payload;

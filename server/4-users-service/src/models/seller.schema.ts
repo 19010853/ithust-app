@@ -61,6 +61,13 @@ const sellerSchema: Schema = new Schema(
     cancelledJobs: { type: Number, default: 0 },
     totalEarnings: { type: Number, default: 0 },
     totalGigs: { type: Number, default: 0 },
+    availableBalance: { type: Number, default: 0 },
+    pendingWithdrawals: { type: Number, default: 0 },
+    bankAccount: {
+      bankName: { type: String, default: '' },
+      accountNumber: { type: String, default: '' },
+      accountName: { type: String, default: '' }
+    },
     createdAt: { type: Date, default: Date.now }
   },
   {

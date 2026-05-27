@@ -12,6 +12,7 @@ const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'authService',
 
 export async function createAuthUser(data: IAuthDocument): Promise<IAuthDocument | undefined> {
   try {
+    (data as IAuthDocument & { role?: string }).role = (data as IAuthDocument & { role?: string }).role || 'user';
     const result: Model = await AuthModel.create(data);
     const messageDetails: IAuthBuyerMessageDetails = {
       username: result.dataValues.username!,
@@ -193,12 +194,23 @@ export async function updateUserOTP(
   }
 }
 
-export function signToken(id: number, email: string, username: string): string {
+export async function syncAuthRole(authId: number, _email: string): Promise<'user' | 'admin'> {
+  try {
+    const user = (await AuthModel.findOne({ where: { id: authId } })) as Model | null;
+    return user?.dataValues.role === 'admin' ? 'admin' : 'user';
+  } catch (error) {
+    log.error(error);
+    return 'user';
+  }
+}
+
+export function signToken(id: number, email: string, username: string, role: string = 'user'): string {
   return sign(
     {
       id,
       email,
-      username
+      username,
+      role
     },
     config.JWT_TOKEN!
   );

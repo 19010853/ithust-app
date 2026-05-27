@@ -2,7 +2,7 @@ import path from 'path';
 import { IEmailLocals, winstonLogger } from '@19010853/ithust-shared';
 import { Logger } from 'winston';
 import { config } from '@notifications/config';
-import nodemailer, { Transporter } from 'nodemailer';
+import nodemailer, { SentMessageInfo, Transporter } from 'nodemailer';
 import Email from 'email-templates';
 
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'mailTransportHelper', 'debug');
@@ -38,13 +38,18 @@ async function emailTemplates(template: string, receiver: string, locals: IEmail
       }
     });
 
-    await email.send({
+    const info: SentMessageInfo = await email.send({
       template: path.join(__dirname, '..', 'src/emails', template),
       message: { to: receiver },
       locals
     });
+    const previewUrl = nodemailer.getTestMessageUrl(info);
+    if (previewUrl) {
+      log.info(`Email preview URL for ${receiver}: ${previewUrl}`);
+    }
   } catch (error) {
-    log.error(error);
+    log.log('error', `NotificationService emailTemplates() failed for template ${template} and receiver ${receiver}:`, error);
+    throw error;
   }
 }
 
