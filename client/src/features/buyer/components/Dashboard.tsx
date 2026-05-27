@@ -2,7 +2,7 @@ import { FC, ReactElement, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { IOrderDocument } from 'src/features/order/interfaces/order.interface';
 import { useGetOrdersByBuyerIdQuery } from 'src/features/order/services/order.service';
-import { orderTypes, shortenLargeNumbers } from 'src/shared/utils/utils.service';
+import { orderTypes, sellerOrderList, shortenLargeNumbers } from 'src/shared/utils/utils.service';
 import { socket, socketService } from 'src/sockets/socket.service';
 
 import BuyerTable from './BuyerTable';
@@ -84,13 +84,25 @@ const BuyerDashboard: FC = (): ReactElement => {
         </div>
 
         {type === BUYER_GIG_STATUS.ACTIVE && (
-          <BuyerTable type="active" orders={orders} orderTypes={orderTypes(BUYER_GIG_STATUS.IN_PROGRESS, orders)} />
+          <BuyerTable
+            type="active"
+            orders={sellerOrderList(BUYER_GIG_STATUS.IN_PROGRESS, orders)}
+            orderTypes={orderTypes(BUYER_GIG_STATUS.IN_PROGRESS, orders)}
+          />
         )}
         {type === BUYER_GIG_STATUS.COMPLETED && (
-          <BuyerTable type="completed" orders={orders} orderTypes={orderTypes(BUYER_GIG_STATUS.COMPLETED, orders)} />
+          <BuyerTable
+            type="completed"
+            orders={sellerOrderList(BUYER_GIG_STATUS.COMPLETED, orders)}
+            orderTypes={orderTypes(BUYER_GIG_STATUS.COMPLETED, orders)}
+          />
         )}
         {type === BUYER_GIG_STATUS.CANCELLED && (
-          <BuyerTable type="cancelled" orders={orders} orderTypes={orderTypes(BUYER_GIG_STATUS.CANCELLED, orders)} />
+          <BuyerTable
+            type="cancelled"
+            orders={sellerOrderList(BUYER_GIG_STATUS.CANCELLED, orders)}
+            orderTypes={orderTypes(BUYER_GIG_STATUS.CANCELLED, orders)}
+          />
         )}
       </div>
     </div>

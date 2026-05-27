@@ -1,7 +1,7 @@
 import { IResponse } from 'src/shared/shared.interface';
 import { api } from 'src/store/api';
 
-import { IDeliveredWork, IExtendedDelivery, IOrderDocument, IOrderMessage } from '../interfaces/order.interface';
+import { IDeliveredWork, IExtendedDelivery, IOrderDocument, IOrderMessage, IRefundRequestPayload } from '../interfaces/order.interface';
 
 export const ordersApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -17,20 +17,20 @@ export const ordersApi = api.injectEndpoints({
       query: (buyerId: string) => `order/buyer/${buyerId}`,
       providesTags: ['Order']
     }),
-    createOrderIntent: build.mutation<IResponse, number>({
-      query(price: number) {
-        return {
-          url: 'order/create-payment-intent',
-          method: 'POST',
-          body: { price }
-        };
-      },
-      invalidatesTags: ['Order']
-    }),
     createOrder: build.mutation<IResponse, IOrderDocument>({
       query(body: IOrderDocument) {
         return {
           url: 'order',
+          method: 'POST',
+          body
+        };
+      },
+      invalidatesTags: ['Order']
+    }),
+    createRefundRequest: build.mutation<IResponse, { orderId: string; body: IRefundRequestPayload }>({
+      query({ orderId, body }) {
+        return {
+          url: `order/${orderId}/refund`,
           method: 'POST',
           body
         };
@@ -92,10 +92,11 @@ export const ordersApi = api.injectEndpoints({
 
 export const {
   useGetOrderByOrderIdQuery,
+  useLazyGetOrderByOrderIdQuery,
   useGetOrdersBySellerIdQuery,
   useGetOrdersByBuyerIdQuery,
-  useCreateOrderIntentMutation,
   useCreateOrderMutation,
+  useCreateRefundRequestMutation,
   useCancelOrderMutation,
   useRequestDeliveryDateExtensionMutation,
   useUpdateDeliveryDateMutation,

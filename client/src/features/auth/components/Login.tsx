@@ -55,9 +55,15 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
           setAlertMessage('');
           dispatch(addAuthUser({ authInfo: result.user }));
           dispatch(updateLogout(false));
+          saveToSessionStorage(JSON.stringify(true), JSON.stringify(result.user?.username));
+          if (result.user?.role === 'admin') {
+            dispatch(updateHeader('admin'));
+            dispatch(updateCategoryContainer(false));
+            navigate('/admin/dashboard');
+            return;
+          }
           dispatch(updateHeader('home'));
           dispatch(updateCategoryContainer(true));
-          saveToSessionStorage(JSON.stringify(true), JSON.stringify(result.user?.username));
         }
       }
     } catch (error) {

@@ -71,6 +71,13 @@ const DashboardHeader: FC = (): ReactElement => {
                         <span>Earnings</span>
                       </Link>
                     </li>
+                    {authUser.role === 'admin' && (
+                      <li className="relative flex items-center">
+                        <Link to="/admin/dashboard" className="px-3">
+                          <span>Admin</span>
+                        </Link>
+                      </li>
+                    )}
                     <li className="relative flex cursor-pointer items-center">
                       <Button
                         className="px-3 text-base font-medium"

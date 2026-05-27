@@ -24,6 +24,7 @@ export const initialAuthUserValues: IAuthUser = {
   profilePicture: null,
   updatedAt: null,
   username: null,
+  role: null,
   browserName: null,
   deviceType: null
 };

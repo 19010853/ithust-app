@@ -20,6 +20,10 @@ export const lowerCase = (str: string): string => {
   return str.toLowerCase();
 };
 
+export const normalizeOrderStatus = (status: string): string => {
+  return lowerCase(`${status}`).replace(/[_\s]+/g, ' ').trim();
+};
+
 export const firstLetterUppercase = (str: string): string => {
   const valueString = lowerCase(`${str}`);
   return `${valueString.charAt(0).toUpperCase()}${valueString.slice(1).toLowerCase()}`;
@@ -109,9 +113,9 @@ export const deleteFromLocalStorage = (key: string): void => {
 export const applicationLogout = (dispatch: Dispatch, navigate: NavigateFunction) => {
   const loggedInUsername: string = getDataFromSessionStorage('loggedInuser');
   dispatch(logout({}));
-  dispatch(clearAuthUser());
-  dispatch(emptyBuyer());
-  dispatch(emptySeller());
+  dispatch(clearAuthUser(undefined));
+  dispatch(emptyBuyer(undefined));
+  dispatch(emptySeller(undefined));
   if (loggedInUsername) {
     dispatch(authApi.endpoints.removeLoggedInUser.initiate(`${loggedInUsername}`, { track: false }) as never);
   }
@@ -127,12 +131,12 @@ export const isFetchBaseQueryError = (error: unknown): boolean => {
 };
 
 export const orderTypes = (status: string, orders: IOrderDocument[]): number => {
-  const orderList: IOrderDocument[] = filter(orders, (order: IOrderDocument) => lowerCase(order.status) === lowerCase(status));
+  const orderList: IOrderDocument[] = filter(orders, (order: IOrderDocument) => normalizeOrderStatus(order.status) === normalizeOrderStatus(status));
   return orderList.length;
 };
 
 export const sellerOrderList = (status: string, orders: IOrderDocument[]): IOrderDocument[] => {
-  const orderList: IOrderDocument[] = filter(orders, (order: IOrderDocument) => lowerCase(order.status) === lowerCase(status));
+  const orderList: IOrderDocument[] = filter(orders, (order: IOrderDocument) => normalizeOrderStatus(order.status) === normalizeOrderStatus(status));
   return orderList;
 };
 

@@ -5,6 +5,7 @@ import { ISellerDocument } from 'src/features/sellers/interfaces/seller.interfac
 
 export interface IChatWindowProps {
   chatMessages: IMessageDocument[];
+  draftConversation?: IInboxDraftConversation;
   isError: boolean;
   isLoading: boolean;
   setSkip?: Dispatch<SetStateAction<boolean>>;
@@ -50,13 +51,6 @@ export interface IMessageDocument {
   createdAt?: Date | string;
 }
 
-export interface IChatBoxProps {
-  seller: IChatSellerProps;
-  buyer: IChatBuyerProps;
-  gigId: string;
-  onClose: () => void;
-}
-
 export interface IChatSellerProps {
   _id: string;
   username: string;
@@ -74,4 +68,12 @@ export interface IChatMessageProps {
   message: IMessageDocument;
   seller?: ISellerDocument;
   gig?: ISellerGig;
+}
+
+export interface IInboxDraftConversation {
+  buyer: IChatBuyerProps;
+  conversationId: string;
+  gigId: string;
+  hasConversationId: boolean;
+  seller: IChatSellerProps;
 }

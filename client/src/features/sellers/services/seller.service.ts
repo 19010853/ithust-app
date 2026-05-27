@@ -1,7 +1,7 @@
 import { IResponse } from 'src/shared/shared.interface';
 import { api } from 'src/store/api';
 
-import { ISellerDocument } from '../interfaces/seller.interface';
+import { ISellerDocument, IWithdrawalDocument } from '../interfaces/seller.interface';
 
 export const sellerApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -36,6 +36,43 @@ export const sellerApi = api.injectEndpoints({
         };
       },
       invalidatesTags: ['Seller']
+    }),
+    createWithdrawal: build.mutation<IResponse, { sellerId: string; amount: number; bankAccount: { bankName: string; accountNumber: string; accountName: string } }>({
+      query(body) {
+        return {
+          url: `seller/${body.sellerId}/withdraw`,
+          method: 'POST',
+          body: {
+            amount: body.amount,
+            bankAccount: body.bankAccount
+          }
+        };
+      },
+      invalidatesTags: ['Seller']
+    }),
+    getWithdrawals: build.query<IResponse, string | undefined>({
+      query: (status?: string) => ({
+        url: 'seller/withdrawals',
+        params: status ? { status } : {}
+      }),
+      providesTags: ['Withdrawal']
+    }),
+    updateWithdrawalStatus: build.mutation<
+      IResponse,
+      { withdrawalId: string; status: IWithdrawalDocument['status']; adminNote?: string; paymentReference?: string }
+    >({
+      query(body) {
+        return {
+          url: `seller/withdrawals/${body.withdrawalId}/status`,
+          method: 'PATCH',
+          body: {
+            status: body.status,
+            adminNote: body.adminNote,
+            paymentReference: body.paymentReference
+          }
+        };
+      },
+      invalidatesTags: ['Withdrawal', 'Seller']
     })
   })
 });
@@ -45,5 +82,8 @@ export const {
   useGetRandomSellersQuery,
   useGetSellerByIdQuery,
   useCreateSellerMutation,
-  useUpdateSellerMutation
+  useUpdateSellerMutation,
+  useCreateWithdrawalMutation,
+  useGetWithdrawalsQuery,
+  useUpdateWithdrawalStatusMutation
 } = sellerApi;

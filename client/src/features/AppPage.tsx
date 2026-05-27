@@ -1,6 +1,6 @@
 import { FC, ReactElement, useCallback, useEffect, useState } from 'react';
 
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { Navigate, NavigateFunction, useNavigate } from 'react-router-dom';
 
 import HomeHeader from 'src/shared/header/components/HomeHeader';
 
@@ -42,7 +42,7 @@ const AppPage: FC = (): ReactElement => {
 
   const showCategoryContainer = useAppSelector((state: IReduxState) => state.showCategoryContainer);
 
-  const [tokenIsValid, setTokenIsValid] = useState<boolean>(false);
+  const [, setTokenIsValid] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
 
@@ -69,6 +69,16 @@ const AppPage: FC = (): ReactElement => {
         setTokenIsValid(true);
 
         dispatch(addAuthUser({ authInfo: currentUserData.user }));
+
+        if (currentUserData.user.role === 'admin') {
+
+          saveToSessionStorage(JSON.stringify(true), JSON.stringify(currentUserData.user.username));
+
+          navigate('/admin/dashboard');
+
+          return;
+
+        }
 
         dispatch(addBuyer(buyerData?.buyer));
 
@@ -142,13 +152,17 @@ const AppPage: FC = (): ReactElement => {
 
         ) : (
 
-          <>
+          authUser.role === 'admin' ? (
+            <Navigate to="/admin/dashboard" />
+          ) : (
+            <>
 
-            <HomeHeader showCategoryContainer={showCategoryContainer} />
+              <HomeHeader showCategoryContainer={showCategoryContainer} />
 
-            <Home />
+              <Home />
 
-          </>
+            </>
+          )
 
         )}
 

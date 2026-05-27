@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { forwardRef, ForwardRefExoticComponent, RefAttributes, useContext, useState } from 'react';
 import { FaCheck, FaChevronDown, FaChevronUp, FaDownload, FaGift } from 'react-icons/fa';
-import ChatBox from 'src/features/chat/components/chatbox/ChatBox';
+import useInboxNavigation from 'src/features/chat/hooks/useInboxNavigation';
 import { IChatBuyerProps, IChatSellerProps } from 'src/features/chat/interfaces/chat.interface';
 import { OrderContext } from 'src/features/order/context/OrderContext';
 import { IDeliveredWork, IOrderDeliveredModal, IOrderDeliveredProps, IOrderMessage } from 'src/features/order/interfaces/order.interface';
@@ -21,8 +21,8 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
       deliveryApproval: false
     });
     const [approvalModalContent, setApprovalModalContent] = useState<IApprovalModalContent>();
-    const [showChatBox, setShowChatBox] = useState<boolean>(false);
     const [approveOrder] = useApproveOrderMutation();
+    const { navigateToInbox } = useInboxNavigation();
     const chatSeller: IChatSellerProps = {
       username: `${order?.sellerUsername}`,
       _id: `${order?.sellerId}`,
@@ -172,9 +172,20 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
                               <div className="flex flex-col justify-between text-[#777d74]">
                                 <span className="text-sm md:text-[15px]">
                                   If you have any issue to discuss with the seller before approving, you can go to
-                                  <a onClick={() => setShowChatBox(!showChatBox)} className="px-1 text-blue-500 hover:underline" href="#">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      void navigateToInbox({
+                                        seller: chatSeller,
+                                        buyer: chatBuyer,
+                                        gigId: `${order?.gigId}`,
+                                        currentUsername: `${authUser?.username}`
+                                      });
+                                    }}
+                                    className="px-1 text-blue-500 hover:underline"
+                                  >
                                     Go to Inbox
-                                  </a>
+                                  </button>
                                   to contact the seller.
                                 </span>
                                 <div className="mt-3 flex pb-6">
@@ -204,7 +215,6 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
             </div>
           </div>
         )}
-        {showChatBox && <ChatBox seller={chatSeller} buyer={chatBuyer} gigId={`${order?.gigId}`} onClose={() => setShowChatBox(false)} />}
       </>
     );
   }

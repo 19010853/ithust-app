@@ -1,5 +1,5 @@
 import { ChangeEvent, FC, FormEvent, ReactElement, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Alert from 'src/shared/alert/Alert';
 import Button from 'src/shared/button/Button';
 import Header from 'src/shared/header/components/Header';
@@ -20,6 +20,7 @@ const ResetPassword: FC = (): ReactElement => {
   const [status, setStatus] = useState<string>(AUTH_FETCH_STATUS.IDLE);
   const [schemaValidation, validationErrors] = useAuthSchema({ schema: resetPasswordSchema, userInfo });
   const [searchParams] = useSearchParams({});
+  const navigate = useNavigate();
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
   useEffect(() => {
@@ -44,6 +45,7 @@ const ResetPassword: FC = (): ReactElement => {
         setAlertMessage(`${result.message}`);
         setStatus(AUTH_FETCH_STATUS.SUCCESS);
         setUserInfo({ password: '', confirmPassword: '' });
+        setTimeout(() => navigate('/'), 1000);
       }
     } catch (error) {
       setStatus(AUTH_FETCH_STATUS.ERROR);

@@ -11,6 +11,7 @@ import { useGetOrderByOrderIdQuery } from '../services/order.service';
 import DeliveryTimer from './DeliveryTimer';
 import OrderActivities from './order-activities/OrderActivities';
 import OrderDetailsTable from './OrderDetailsTable';
+import RefundRequest from './RefundRequest';
 
 const Order: FC = (): ReactElement => {
   const authUser = useAppSelector((state: IReduxState) => state.authUser);
@@ -40,6 +41,7 @@ const Order: FC = (): ReactElement => {
       <div className="flex flex-wrap">
         <div className="order-last w-full p-4 lg:order-first lg:w-2/3">
           <OrderDetailsTable order={order} authUser={authUser} />
+          {order && order.buyerUsername === authUser.username && <RefundRequest order={order} />}
           {order && order.buyerUsername === authUser.username && (
             <div className="mt-4 flex flex-col justify-between bg-white md:flex-row">
               <div className="flex w-full flex-col flex-wrap p-4 md:w-2/3">

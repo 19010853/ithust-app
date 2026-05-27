@@ -12,7 +12,7 @@ const logoutSlice: Slice = createSlice({
       state = action.payload;
       return state;
     },
-    logout: (state: boolean): boolean => {
+    logout: (): boolean => {
       return true;
     }
   }

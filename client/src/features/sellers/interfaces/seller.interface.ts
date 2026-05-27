@@ -215,6 +215,13 @@ export interface ISellerDocument extends Record<string, SellerType> {
   country: string;
   oneliner: string;
   skills: string[];
+  bankAccount?: {
+    bankName?: string;
+    accountNumber?: string;
+    accountName?: string;
+  };
+  availableBalance?: number;
+  pendingWithdrawals?: number;
   ratingsCount?: number;
   ratingSum?: number;
   ratingCategories?: IRatingCategories;
@@ -232,4 +239,25 @@ export interface ISellerDocument extends Record<string, SellerType> {
   totalGigs?: number;
   paypal?: string; // not needed
   createdAt?: Date | string;
+}
+
+export interface IWithdrawalDocument {
+  _id?: string;
+  sellerId?: string | Pick<ISellerDocument, '_id' | 'username' | 'fullName' | 'email'>;
+  amount: number;
+  bankInfo: {
+    bankName?: string;
+    accountNumber?: string;
+    accountName?: string;
+  };
+  status: 'PENDING' | 'COMPLETED' | 'REJECTED';
+  createdAt?: Date | string;
+  processedDate?: Date | string | null;
+  processedBy?: {
+    id?: number;
+    username?: string;
+    email?: string;
+  };
+  adminNote?: string;
+  paymentReference?: string;
 }

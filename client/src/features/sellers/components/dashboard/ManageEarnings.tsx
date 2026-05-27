@@ -1,18 +1,91 @@
-import { filter, lowerCase, sumBy } from 'lodash';
-import { FC, ReactElement } from 'react';
+import { filter, sumBy } from 'lodash';
+import { FC, ReactElement, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { IOrderDocument } from 'src/features/order/interfaces/order.interface';
-import { shortenLargeNumbers } from 'src/shared/utils/utils.service';
+import Button from 'src/shared/button/Button';
+import { isFetchBaseQueryError, normalizeOrderStatus, shortenLargeNumbers, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 
 import { SellerContextType } from '../../interfaces/seller.interface';
+import { useCreateWithdrawalMutation } from '../../services/seller.service';
 import ManageEarningsTable from './components/ManageEarningsTable';
+
+const normalizeMoney = (value?: number): number => Math.round(Number(value || 0) * 100) / 100;
+const formatMoney = (value?: number): string =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(normalizeMoney(value));
 
 const ManageEarnings: FC = (): ReactElement => {
   const { orders, seller } = useOutletContext<SellerContextType>();
-  const completedOrders: IOrderDocument[] = filter(orders, (order: IOrderDocument) => lowerCase(order.status) === lowerCase('Delivered'));
+  const completedOrders: IOrderDocument[] = filter(orders, (order: IOrderDocument) => normalizeOrderStatus(order.status) === 'delivered');
   const sum: number = sumBy(orders, 'price');
   const average: number = sum / orders.length;
   const averageSellingPrice = average ? parseInt(shortenLargeNumbers(average)) : 0;
+  const [amount, setAmount] = useState<string>('');
+  const [bankName, setBankName] = useState<string>(seller?.bankAccount?.bankName || '');
+  const [accountNumber, setAccountNumber] = useState<string>(seller?.bankAccount?.accountNumber || '');
+  const [accountName, setAccountName] = useState<string>(seller?.bankAccount?.accountName || '');
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [createWithdrawal, { isLoading }] = useCreateWithdrawalMutation();
+  const availableBalance = normalizeMoney(seller?.availableBalance);
+
+  useEffect(() => {
+    setBankName(seller?.bankAccount?.bankName || '');
+    setAccountNumber(seller?.bankAccount?.accountNumber || '');
+    setAccountName(seller?.bankAccount?.accountName || '');
+  }, [seller]);
+
+  const onCreateWithdrawal = async (): Promise<void> => {
+    try {
+      const parsedAmount = Number(amount);
+      if (!seller?._id) {
+        showErrorToast('Missing seller profile.');
+        return;
+      }
+
+      const nextErrors: Record<string, string> = {};
+      if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+        nextErrors.amount = 'Enter a withdrawal amount greater than zero.';
+      } else if (parsedAmount > availableBalance) {
+        nextErrors.amount = 'Withdrawal amount cannot exceed your available balance.';
+      }
+      if (!bankName.trim()) {
+        nextErrors.bankName = 'Bank name is required.';
+      }
+      if (!/^[0-9]{6,24}$/.test(accountNumber.trim())) {
+        nextErrors.accountNumber = 'Account number must contain 6 to 24 digits.';
+      }
+      if (!accountName.trim()) {
+        nextErrors.accountName = 'Account name is required.';
+      }
+      setFormErrors(nextErrors);
+      if (Object.keys(nextErrors).length) {
+        return;
+      }
+
+      await createWithdrawal({
+        sellerId: seller._id,
+        amount: parsedAmount,
+        bankAccount: {
+          bankName: bankName.trim(),
+          accountNumber: accountNumber.trim(),
+          accountName: accountName.trim()
+        }
+      }).unwrap();
+      setAmount('');
+      setFormErrors({});
+      showSuccessToast('Withdrawal request sent to admin email.');
+    } catch (error) {
+      if (isFetchBaseQueryError(error)) {
+        showErrorToast(error?.data?.message || 'Unable to create withdrawal request.');
+        return;
+      }
+      showErrorToast('Unable to create withdrawal request.');
+    }
+  };
 
   return (
     <div className="container mx-auto mt-8">
@@ -21,13 +94,13 @@ const ManageEarnings: FC = (): ReactElement => {
           <div className="border border-grey flex items-center justify-center p-8 sm:col-span-1">
             <div className="flex flex-col gap-3">
               <span className="text-center text-base lg:text-xl">Earnings to date</span>
-              <span className="text-center font-bold text-base md:text-xl lg:text-2xl truncate">${seller?.totalEarnings}</span>
+              <span className="text-center font-bold text-base md:text-xl lg:text-2xl truncate">{formatMoney(seller?.totalEarnings)}</span>
             </div>
           </div>
           <div className="border border-grey flex items-center justify-center p-8 sm:col-span-1">
             <div className="flex flex-col gap-3">
               <span className="text-center text-base lg:text-xl">Avg. selling price</span>
-              <span className="text-center font-bold text-base md:text-xl lg:text-2xl truncate">${averageSellingPrice}</span>
+              <span className="text-center font-bold text-base md:text-xl lg:text-2xl truncate">{formatMoney(averageSellingPrice)}</span>
             </div>
           </div>
           <div className="border border-grey flex items-center justify-center p-8 sm:col-span-1">
@@ -35,6 +108,86 @@ const ManageEarnings: FC = (): ReactElement => {
               <span className="text-center text-base lg:text-xl">Orders completed</span>
               <span className="text-center font-bold text-base md:text-xl lg:text-2xl truncate">{seller?.completedJobs}</span>
             </div>
+          </div>
+        </div>
+
+        <div className="mb-6 border border-grey bg-white p-4 sm:p-6">
+          <div className="mb-4 flex flex-col gap-2">
+            <h2 className="text-lg font-bold text-gray-900">Withdraw funds</h2>
+            <p className="text-sm text-gray-600">Send a withdrawal request to admin email for batch payout processing.</p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Available balance</label>
+              <div className="rounded border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700">{formatMoney(availableBalance)}</div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Withdrawal amount</label>
+              <input
+                className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
+                type="number"
+                min="0.01"
+                max={availableBalance}
+                step="0.01"
+                value={amount}
+                onChange={(event) => {
+                  setAmount(event.target.value);
+                  setFormErrors((currentErrors) => ({ ...currentErrors, amount: '' }));
+                }}
+                placeholder="Enter amount"
+              />
+              {formErrors.amount && <p className="text-xs text-red-500">{formErrors.amount}</p>}
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Bank name</label>
+              <input
+                className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
+                type="text"
+                value={bankName}
+                onChange={(event) => {
+                  setBankName(event.target.value);
+                  setFormErrors((currentErrors) => ({ ...currentErrors, bankName: '' }));
+                }}
+                placeholder="VCB / MB / ACB..."
+              />
+              {formErrors.bankName && <p className="text-xs text-red-500">{formErrors.bankName}</p>}
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Account number</label>
+              <input
+                className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
+                type="text"
+                value={accountNumber}
+                onChange={(event) => {
+                  setAccountNumber(event.target.value);
+                  setFormErrors((currentErrors) => ({ ...currentErrors, accountNumber: '' }));
+                }}
+                placeholder="Bank account number"
+              />
+              {formErrors.accountNumber && <p className="text-xs text-red-500">{formErrors.accountNumber}</p>}
+            </div>
+            <div className="flex flex-col gap-1 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700">Account name</label>
+              <input
+                className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
+                type="text"
+                value={accountName}
+                onChange={(event) => {
+                  setAccountName(event.target.value);
+                  setFormErrors((currentErrors) => ({ ...currentErrors, accountName: '' }));
+                }}
+                placeholder="ACCOUNT NAME"
+              />
+              {formErrors.accountName && <p className="text-xs text-red-500">{formErrors.accountName}</p>}
+            </div>
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button
+              className="rounded bg-sky-500 px-5 py-2 text-sm font-bold text-white hover:bg-sky-400 disabled:cursor-not-allowed disabled:bg-gray-400"
+              label={isLoading ? 'Submitting...' : 'Request withdrawal'}
+              disabled={isLoading || availableBalance <= 0}
+              onClick={onCreateWithdrawal}
+            />
           </div>
         </div>
 

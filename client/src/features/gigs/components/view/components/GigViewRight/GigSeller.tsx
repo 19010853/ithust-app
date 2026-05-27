@@ -1,7 +1,7 @@
 import { FC, ReactElement, useContext, useState } from 'react';
 import { FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import ChatBox from 'src/features/chat/components/chatbox/ChatBox';
+import useInboxNavigation from 'src/features/chat/hooks/useInboxNavigation';
 import { IChatBuyerProps, IChatSellerProps } from 'src/features/chat/interfaces/chat.interface';
 import { GigContext } from 'src/features/gigs/context/GigContext';
 import { ILanguage } from 'src/features/sellers/interfaces/seller.interface';
@@ -21,7 +21,7 @@ const GigSeller: FC = (): ReactElement => {
   const { gig, seller } = useContext(GigContext);
   const [approvalModalContent, setApprovalModalContent] = useState<IApprovalModalContent>();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showChatBox, setShowChatBox] = useState<boolean>(false);
+  const { navigateToInbox } = useInboxNavigation();
   const chatSeller: IChatSellerProps = {
     username: `${seller.username}`,
     _id: `${seller._id}`,
@@ -117,13 +117,17 @@ const GigSeller: FC = (): ReactElement => {
                   });
                   setShowModal(true);
                 } else {
-                  setShowChatBox((item: boolean) => !item);
+                  void navigateToInbox({
+                    seller: chatSeller,
+                    buyer: chatBuyer,
+                    gigId: `${gig.id}`,
+                    currentUsername: `${authUser.username}`
+                  });
                 }
               }}
             />
           </div>
         </div>
-        {showChatBox && <ChatBox seller={chatSeller} buyer={chatBuyer} gigId={`${gig.id}`} onClose={() => setShowChatBox(false)} />}
       </div>
     </>
   );

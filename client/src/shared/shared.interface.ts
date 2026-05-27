@@ -7,7 +7,7 @@ import { IConversationDocument, IMessageDocument } from 'src/features/chat/inter
 import { ICreateGig, ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
 import { IOrderDocument, IOrderNotifcation } from 'src/features/order/interfaces/order.interface';
 import { IReviewDocument } from 'src/features/order/interfaces/review.interface';
-import { IEducation, IExperience, ILanguage, IPersonalInfoData, ISellerDocument } from 'src/features/sellers/interfaces/seller.interface';
+import { IEducation, IExperience, ILanguage, IPersonalInfoData, ISellerDocument, IWithdrawalDocument } from 'src/features/sellers/interfaces/seller.interface';
 
 export type validationErrorsType =
   | ISignInPayload
@@ -46,6 +46,10 @@ export interface IResponse {
   review?: IReviewDocument;
   reviews?: IReviewDocument[];
   notifications?: IOrderNotifcation[];
+  payment?: { qrCodeUrl: string; amount: number; currency: 'VND'; mode: 'test' | 'live'; content: string };
+  refund?: unknown;
+  withdrawal?: unknown;
+  withdrawals?: IWithdrawalDocument[];
   browserName?: string;
   deviceType?: string;
 }

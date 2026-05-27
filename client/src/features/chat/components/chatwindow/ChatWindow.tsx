@@ -11,7 +11,7 @@ import TextInput from 'src/shared/inputs/TextInput';
 import OfferModal from 'src/shared/modals/OfferModal';
 import { checkFile, fileType, readAsBase64 } from 'src/shared/utils/image-utils.service';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
-import { firstLetterUppercase, showErrorToast } from 'src/shared/utils/utils.service';
+import { firstLetterUppercase, lowerCase, showErrorToast } from 'src/shared/utils/utils.service';
 import { socket, socketService } from 'src/sockets/socket.service';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
 import { IReduxState } from 'src/store/store.interface';
@@ -31,12 +31,12 @@ const MESSAGE_STATUS = {
 };
 const NOT_EXISTING_ID = '649db27404c0c7b7d4b112ec';
 
-const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, isLoading, setSkip }): ReactElement => {
+const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isLoading, setSkip }): ReactElement => {
   const seller = useAppSelector((state: IReduxState) => state.seller);
   const authUser = useAppSelector((state: IReduxState) => state.authUser);
   const fileRef = useRef<HTMLInputElement>(null);
   const scrollRef = useChatScrollToBottom([]);
-  const { username } = useParams<string>();
+  const { username, conversationId } = useParams<string>();
   const receiverUsername = useRef<string>(MESSAGE_STATUS.EMPTY);
   const receiverRef = useRef<IBuyerDocument>();
   const singleMessageRef = useRef<IMessageDocument>();
@@ -45,17 +45,43 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, isLoading, setSkip }):
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploadingFile, setIsUploadingFile] = useState<boolean>(MESSAGE_STATUS.IS_LOADING);
   const [message, setMessage] = useState<string>(MESSAGE_STATUS.EMPTY);
+  const [hasConversationId, setHasConversationId] = useState<boolean>(draftConversation?.hasConversationId ?? true);
   const dispatch = useAppDispatch();
+  const draftReceiver =
+    draftConversation && lowerCase(`${authUser?.username}`) === lowerCase(draftConversation.seller.username)
+      ? draftConversation.buyer
+      : draftConversation?.seller;
   const { data: buyerData, isSuccess: isBuyerSuccess } = useGetBuyerByUsernameQuery(`${firstLetterUppercase(`${username}`)}`);
-  const { data } = useGetGigByIdQuery(singleMessageRef.current ? `${singleMessageRef.current?.gigId}` : NOT_EXISTING_ID);
+  const { data } = useGetGigByIdQuery(
+    singleMessageRef.current ? `${singleMessageRef.current?.gigId}` : draftConversation?.gigId ?? NOT_EXISTING_ID
+  );
   const [saveChatMessage] = useSaveChatMessageMutation();
 
   if (isBuyerSuccess) {
     receiverRef.current = buyerData.buyer;
   }
 
+  if (draftReceiver && lowerCase(`${receiverRef.current?.username}`) !== lowerCase(draftReceiver.username)) {
+    receiverRef.current = {
+      ...receiverRef.current,
+      country: receiverRef.current?.country ?? '',
+      profilePicture: draftReceiver.profilePicture,
+      purchasedGigs: receiverRef.current?.purchasedGigs ?? [],
+      username: draftReceiver.username
+    };
+  }
+
   if (chatMessages.length) {
     singleMessageRef.current = chatMessages[chatMessages.length - 1];
+  } else if (draftConversation) {
+    singleMessageRef.current = {
+      buyerId: draftConversation.buyer._id,
+      conversationId: draftConversation.conversationId,
+      gigId: draftConversation.gigId,
+      receiverPicture: draftReceiver?.profilePicture,
+      receiverUsername: draftReceiver?.username,
+      sellerId: draftConversation.seller._id
+    };
   }
 
   const handleFileChange = (event: ChangeEvent): void => {
@@ -75,18 +101,17 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, isLoading, setSkip }):
 
   const sendMessage = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
-    if (setSkip) {
-      setSkip(true);
-    }
-
     if (!message && !selectedFile) {
       return;
+    }
+    if (setSkip) {
+      setSkip(true);
     }
     try {
       setIsUploadingFile(MESSAGE_STATUS.LOADING);
       const messageBody: IMessageDocument = {
-        conversationId: singleMessageRef?.current?.conversationId,
-        hasConversationId: true,
+        conversationId: singleMessageRef?.current?.conversationId ?? conversationId,
+        hasConversationId,
         body: message,
         gigId: singleMessageRef?.current?.gigId,
         sellerId: singleMessageRef?.current?.sellerId,
@@ -107,6 +132,7 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, isLoading, setSkip }):
         messageBody.fileSize = `${selectedFile.size}`;
       }
       await saveChatMessage(messageBody).unwrap();
+      setHasConversationId(true);
       setSelectedFile(null);
       setShowImagePreview(MESSAGE_STATUS.IS_LOADING);
       setMessage(MESSAGE_STATUS.EMPTY);
@@ -117,6 +143,10 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, isLoading, setSkip }):
       showErrorToast('Error sending message.');
     }
   };
+
+  useEffect(() => {
+    setHasConversationId(draftConversation?.hasConversationId ?? true);
+  }, [draftConversation?.conversationId, draftConversation?.hasConversationId]);
 
   useEffect(() => {
     const list: IMessageDocument[] = filter(chatMessages, (item: IMessageDocument) => !item.isRead && item.receiverUsername === username);
@@ -215,7 +245,7 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, isLoading, setSkip }):
                 <div className="flex cursor-pointer flex-row justify-between">
                   <div className="flex gap-4">
                     {!showImagePreview && <FaPaperclip className="mt-1 self-center" onClick={() => fileRef?.current?.click()} />}
-                    {!showImagePreview && singleMessageRef.current && singleMessageRef.current.sellerId === seller?._id && (
+                    {!showImagePreview && hasConversationId && singleMessageRef.current && singleMessageRef.current.sellerId === seller?._id && (
                       <Button
                         className="rounded bg-sky-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
                         disabled={false}

@@ -7,7 +7,7 @@ import { updateHeader } from 'src/shared/header/reducers/header.reducer';
 import ApprovalModal from 'src/shared/modals/ApprovalModal';
 import { IApprovalModalContent } from 'src/shared/modals/interfaces/modal.interface';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
-import { lowerCase, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
+import { normalizeOrderStatus, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 import { useAppDispatch } from 'src/store/store';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -98,9 +98,9 @@ const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): 
                     <td className="p-3 text-left lg:text-center">${order.price}</td>
                     <td className="px-3 py-1 lg:p-3 text-left lg:text-center">
                       <span
-                        className={`rounded bg-transparent text-black p-0 text-xs font-bold uppercase sm:text-white sm:px-[5px] sm:py-[4px] status ${lowerCase(
-                          order.status.replace(/ /g, '')
-                        )}`}
+                        className={`rounded bg-transparent text-black p-0 text-xs font-bold uppercase sm:text-white sm:px-[5px] sm:py-[4px] status ${normalizeOrderStatus(
+                          order.status
+                        ).replace(/ /g, '')}`}
                       >
                         {order.status}
                       </span>

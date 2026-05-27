@@ -2,6 +2,9 @@ import { FC, ReactNode, Suspense } from 'react';
 import { RouteObject, useRoutes } from 'react-router-dom';
 
 import AppPage from './features/AppPage';
+import AdminRoute from './features/AdminRoute';
+import AdminSettings from './features/admin/components/AdminSettings';
+import AdminWithdrawals from './features/admin/components/AdminWithdrawals';
 import ConfirmEmail from './features/auth/components/ConfirmEmail';
 import ResetPassword from './features/auth/components/ResetPassword';
 import VerifyOTP from './features/auth/components/VerifyOTP';
@@ -15,6 +18,7 @@ import GigView from './features/gigs/components/view/GigView';
 import Home from './features/home/components/Home';
 import GigInfoDisplay from './features/index/gig-tabs/GigInfoDisplay';
 import GigsIndexDisplay from './features/index/gig-tabs/GigsIndexDisplay';
+import NonAdminRoute from './features/NonAdminRoute';
 import Checkout from './features/order/components/Checkout';
 import Order from './features/order/components/Order';
 import Requirement from './features/order/components/Requirement';
@@ -27,9 +31,17 @@ import SellerDashboard from './features/sellers/components/dashboard/SellerDashb
 import CurrentSellerProfile from './features/sellers/components/profile/CurrentSellerProfile';
 import SellerProfile from './features/sellers/components/profile/SellerProfile';
 import Settings from './features/settings/components/Settings';
+import AdminHeader from './shared/header/components/AdminHeader';
 
 const Layout = ({ backgroundColor = '#fff', children }: { backgroundColor: string; children: ReactNode }): JSX.Element => (
   <div style={{ backgroundColor }} className="flex flex-grow">
+    {children}
+  </div>
+);
+
+const AdminLayout = ({ children }: { children: ReactNode }): JSX.Element => (
+  <div className="min-h-screen bg-white">
+    <AdminHeader />
     {children}
   </div>
 );
@@ -68,9 +80,11 @@ const AppRouter: FC = () => {
       path: '/search/categories/:category',
       element: (
         <Suspense>
-          <Layout backgroundColor="#ffffff">
-            <GigsIndexDisplay type="categories" />
-          </Layout>
+          <NonAdminRoute>
+            <Layout backgroundColor="#ffffff">
+              <GigsIndexDisplay type="categories" />
+            </Layout>
+          </NonAdminRoute>
         </Suspense>
       )
     },
@@ -78,9 +92,11 @@ const AppRouter: FC = () => {
       path: '/gigs/search',
       element: (
         <Suspense>
-          <Layout backgroundColor="#ffffff">
-            <GigsIndexDisplay type="search" />
-          </Layout>
+          <NonAdminRoute>
+            <Layout backgroundColor="#ffffff">
+              <GigsIndexDisplay type="search" />
+            </Layout>
+          </NonAdminRoute>
         </Suspense>
       )
     },
@@ -88,9 +104,11 @@ const AppRouter: FC = () => {
       path: '/gig/:gigId/:title',
       element: (
         <Suspense>
-          <Layout backgroundColor="#ffffff">
-            <GigInfoDisplay />
-          </Layout>
+          <NonAdminRoute>
+            <Layout backgroundColor="#ffffff">
+              <GigInfoDisplay />
+            </Layout>
+          </NonAdminRoute>
         </Suspense>
       )
     },
@@ -103,6 +121,42 @@ const AppRouter: FC = () => {
               <Home />
             </Layout>
           </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/admin/dashboard',
+      element: (
+        <Suspense>
+          <AdminRoute>
+            <AdminLayout>
+              <AdminWithdrawals />
+            </AdminLayout>
+          </AdminRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/admin/withdrawals',
+      element: (
+        <Suspense>
+          <AdminRoute>
+            <AdminLayout>
+              <AdminWithdrawals />
+            </AdminLayout>
+          </AdminRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/admin/settings',
+      element: (
+        <Suspense>
+          <AdminRoute>
+            <AdminLayout>
+              <AdminSettings />
+            </AdminLayout>
+          </AdminRoute>
         </Suspense>
       )
     },

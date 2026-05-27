@@ -155,6 +155,18 @@ export interface IOrderDocument {
   buyerReview?: IOrderReview;
   sellerReview?: IOrderReview;
   paymentIntent?: string;
+  paymentAmountVnd?: number;
+  paymentCurrency?: 'VND';
+  paymentStatus?: 'PENDING' | 'HELD' | 'RELEASED' | 'REFUND_REQUESTED';
+}
+
+export interface IRefundRequestPayload {
+  reason: string;
+  bankInfo: {
+    bankName: string;
+    accountNumber: string;
+    accountName: string;
+  };
 }
 
 export interface IOrderMessage {

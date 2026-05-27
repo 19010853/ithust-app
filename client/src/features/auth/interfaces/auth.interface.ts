@@ -8,6 +8,7 @@ export interface IAuthUser {
   emailVerificationToken: string | null;
   emailVerified: boolean | null;
   id: number | null;
+  role?: 'user' | 'admin' | null;
   passwordResetExpires: Date | null;
   passwordResetToken: null | null;
   profilePicture: string | null;
@@ -22,6 +23,7 @@ export interface IAuthDocument {
   profilePublicId?: string;
   username?: string;
   email?: string;
+  role?: 'user' | 'admin';
   password?: string;
   country?: string;
   profilePicture?: string;

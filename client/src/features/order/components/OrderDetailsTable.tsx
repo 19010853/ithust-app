@@ -11,6 +11,7 @@ import Invoice from './Invoice/Invoice';
 const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement => {
   const [showOrderDetailsPanel, setShowOrderDetailsPanel] = useState<boolean>(false);
   const orderInvoice = useRef<IOrderInvoice>({} as IOrderInvoice);
+  const offer = order?.offer;
   if (order && Object.keys(order).length > 0) {
     orderInvoice.current = {
       invoiceId: `${order.orderId}`,
@@ -19,14 +20,14 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
       buyerUsername: `${order.buyerUsername}`,
       orderService: [
         {
-          service: `${order.gigMainTitle}`,
+          service: `${order.gigMainTitle || offer?.gigTitle || 'N/A'}`,
           quantity: 1,
-          price: order.price
+          price: Number(order.price ?? 0)
         },
         {
           service: 'Service Fee',
           quantity: 1,
-          price: parseInt(`${order.serviceFee}`)
+          price: Number(order.serviceFee ?? 0)
         }
       ]
     };
@@ -104,17 +105,17 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
                       <tbody>
                         <tr className="bg-white">
                           <td scope="row" className="whitespace-wrap px-4 py-4 font-bold">
-                            {order.offer.gigTitle}
+                            {offer?.gigTitle || order.gigMainTitle || 'N/A'}
                           </td>
                           <td className="px-4 py-4">{order.quantity}</td>
                           <td className="px-4 py-4">
-                            {order.offer.deliveryInDays} day{order.offer.deliveryInDays > 1 ? 's' : ''}
+                            {offer?.deliveryInDays ?? 0} day{(offer?.deliveryInDays ?? 0) > 1 ? 's' : ''}
                           </td>
                           <td className="px-4 py-4">${order.price}</td>
                         </tr>
                         <tr className="bg-white">
                           <th scope="row" className="whitespace-wrap px-4 py-4 font-normal">
-                            {order.offer.description}
+                            {offer?.description || 'No description available'}
                           </th>
                           <td className="px-4 py-4"></td>
                           <td className="px-4 py-4"></td>
@@ -136,7 +137,7 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
                           </th>
                           <td className="px-4 py-3"></td>
                           <td className="px-4 py-3"></td>
-                          <td className="px-4 py-3 font-bold">${order.price + parseInt(`${order.serviceFee}`)}</td>
+                          <td className="px-4 py-3 font-bold">${Number(order.price ?? 0) + Number(order.serviceFee ?? 0)}</td>
                         </tr>
                       </tfoot>
                     </table>

@@ -66,6 +66,7 @@ export const chatApi = api.injectEndpoints({
 
 export const {
   useGetConversationQuery,
+  useLazyGetConversationQuery,
   useGetMessagesQuery,
   useGetConversationListQuery,
   useGetUserMessagesQuery,

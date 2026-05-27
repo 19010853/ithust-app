@@ -39,6 +39,10 @@ const ProtectedRoute: FC<IProtectedRouteProps> = ({ children }): ReactElement =>
 
   if ((data && data.user) || authUser.id) {
     if (tokenIsValid) {
+      const currentRole = data?.user?.role || authUser.role;
+      if (currentRole === 'admin') {
+        return <Navigate to="/admin/dashboard" />;
+      }
       return (
         <>
           {header && header === 'home' && <HomeHeader showCategoryContainer={showCategoryContainer} />}

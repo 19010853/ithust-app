@@ -1,5 +1,5 @@
-import { forwardRef, ForwardRefExoticComponent, RefAttributes, useState } from 'react';
-import ChatBox from 'src/features/chat/components/chatbox/ChatBox';
+import { forwardRef, ForwardRefExoticComponent, RefAttributes } from 'react';
+import useInboxNavigation from 'src/features/chat/hooks/useInboxNavigation';
 import { IChatBuyerProps, IChatSellerProps } from 'src/features/chat/interfaces/chat.interface';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
 
@@ -15,7 +15,7 @@ const OrderActivities: ForwardRefExoticComponent<Omit<IOrderActivitiesProps, 're
   IOrderActivitiesProps
 >((props, ref) => {
   const { order, authUser, viewDeliveryBtnClicked } = props;
-  const [showChatBox, setShowChatBox] = useState<boolean>(false);
+  const { navigateToInbox } = useInboxNavigation();
   const chatSeller: IChatSellerProps = {
     username: `${order.sellerUsername}`,
     _id: `${order.sellerId}`,
@@ -43,11 +43,20 @@ const OrderActivities: ForwardRefExoticComponent<Omit<IOrderActivitiesProps, 're
       </OrderContext.Provider>
       <div className="px-3 pt-2 flex">
         If you need to contact the {order.buyerUsername === authUser.username ? 'seller' : 'buyer'},
-        <div onClick={() => setShowChatBox((item: boolean) => !item)} className="px-2 text-blue-500 cursor-pointer hover:underline">
+        <div
+          onClick={() => {
+            void navigateToInbox({
+              seller: chatSeller,
+              buyer: chatBuyer,
+              gigId: order.gigId,
+              currentUsername: `${authUser.username}`
+            });
+          }}
+          className="px-2 text-blue-500 cursor-pointer hover:underline"
+        >
           Go to Inbox
         </div>
       </div>
-      {showChatBox && <ChatBox seller={chatSeller} buyer={chatBuyer} gigId={order.gigId} onClose={() => setShowChatBox(false)} />}
     </div>
   );
 });
