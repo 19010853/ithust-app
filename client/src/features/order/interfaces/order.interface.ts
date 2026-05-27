@@ -154,7 +154,6 @@ export interface IOrderDocument {
   events: IOrderEvents;
   buyerReview?: IOrderReview;
   sellerReview?: IOrderReview;
-  paymentIntent?: string;
   paymentAmountVnd?: number;
   paymentCurrency?: 'VND';
   paymentStatus?: 'PENDING' | 'HELD' | 'RELEASED' | 'REFUND_REQUESTED';

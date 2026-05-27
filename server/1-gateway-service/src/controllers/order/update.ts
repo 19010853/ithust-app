@@ -6,8 +6,8 @@ import { orderService } from '@gateway/services/api/order.service';
 export class Update {
   public async cancel(req: Request, res: Response): Promise<void> {
     const { orderId } = req.params;
-    const { orderData, paymentIntentId } = req.body;
-    const response: AxiosResponse = await orderService.cancelOrder(paymentIntentId, orderId, orderData);
+    const { orderData } = req.body;
+    const response: AxiosResponse = await orderService.cancelOrder(orderId, orderData);
     res.status(StatusCodes.CREATED).json({ message: response.data.message });
   }
 

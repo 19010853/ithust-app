@@ -37,12 +37,12 @@ export const ordersApi = api.injectEndpoints({
       },
       invalidatesTags: ['Order']
     }),
-    cancelOrder: build.mutation<IResponse, { paymentIntentId: string; orderId: string; body: IOrderMessage }>({
-      query({ paymentIntentId, orderId, body }) {
+    cancelOrder: build.mutation<IResponse, { orderId: string; body: IOrderMessage }>({
+      query({ orderId, body }) {
         return {
           url: `order/cancel/${orderId}`,
           method: 'PUT',
-          body: { paymentIntentId, orderData: body }
+          body: { orderData: body }
         };
       },
       invalidatesTags: ['Order']

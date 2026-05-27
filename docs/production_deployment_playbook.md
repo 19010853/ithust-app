@@ -195,7 +195,7 @@ Khi chuyển dịch từ chạy thử nghiệm sang môi trường thương mạ
 | `VITE_BASE_ENDPOINT` | `http://localhost:4000` | `https://ithust.store` | Điểm truy cập API Gateway bên ngoài. Client sẽ gửi toàn bộ API request tới đây qua HTTPS. |
 
 ### 2. Cổng thanh toán quét mã QR SePay (Rất quan trọng)
-Dự án đã tích hợp SePay thay thế cho Stripe để phù hợp với thanh toán QR nội địa.
+Dự án sử dụng SePay/VietQR làm luồng thanh toán duy nhất cho order production.
 | Tên biến (K8s Secret Key) | Môi trường Sandbox (Test mode) | Môi trường Production | Giải thích & Hành động |
 | :--- | :--- | :--- | :--- |
 | `PLATFORM_BANK_ID` | `MBBank` | Tên ngân hàng thật (vd: `Vietcombank`, `Techcombank`, `MBBank`) | Mã ngân hàng thụ hưởng chính thức của doanh nghiệp/chủ sàn. Tra cứu mã chuẩn tại `https://qr.sepay.vn/banks.json`. |
@@ -203,13 +203,9 @@ Dự án đã tích hợp SePay thay thế cho Stripe để phù hợp với tha
 | `SEPAY_WEBHOOK_SECRET` | Key lấy từ mục **Test mode** trên `my.sepay.vn` | Key lấy từ mục **Live mode** trên `my.sepay.vn` | Mã token bí mật dùng để xác thực webhook gửi đi từ SePay. Đảm bảo request gửi tới cổng Gateway của bạn đúng là từ hệ thống SePay chứ không phải hacker giả lập. |
 | *Webhook URL cấu hình trên SePay* | `https://your-ngrok-tunnel.ngrok-free.app/api/gateway/v1/sepay/webhook` | `https://ithust.store/api/gateway/v1/sepay/webhook` | Địa chỉ endpoint Gateway chính thức tiếp nhận dữ liệu giao dịch biến động số dư. |
 
-### 3. Cổng thanh toán quốc tế Stripe (Nếu vẫn song hành)
-| Tên biến (K8s Secret Key / Frontend Key) | Môi trường Sandbox | Môi trường Production | Giải thích & Hành động |
-| :--- | :--- | :--- | :--- |
-| `stripe-api-key` (Backend Secret) | `sk_test_51P...` | `sk_live_51P...` | Secret API Key dùng ở microservice `order-service` để tạo Intent giao dịch phía backend. |
-| `stripe-client-key` / `VITE_STRIPE_KEY` | `pk_test_51P...` | `pk_live_51P...` | Public Publishable Key dùng ở Client React để tải form thanh toán bảo mật Stripe. |
+Refund và seller withdrawal hiện là quy trình manual review nội bộ; không dùng API refund tự động từ cổng thanh toán khác.
 
-### 4. Cơ sở dữ liệu & Cấu hình mạng Cluster K3s
+### 3. Cơ sở dữ liệu & Cấu hình mạng Cluster K3s
 Trên localhost, các dịch vụ kết nối với DB qua cổng map ra máy vật lý (ví dụ MySQL port 3307, Redis 6379). Trên K3s Production, các dịch vụ gọi nhau thông qua hệ thống phân giải tên miền nội bộ của Kubernetes (CoreDNS) để tối đa hóa bảo mật (không mở cổng DB ra internet).
 | Tên biến (K8s Secret Key) | Cấu hình Sandbox/Local | Cấu hình Production trên K3s | Giải thích & Hành động |
 | :--- | :--- | :--- | :--- |
@@ -220,12 +216,12 @@ Trên localhost, các dịch vụ kết nối với DB qua cổng map ra máy v�
 | `ithust-rabbitmq-endpoint` | `amqp://guest:guest@localhost:5672` | `amqp://ithust:ithustpass@ithust-queue.production.svc.cluster.local:5672` | Endpoint kết nối RabbitMQ để truyền tin nhắn bất đồng bộ giữa các microservices. |
 | `ithust-elasticsearch-url` | `http://localhost:9200` | `http://elastic:mật-khẩu-thật@ithust-elastic.production.svc.cluster.local:9200` | Đường dẫn kết nối Elasticsearch phục vụ cho việc tìm kiếm gig/dịch vụ nhanh. |
 
-### 5. Dịch vụ lưu trữ hình ảnh Cloudinary
+### 4. Dịch vụ lưu trữ hình ảnh Cloudinary
 | Tên biến (K8s Secret Key) | Môi trường Sandbox | Môi trường Production | Giải thích & Hành động |
 | :--- | :--- | :--- | :--- |
 | `cloud-name`, `cloud-api-key`, `cloud-api-secret` | Tài khoản cá nhân chạy thử | Tài khoản Cloudinary Production doanh nghiệp | Nơi lưu trữ hình ảnh tải lên từ avatar người dùng, ảnh minh họa gigs, hình ảnh đính kèm tin nhắn chat. Nên tạo thư mục/folder riêng để tránh lẫn lộn file test. |
 
-### 6. Gửi Email thông báo (SMTP)
+### 5. Gửi Email thông báo (SMTP)
 | Tên biến (K8s Secret Key) | Môi trường Sandbox | Môi trường Production | Giải thích & Hành động |
 | :--- | :--- | :--- | :--- |
 | `sender-email` | Email cá nhân (vd: `test@gmail.com`) | Email giao dịch (vd: `no-reply@ithust.shop`) | Địa chỉ email hiển thị ở hộp thư khách hàng khi hệ thống gửi thông báo kích hoạt tài khoản hoặc đơn hàng. |
@@ -247,7 +243,6 @@ Trên localhost, các dịch vụ kết nối với DB qua cổng map ra máy v�
 | `KUBECONFIG_B64` | Chuỗi mã hóa Base64 của file cấu hình Kubernetes trên VPS | **Đây là cầu nối giúp GitHub điều khiển cụm K3s trên VPS**. Hãy đăng nhập SSH vào VPS và chạy lệnh:<br>`cat ~/.kube/config \| sed "s/127.0.0.1/YOUR_VPS_PUBLIC_IP/g" \| base64 -w 0`<br>Copy toàn bộ chuỗi ký tự hiển thị trên màn hình dán vào giá trị Secret này. |
 | `VITE_BASE_ENDPOINT` | `https://ithust.store` | Địa chỉ URL API Gateway chính thức cho môi trường Production. |
 | `VITE_CLIENT_ENDPOINT` | `https://ithust.shop` | Địa chỉ URL trang giao diện người dùng Frontend Production. |
-| `VITE_STRIPE_KEY` | `pk_live_...` | Khóa công khai Stripe Live Mode dùng trong frontend (nếu sử dụng Stripe thanh toán quốc tế). |
 | `VITE_ELASTIC_APM_SERVER` | URL APM frontend, có thể để trống nếu chưa dùng | Chỉ điền khi đã triển khai APM server thật. |
 | `VITE_ELASTIC_APM_SERVER_TOKEN` | Token APM frontend, có thể để trống nếu chưa dùng | Chỉ điền khi APM server yêu cầu token. |
 | `TELEGRAM_TOKEN` | Token của Telegram Bot thông báo | Chat với `@BotFather` trên Telegram để tạo Bot mới và lấy Token thông báo trạng thái Deploy thành công/thất bại. |

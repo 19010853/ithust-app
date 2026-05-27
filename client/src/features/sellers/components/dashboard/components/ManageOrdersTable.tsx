@@ -27,7 +27,6 @@ const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): 
       };
       setShowCancelModal(false);
       await cancelOrder({
-        paymentIntentId: `${selectedOrder.current?.paymentIntent}`,
         orderId: `${selectedOrder.current?.orderId}`,
         body: orderData
       });

@@ -40,8 +40,8 @@ class OrderService {
     return response;
   }
 
-  async cancelOrder(paymentIntentId: string, orderId: string, body: IOrderMessage): Promise<AxiosResponse> {
-    const response: AxiosResponse = await axiosOrderInstance.put(`/cancel/${orderId}`, { paymentIntentId, orderData: body });
+  async cancelOrder(orderId: string, body: IOrderMessage): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosOrderInstance.put(`/cancel/${orderId}`, { orderData: body });
     return response;
   }
 

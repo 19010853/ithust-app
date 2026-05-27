@@ -39,8 +39,6 @@ export interface IResponse {
   messages?: IMessageDocument[];
   messageData?: IMessageDocument;
   conversationId?: string;
-  clientSecret?: string;
-  paymentIntentId?: string;
   order?: IOrderDocument;
   orders?: IOrderDocument[];
   review?: IReviewDocument;

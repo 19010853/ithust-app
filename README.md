@@ -13,7 +13,7 @@ Hệ thống bao gồm 8 backend services và 1 frontend client độc lập:
 - **Auth Service**: Quản lý đăng ký, đăng nhập, phân quyền, và cấp phát JWT. Lọc dữ liệu qua MySQL.
 - **Users Service**: Quản lý hồ sơ người mua/người bán trên hệ thống.
 - **Gig Service**: Dịch vụ quản lý các "công việc/dịch vụ" (gigs). Hỗ trợ công cụ tìm kiếm mạnh mẽ nhờ Elasticsearch.
-- **Order Service**: Xử lý logic đặt hàng, tích hợp cổng thanh toán (Stripe) và theo dõi trạng thái.
+- **Order Service**: Xử lý logic đặt hàng, tạo QR SePay/VietQR và theo dõi trạng thái thanh toán qua webhook.
 - **Chat Service**: Giao tiếp thời gian thực (real-time chat) giữa các người dùng thông qua Socket.io.
 - **Review Service**: Đánh giá và phản hồi các đơn hàng đã hoàn tất. Lưu trữ qua PostgreSQL.
 - **Notification Service**: Chịu trách nhiệm độc lập gửi email và thông báo cho người dùng (broker driven).
@@ -233,7 +233,6 @@ Secrets bắt buộc riêng cho frontend:
 | --- | --- |
 | `VITE_BASE_ENDPOINT` | `https://ithust.store` |
 | `VITE_CLIENT_ENDPOINT` | `https://ithust.shop` |
-| `VITE_STRIPE_KEY` | Stripe publishable key dạng `pk_live_...`. |
 
 Secrets optional cho frontend APM:
 

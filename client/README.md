@@ -6,7 +6,7 @@
   * `Tailwindcss`
   * `Redux Toolkit`
   * `RTK Query`
-  * `Stripe`
+  * `SePay/VietQR`
   * `Elasticsearch`
   * `Axios`
   * `React Router DOM`
@@ -16,10 +16,8 @@
   * `ESlint and Prettier`
 * There are other tools and packages used.
 * You can update the version of `NodeJS` used inside the `Dockerfile`
-* Copy contents of `.env.dev` to `.env` file
-  * Create an account on `https://stripe.com`
-    * Go to developers page to get your api key for the client (it starts with `pk_`)
-    * Add the api key to `VITE_STRIPE_KEY`
+* Copy contents of `.env.dev` to `.env` file.
+* Payment is handled by the backend through SePay/VietQR. The frontend only needs `VITE_BASE_ENDPOINT` and `VITE_CLIENT_ENDPOINT`.
 
 ### Create docker images
 * You can create your own docker image from this microservice.
@@ -29,4 +27,3 @@
   * `docker build -t <your-dockerhub-username>/ithust-frontend .`
   * `docker tag <your-dockerhub-username>/ithust-frontend <your-dockerhub-username>/ithust-frontend:stable`
   * `docker push <your-dockerhub-username>/ithust-frontend:stable`
-

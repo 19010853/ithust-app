@@ -31,7 +31,6 @@ const orderSchema: ObjectSchema = Joi.object().keys({
   price: Joi.number().required(),
   serviceFee: Joi.number().optional(),
   requirements: Joi.string().optional().allow(null, ''),
-  paymentIntent: Joi.string().optional().allow(null, ''),
   requestExtension: Joi.object({
     originalDate: Joi.string().required(),
     newDate: Joi.string().required(),

@@ -138,7 +138,6 @@ const Requirement: FC = (): ReactElement => {
         dateOrdered: `${new Date()}`,
         price: offer.price,
         requirements: requirement,
-        paymentIntent: '', // Not used in SePay
         events: {
           placeOrder: order_date,
           requirements: `${new Date()}`,
