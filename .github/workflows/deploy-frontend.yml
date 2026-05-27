@@ -22,6 +22,29 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Validate Required Secrets
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+          TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          VITE_BASE_ENDPOINT: ${{ secrets.VITE_BASE_ENDPOINT }}
+          VITE_CLIENT_ENDPOINT: ${{ secrets.VITE_CLIENT_ENDPOINT }}
+          VITE_STRIPE_KEY: ${{ secrets.VITE_STRIPE_KEY }}
+        run: |
+          missing=0
+          for secret_name in DOCKERHUB_USERNAME DOCKERHUB_PASSWORD KUBECONFIG_B64 TELEGRAM_TO TELEGRAM_TOKEN VITE_BASE_ENDPOINT VITE_CLIENT_ENDPOINT VITE_STRIPE_KEY; do
+            if [ -z "${!secret_name}" ]; then
+              echo "::error title=Missing GitHub Actions secret::$secret_name is required in Repository secrets."
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "Add missing values in GitHub: Settings > Secrets and variables > Actions > Repository secrets."
+            exit 1
+          fi
+
       - name: Create Environment Variables
         working-directory: client
         run: |

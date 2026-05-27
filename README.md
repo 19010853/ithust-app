@@ -214,12 +214,41 @@ Mọi tác vụ biên dịch ảnh Docker và cập nhật mã nguồn sẽ đư
     - **Lint & Test**: (Mở rộng trong tương lai)
     - **Docker Build & Push**: Tự động tải NPM dependencies, đóng gói docker image dưới tag `stable-<build-number>` và đẩy thẳng lên Docker Hub.
     - **Deployment (Rolling Update)**: GitHub connect tới VPS bằng `KUBECONFIG_B64`, apply manifest K3s tương ứng, rồi `rollout restart/status` deployment để kéo image `stable` mới nhất.
-3. **Cấu hình trên GitHub Repo**: Để pipeline chạy thành công, chủ repo phải cập nhật các Credentials vào Github **Settings > Secrets**:
-    - `DOCKERHUB_USERNAME`, `DOCKERHUB_PASSWORD`: Token đăng nhập hệ thống docker để đẩy image.
-    - `NPM_TOKEN`: GitHub personal PAT để tải chung các package public (@19010853/ithust-shared) dưới dạng registry.
-    - `KUBECONFIG_B64`: String Base64 của file `~/.kube/config` trích từ nội VPS. *(Dùng lệnh `cat ~/.kube/config | base64` ở Server)*.
-    - Các khoá cấu hình Frontend: `VITE_BASE_ENDPOINT=https://ithust.store`, `VITE_CLIENT_ENDPOINT=https://ithust.shop`, `VITE_STRIPE_KEY=pk_live_...`.
-    - Thông báo deploy: `TELEGRAM_TOKEN`, `TELEGRAM_TO`.
+3. **Cấu hình trên GitHub Repo**: Để pipeline chạy thành công, chủ repo phải cập nhật các Credentials vào GitHub **Settings > Secrets and variables > Actions > Repository secrets**.
+
+Secrets bắt buộc cho mọi workflow:
+
+| Secret | Giá trị |
+| --- | --- |
+| `DOCKERHUB_USERNAME` | Tên tài khoản Docker Hub, ví dụ `minhkhoi779`. |
+| `DOCKERHUB_PASSWORD` | Docker Hub Access Token có quyền push image. |
+| `NPM_TOKEN` | GitHub PAT có quyền `read:packages` để tải `@19010853/ithust-shared`. |
+| `KUBECONFIG_B64` | Base64 kubeconfig K3s production. |
+| `TELEGRAM_TOKEN` | Token bot Telegram từ `@BotFather`. |
+| `TELEGRAM_TO` | Chat ID hoặc group ID nhận thông báo deploy. |
+
+Secrets bắt buộc riêng cho frontend:
+
+| Secret | Giá trị |
+| --- | --- |
+| `VITE_BASE_ENDPOINT` | `https://ithust.store` |
+| `VITE_CLIENT_ENDPOINT` | `https://ithust.shop` |
+| `VITE_STRIPE_KEY` | Stripe publishable key dạng `pk_live_...`. |
+
+Secrets optional cho frontend APM:
+
+| Secret | Giá trị |
+| --- | --- |
+| `VITE_ELASTIC_APM_SERVER` | URL APM frontend, để trống nếu chưa dùng. |
+| `VITE_ELASTIC_APM_SERVER_TOKEN` | Token APM frontend, để trống nếu chưa dùng. |
+
+Tạo `KUBECONFIG_B64` trên VPS:
+
+```bash
+cat ~/.kube/config | sed "s/127.0.0.1/YOUR_VPS_PUBLIC_IP/g" | base64 -w 0
+```
+
+Workflow chạy `kubectl` từ GitHub runner, nên kubeconfig không được trỏ về `127.0.0.1`. VPS phải cho GitHub runner truy cập Kubernetes API public, thường là port `6443`.
 
 Branch deploy hiện dùng cho workflow là `dev/se-pay`. Git không cho tạo đồng thời branch `dev` khi remote đang có các branch dạng `dev/*`, vì vậy cứ push trực tiếp lên `dev/se-pay`:
 

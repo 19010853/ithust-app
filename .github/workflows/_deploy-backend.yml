@@ -32,17 +32,17 @@ on:
         type: string
     secrets:
       DOCKERHUB_USERNAME:
-        required: true
+        required: false
       DOCKERHUB_PASSWORD:
-        required: true
+        required: false
       NPM_TOKEN:
-        required: true
+        required: false
       KUBECONFIG_B64:
-        required: true
+        required: false
       TELEGRAM_TO:
-        required: true
+        required: false
       TELEGRAM_TOKEN:
-        required: true
+        required: false
 
 jobs:
   build-and-deploy:
@@ -59,6 +59,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+
+      - name: Validate Required Secrets
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+          TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        run: |
+          missing=0
+          for secret_name in DOCKERHUB_USERNAME DOCKERHUB_PASSWORD NPM_TOKEN KUBECONFIG_B64 TELEGRAM_TO TELEGRAM_TOKEN; do
+            if [ -z "${!secret_name}" ]; then
+              echo "::error title=Missing GitHub Actions secret::$secret_name is required in Repository secrets."
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "Add missing values in GitHub: Settings > Secrets and variables > Actions > Repository secrets."
+            exit 1
+          fi
 
       - name: Install Dependencies
         working-directory: ${{ inputs.service_dir }}

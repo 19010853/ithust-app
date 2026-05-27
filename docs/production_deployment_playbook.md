@@ -244,7 +244,7 @@ Trên localhost, các dịch vụ kết nối với DB qua cổng map ra máy v�
 | `DOCKERHUB_USERNAME` | Tên tài khoản Docker Hub của bạn | Ví dụ: `minhkhoi779` |
 | `DOCKERHUB_PASSWORD` | Docker Hub Access Token (Khuyến nghị) hoặc mật khẩu | Vào **Docker Hub $\rightarrow$ Account Settings $\rightarrow$ Security $\rightarrow$ New Access Token**. Tạo token có quyền **Read & Write** để bảo mật hơn sử dụng mật khẩu gốc. |
 | `NPM_TOKEN` | GitHub Personal Access Token (PAT) hoặc NPM Token | Dùng để tải các thư viện dùng chung được đóng gói riêng của bạn (ví dụ `@19010853/ithust-shared`). Cách lấy: Vào **GitHub $\rightarrow$ Developer Settings $\rightarrow$ Personal Access Tokens (Classic)** $\rightarrow$ Tạo token có quyền `read:packages`. |
-| `KUBECONFIG_B64` | Chuỗi mã hóa Base64 của file cấu hình Kubernetes trên VPS | **Đây là cầu nối giúp GitHub điều khiển cụm K3s trên VPS**. Hãy đăng nhập SSH vào VPS và chạy lệnh:<br>`cat ~/.kube/config \| base64 -w 0`<br>Copy toàn bộ chuỗi ký tự hiển thị trên màn hình dán vào giá trị Secret này. |
+| `KUBECONFIG_B64` | Chuỗi mã hóa Base64 của file cấu hình Kubernetes trên VPS | **Đây là cầu nối giúp GitHub điều khiển cụm K3s trên VPS**. Hãy đăng nhập SSH vào VPS và chạy lệnh:<br>`cat ~/.kube/config \| sed "s/127.0.0.1/YOUR_VPS_PUBLIC_IP/g" \| base64 -w 0`<br>Copy toàn bộ chuỗi ký tự hiển thị trên màn hình dán vào giá trị Secret này. |
 | `VITE_BASE_ENDPOINT` | `https://ithust.store` | Địa chỉ URL API Gateway chính thức cho môi trường Production. |
 | `VITE_CLIENT_ENDPOINT` | `https://ithust.shop` | Địa chỉ URL trang giao diện người dùng Frontend Production. |
 | `VITE_STRIPE_KEY` | `pk_live_...` | Khóa công khai Stripe Live Mode dùng trong frontend (nếu sử dụng Stripe thanh toán quốc tế). |
@@ -252,6 +252,12 @@ Trên localhost, các dịch vụ kết nối với DB qua cổng map ra máy v�
 | `VITE_ELASTIC_APM_SERVER_TOKEN` | Token APM frontend, có thể để trống nếu chưa dùng | Chỉ điền khi APM server yêu cầu token. |
 | `TELEGRAM_TOKEN` | Token của Telegram Bot thông báo | Chat với `@BotFather` trên Telegram để tạo Bot mới và lấy Token thông báo trạng thái Deploy thành công/thất bại. |
 | `TELEGRAM_TO` | ID phòng chat nhận thông báo | ID của tài khoản Telegram cá nhân của bạn hoặc Group ID nơi add Bot vào nhận tin nhắn trạng thái deploy. |
+
+> [!IMPORTANT]
+> Workflow chạy `kubectl` từ GitHub runner, nên `server:` trong kubeconfig không được là `127.0.0.1`. Hãy thay bằng IP public/domain của VPS và đảm bảo Kubernetes API port `6443` có thể truy cập theo chính sách firewall của bạn.
+
+> [!NOTE]
+> Các backend runtime secrets như mật khẩu DB, RabbitMQ, Elasticsearch, Cloudinary, SePay live key không cần đưa vào GitHub Actions nếu workflow không dùng trực tiếp. Các giá trị đó nằm trong Kubernetes Secret `kubernetes/k3s/secrets/backend-secrets.yaml` và apply trực tiếp vào cluster.
 
 ---
 
