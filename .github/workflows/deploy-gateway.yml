@@ -5,6 +5,9 @@ on:
     branches: ['dev/se-pay']
     paths:
       - 'server/1-gateway-service/**'
+      - 'kubernetes/k3s/1-gateway-service/**'
+      - '.github/workflows/deploy-gateway.yml'
+      - '.github/workflows/_deploy-backend.yml'
 
 jobs:
   deploy:

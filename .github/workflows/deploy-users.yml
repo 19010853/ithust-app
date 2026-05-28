@@ -5,6 +5,9 @@ on:
     branches: ['dev/se-pay']
     paths:
       - 'server/4-users-service/**'
+      - 'kubernetes/k3s/4-users-service/**'
+      - '.github/workflows/deploy-users.yml'
+      - '.github/workflows/_deploy-backend.yml'
 
 jobs:
   deploy:

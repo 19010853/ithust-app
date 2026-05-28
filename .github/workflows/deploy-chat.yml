@@ -5,6 +5,9 @@ on:
     branches: ['dev/se-pay']
     paths:
       - 'server/6-chat-service/**'
+      - 'kubernetes/k3s/6-chat-service/**'
+      - '.github/workflows/deploy-chat.yml'
+      - '.github/workflows/_deploy-backend.yml'
 
 jobs:
   deploy:

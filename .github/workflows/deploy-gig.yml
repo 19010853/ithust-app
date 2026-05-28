@@ -5,6 +5,9 @@ on:
     branches: ['dev/se-pay']
     paths:
       - 'server/5-gig-service/**'
+      - 'kubernetes/k3s/5-gig-service/**'
+      - '.github/workflows/deploy-gig.yml'
+      - '.github/workflows/_deploy-backend.yml'
 
 jobs:
   deploy:

@@ -5,6 +5,9 @@ on:
     branches: ['dev/se-pay']
     paths:
       - 'server/8-review-service/**'
+      - 'kubernetes/k3s/8-review-service/**'
+      - '.github/workflows/deploy-review.yml'
+      - '.github/workflows/_deploy-backend.yml'
 
 jobs:
   deploy:

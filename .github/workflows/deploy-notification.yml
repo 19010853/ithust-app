@@ -5,6 +5,9 @@ on:
     branches: ['dev/se-pay']
     paths:
       - 'server/2-notification-service/**'
+      - 'kubernetes/k3s/2-notifications-service/**'
+      - '.github/workflows/deploy-notification.yml'
+      - '.github/workflows/_deploy-backend.yml'
 
 jobs:
   deploy:

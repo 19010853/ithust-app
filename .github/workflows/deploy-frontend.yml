@@ -5,6 +5,8 @@ on:
     branches: ['dev/se-pay']
     paths:
       - 'client/**'
+      - 'kubernetes/k3s/0-frontend/**'
+      - '.github/workflows/deploy-frontend.yml'
 
 jobs:
   build-and-deploy:
@@ -55,7 +57,7 @@ jobs:
 
       - name: Install Dependencies
         working-directory: client
-        run: npm install
+        run: npm ci
 
       - name: Build Docker Image
         working-directory: client

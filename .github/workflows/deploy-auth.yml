@@ -5,6 +5,9 @@ on:
     branches: ['dev/se-pay']
     paths:
       - 'server/3-auth-service/**'
+      - 'kubernetes/k3s/3-auth-service/**'
+      - '.github/workflows/deploy-auth.yml'
+      - '.github/workflows/_deploy-backend.yml'
 
 jobs:
   deploy:
