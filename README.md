@@ -120,7 +120,31 @@ Khi xong việc, có thể dừng docker để tiết kiệm RAM:
 
 ## 5. Hướng dẫn triển khai Production (VPS + K3s)
 
-Dự án hiện tại sử dụng **K3s trên VPS (Ubuntu 22.04+, 8GB+ RAM)** chạy built-in Traefik làm Ingress Controller. 
+Dự án hiện tại sử dụng **K3s trên VPS Ubuntu 22.04+** chạy built-in Traefik làm Ingress Controller.
+
+### Bước 5.0: Chọn cấu hình VPS
+
+Theo manifest trong `kubernetes/k3s` hiện tại với `replicas: 1`, tổng tài nguyên khai báo xấp xỉ:
+
+| Loại tài nguyên | Tổng theo manifest |
+| --- | ---: |
+| CPU requests | `1.9 vCPU` |
+| RAM requests | `~7.65 GiB` |
+| CPU limits | `11.1 vCPU` |
+| RAM limits | `~14.2 GiB` |
+| PVC storage tối thiểu | `~15.5 GiB` |
+
+Con số trên chưa tính CPU/RAM thực tế cho MongoDB và Redis vì hai manifest này chưa khai báo `resources`, đồng thời chưa tính hệ điều hành, K3s, Traefik, image cache, logs, backup và dữ liệu tăng trưởng.
+
+Khuyến nghị cấu hình:
+
+| Mục tiêu | CPU | RAM | SSD/NVMe |
+| --- | ---: | ---: | ---: |
+| Chạy full stack theo manifest | `12 vCPU` | `24GB` | `80GB+` |
+| Production ổn định hơn | `16 vCPU` | `32GB` | `120-160GB` |
+| VPS nhỏ tạm thời | `6 vCPU` | `8GB` | `50GB+` |
+
+Với VPS nhỏ tạm thời, chỉ nên chạy `replicas=1`, tắt hoặc tách `Elasticsearch/Kibana`, và giảm resource limits. Elasticsearch đang dùng nhiều RAM nhất: riêng manifest hiện tại request/limit `5Gi`.
 
 ### Bước 5.1: Cài đặt K3s lên VPS
 SSH vào VPS của bạn và cài hệ sinh thái Kubernetes dung lượng nhẹ - K3s.
@@ -259,6 +283,7 @@ git push origin dev/se-pay
 
 ## 7. Xử lý Lỗi Cơ Bản K3s
 - **Elasticsearch bị CrashLoopBackOff**: Mặc định VPS thiếu quyền RAM. Chạy `sudo sysctl -w vm.max_map_count=262144`.
+- **Pod bị Pending do ResourceQuota**: Nếu event có `exceeded quota`, kiểm tra `kubectl get resourcequota -n production`. Với VPS 6 CPU/8GB, hãy scale workload về `replicas=1` và cân nhắc tắt `ithust-elastic`/`ithust-kibana` nếu chưa cần observability.
 - **Lấy Password Kibana**: Đợi 2 phút cài đặt, nhập lệnh: `kubectl exec -n production deploy/ithust-elastic -- elasticsearch-reset-password -u kibana_system -b`.
 - **Cập nhật Kubernetes Pod bị Pending**: StorageClass `local-path` chưa được khởi tạo, dùng `kubectl describe pvc -n production` để tra cứu thông báo lỗi đĩa. 
 

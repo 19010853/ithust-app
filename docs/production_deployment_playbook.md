@@ -17,9 +17,11 @@ graph TD
 
 ### 🔹 PHASE 1: Chuẩn bị Hạ tầng VPS & Trỏ DNS
 1. **Yêu cầu cấu hình VPS (Linux Ubuntu 22.04 LTS trở lên)**:
-   * **RAM**: Khuyến nghị tối thiểu **8GB** (tốt nhất là **16GB**) vì cụm cần chạy đồng thời Elasticsearch, MySQL, Postgres, MongoDB, Redis, RabbitMQ và 8 microservices.
-   * **CPU**: Tối thiểu **4 Cores**.
-   * **Ổ cứng (SSD/NVMe)**: **40GB - 80GB** trở lên (Elasticsearch và các DBs tiêu tốn dung lượng I/O khá nhiều).
+   * Theo manifest trong `kubernetes/k3s` hiện tại với `replicas: 1`, cụm khai báo khoảng **1.9 vCPU / 7.65Gi RAM requests**, **11.1 vCPU / 14.2Gi RAM limits**, và **15.5Gi PVC storage tối thiểu**.
+   * **Cấu hình tối thiểu để chạy full stack**: **12 vCPU, 24GB RAM, 80GB SSD/NVMe**.
+   * **Cấu hình khuyến nghị ổn định hơn**: **16 vCPU, 32GB RAM, 120-160GB SSD/NVMe**.
+   * **VPS 6 vCPU / 8GB RAM** chỉ phù hợp chạy tạm với `replicas=1`, tắt hoặc tách `Elasticsearch/Kibana`, và giảm resource limits. Không nên coi là đủ cho full production stack.
+   * Lưu ý: MongoDB/Redis hiện chưa khai báo CPU/RAM trong manifest nên tài nguyên thực tế còn cao hơn phép cộng tĩnh; SSD cũng cần dư cho image cache, logs, backup và dữ liệu tăng trưởng.
 2. **Cấu hình bản ghi tên miền (DNS)**:
    * Vào trang quản trị tên miền của bạn (Namecheap, Cloudflare, Pavietnam, v.v...) trỏ các bản ghi **A Record** về địa chỉ IP Public của VPS:
      * `ithust.shop` $\rightarrow$ Địa chỉ IP VPS (Dành cho Frontend Production)
