@@ -17,10 +17,11 @@ graph TD
 
 ### 🔹 PHASE 1: Chuẩn bị Hạ tầng VPS & Trỏ DNS
 1. **Yêu cầu cấu hình VPS (Linux Ubuntu 22.04 LTS trở lên)**:
-   * Theo manifest trong `kubernetes/k3s` hiện tại với `replicas: 1`, cụm khai báo khoảng **1.9 vCPU / 7.65Gi RAM requests**, **11.1 vCPU / 14.2Gi RAM limits**, và **15.5Gi PVC storage tối thiểu**.
+   * Theo manifest trong `kubernetes/k3s` hiện tại với `replicas: 1` và profile tiết kiệm tài nguyên, cụm khai báo khoảng **1.4 vCPU / 1.65Gi RAM requests**, **4.5 vCPU / 7.3Gi RAM limits**, và **15.5Gi PVC storage tối thiểu**.
+   * Profile tiết kiệm này để `Elasticsearch/Kibana` ở `replicas: 0`; nếu bật lại full observability, cần cộng thêm khoảng **0.5 vCPU / 6Gi RAM requests** và **3 vCPU / 6Gi RAM limits**.
    * **Cấu hình tối thiểu để chạy full stack**: **12 vCPU, 24GB RAM, 80GB SSD/NVMe**.
    * **Cấu hình khuyến nghị ổn định hơn**: **16 vCPU, 32GB RAM, 120-160GB SSD/NVMe**.
-   * **VPS 6 vCPU / 8GB RAM** chỉ phù hợp chạy tạm với `replicas=1`, tắt hoặc tách `Elasticsearch/Kibana`, và giảm resource limits. Không nên coi là đủ cho full production stack.
+   * **VPS 6 vCPU / 8GB RAM** phù hợp cho profile tiết kiệm: `replicas=1`, không bật `Elasticsearch/Kibana`, rolling update không surge. Không nên coi là đủ cho full production stack.
    * Lưu ý: MongoDB/Redis hiện chưa khai báo CPU/RAM trong manifest nên tài nguyên thực tế còn cao hơn phép cộng tĩnh; SSD cũng cần dư cho image cache, logs, backup và dữ liệu tăng trưởng.
 2. **Cấu hình bản ghi tên miền (DNS)**:
    * Vào trang quản trị tên miền của bạn (Namecheap, Cloudflare, Pavietnam, v.v...) trỏ các bản ghi **A Record** về địa chỉ IP Public của VPS:

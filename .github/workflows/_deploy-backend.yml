@@ -48,6 +48,9 @@ jobs:
   build-and-deploy:
     name: "Build & Deploy ${{ inputs.service_label }}"
     runs-on: ubuntu-latest
+    concurrency:
+      group: k3s-production-deploy
+      cancel-in-progress: false
 
     steps:
       - name: Checkout repository

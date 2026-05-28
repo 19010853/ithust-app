@@ -11,8 +11,8 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
+      maxUnavailable: 1
+      maxSurge: 0
   template:
     metadata:
       labels:
@@ -24,7 +24,7 @@ spec:
           imagePullPolicy: Always
           resources:
             limits:
-              cpu: "0.5"
+              cpu: "300m"
               memory: 512Mi
             requests:
               cpu: 100m

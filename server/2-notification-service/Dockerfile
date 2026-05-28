@@ -26,7 +26,6 @@ RUN set -eux; \
     if [ -n "$NPM_TOKEN" ]; then \
       printf '@19010853:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "$NPM_TOKEN" > .npmrc; \
     fi; \
-    npm install -g pm2; \
     npm ci --omit=dev --legacy-peer-deps; \
     npm cache clean --force; \
     rm -f .npmrc
