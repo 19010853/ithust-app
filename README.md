@@ -51,13 +51,17 @@ Máy local cần có:
 
 - Node.js 20+ hoặc 22+
 - Docker và Docker Compose
-- GitHub/NPM token có quyền đọc package `@19010853/ithust-shared`
+- GitHub Personal Access Token classic có quyền đọc package `@19010853/ithust-shared`
 
 Trước khi chạy `npm ci` trong các service backend, tạo file `.npmrc` tạm trong thư mục service nếu dependency private chưa tải được:
 
 ```bash
 printf '@19010853:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=YOUR_NPM_TOKEN\n' > .npmrc
 ```
+
+Nếu GitHub Packages trả về `401 Unauthorized`, token không authenticate được: hãy tạo lại Personal Access Token classic và dán raw token vào secret/local `.npmrc`, không kèm dấu nháy, `Bearer`, khoảng trắng hoặc newline. Nếu trả về `403 Forbidden`, token đã authenticate nhưng thiếu quyền hoặc account tạo token chưa có quyền đọc package.
+
+Để kiểm tra token, dùng `npm view @19010853/ithust-shared@0.0.18 version --registry=https://npm.pkg.github.com`. Không dùng `npm whoami` với GitHub Packages trong pipeline này vì endpoint `/-/whoami` có thể trả `403` không phản ánh đúng quyền đọc package.
 
 ### Bước 4.1: Khởi động Hạ tầng Docker
 Khởi động hạ tầng local bằng Docker Compose:
@@ -246,7 +250,7 @@ Secrets bắt buộc cho mọi workflow:
 | --- | --- |
 | `DOCKERHUB_USERNAME` | Tên tài khoản Docker Hub, ví dụ `minhkhoi779`. |
 | `DOCKERHUB_PASSWORD` | Docker Hub Access Token có quyền push image. |
-| `NPM_TOKEN` | GitHub PAT có quyền `read:packages` để tải `@19010853/ithust-shared`. |
+| `NPM_TOKEN` | GitHub PAT classic có quyền `read:packages` để tải `@19010853/ithust-shared`; thêm `repo` nếu package/repo private, thêm `write:packages` chỉ khi dùng để publish package. |
 | `KUBECONFIG_B64` | Base64 kubeconfig K3s production. |
 | `TELEGRAM_TOKEN` | Token bot Telegram từ `@BotFather`. |
 | `TELEGRAM_TO` | Chat ID hoặc group ID nhận thông báo deploy. |

@@ -49,7 +49,7 @@ jobs:
     name: "Build & Deploy ${{ inputs.service_label }}"
     runs-on: ubuntu-latest
     concurrency:
-      group: k3s-production-deploy
+      group: k3s-production-${{ inputs.service_name }}
       cancel-in-progress: false
 
     steps:
@@ -89,9 +89,13 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          cleanup_npmrc() {
+            rm -f .npmrc
+          }
+          trap cleanup_npmrc EXIT
           printf '@19010853:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "$NPM_TOKEN" > .npmrc
+          npm view @19010853/ithust-shared@0.0.18 version --registry=https://npm.pkg.github.com
           npm ci --legacy-peer-deps
-          rm -f .npmrc
 
       - name: Build Docker Image
         working-directory: ${{ inputs.service_dir }}
@@ -117,6 +121,18 @@ jobs:
           kubectl apply -f ${{ inputs.k8s_dir }}/
           kubectl rollout restart deployment/${{ inputs.service_name }} -n production
           kubectl rollout status deployment/${{ inputs.service_name }} -n production --timeout=180s
+
+      - name: Collect K3s diagnostics on failure
+        if: failure()
+        env:
+          KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+        run: |
+          mkdir -p ~/.kube
+          echo "$KUBECONFIG_B64" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+          kubectl get deploy,pods,events -n production
+          kubectl describe deployment/${{ inputs.service_name }} -n production
+          kubectl logs -n production -l app=${{ inputs.service_name }} --tail=80 || true
 
       - name: Notify Telegram (Success)
         if: success()

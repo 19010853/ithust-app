@@ -36,6 +36,8 @@ Thumbs.db
 .env.test.local
 .env.production.local
 .env.local
+.npmrc
+server/*-service/.npmrc
 
 # Docker data volumes (crucial for ignoring large database files)
 apiCalls
