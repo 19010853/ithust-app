@@ -1,7 +1,6 @@
 import * as connection from '@notifications/queues/connection';
-import amqb from 'amqplib';
-
 import { consumeAuthEmailMessages, consumeOrderEmailMessages } from '@notifications/queues/email.consumer';
+import amqb from 'amqplib';
 
 jest.mock('amqplib');
 jest.mock('@notifications/queues/connection');

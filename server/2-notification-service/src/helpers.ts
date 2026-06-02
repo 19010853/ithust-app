@@ -1,25 +1,27 @@
 import path from 'path';
+
 import { IEmailLocals, winstonLogger } from '@19010853/ithust-shared';
+import Email from 'email-templates';
+import nodemailer, { SentMessageInfo, Transporter } from 'nodemailer';
 import { Logger } from 'winston';
 import { config } from '@notifications/config';
-import nodemailer, { SentMessageInfo, Transporter } from 'nodemailer';
-import Email from 'email-templates';
 
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'mailTransportHelper', 'debug');
 
 async function emailTemplates(template: string, receiver: string, locals: IEmailLocals): Promise<void> {
   try {
     const smtpTransport: Transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
+      host: config.SMTP_HOST,
+      port: Number(config.SMTP_PORT || 587),
+      secure: config.SMTP_SECURE === 'true',
       auth: {
-        user: config.SENDER_EMAIL,
-        pass: config.SENDER_EMAIL_PASSWORD
+        user: config.SMTP_USERNAME || config.SENDER_EMAIL,
+        pass: config.SMTP_PASSWORD || config.SENDER_EMAIL_PASSWORD
       }
     });
     const email: Email = new Email({
       message: {
-        from: `ITHust App <${config.SENDER_EMAIL}>`
+        from: `${config.SENDER_NAME} <${config.SENDER_EMAIL}>`
       },
       send: true,
       preview: false,

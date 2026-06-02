@@ -81,7 +81,7 @@ async function consumeOrderEmailMessages(channel: Channel): Promise<void> {
         accountName,
         refundRequestId
       } = JSON.parse(msg!.content.toString());
-      const locals: IEmailLocals & any = {
+      const locals: IEmailLocals & Record<string, unknown> = {
         appLink: `${config.CLIENT_URL}`,
         appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
         username,
@@ -153,7 +153,7 @@ async function consumeWithdrawalEmailMessages(channel: Channel): Promise<void> {
         adminNote,
         paymentReference
       } = JSON.parse(msg!.content.toString());
-      const locals: IEmailLocals & any = {
+      const locals: IEmailLocals & Record<string, unknown> = {
         appLink: `${config.CLIENT_URL}`,
         appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
         username: sellerUsername,

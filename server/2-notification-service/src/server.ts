@@ -1,14 +1,15 @@
+import http from 'http';
+
 import { winstonLogger } from '@19010853/ithust-shared';
+import { config } from '@notifications/config';
+import { checkConnection } from '@notifications/elasticsearch';
+import { consumeAuthEmailMessages, consumeOrderEmailMessages, consumeWithdrawalEmailMessages } from '@notifications/queues/email.consumer';
+import { createConnection } from '@notifications/queues/connection';
+import { healthRoutes } from '@notifications/routes';
+import { Channel } from 'amqplib';
+import { Application } from 'express';
 import 'express-async-errors';
 import { Logger } from 'winston';
-import { config } from '@notifications/config';
-import { Application } from 'express';
-import http from 'http';
-import { healthRoutes } from '@notifications/routes';
-import { checkConnection } from '@notifications/elasticsearch';
-import { createConnection } from '@notifications/queues/connection';
-import { Channel } from 'amqplib';
-import { consumeAuthEmailMessages, consumeOrderEmailMessages, consumeWithdrawalEmailMessages } from '@notifications/queues/email.consumer';
 
 const SERVER_PORT = 4001;
 
