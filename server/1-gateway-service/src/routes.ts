@@ -11,6 +11,7 @@ import { messageRoutes } from '@gateway/routes/message';
 import { orderRoutes } from '@gateway/routes/order';
 import { reviewRoutes } from '@gateway/routes/review';
 import { webhookRoutes } from '@gateway/routes/webhook';
+import { adminRoutes } from '@gateway/routes/admin';
 
 const BASE_PATH = '/api/gateway/v1';
 
@@ -27,4 +28,5 @@ export const appRoutes = (app: Application) => {
   app.use(BASE_PATH, authMiddleware.verifyUser, messageRoutes.routes());
   app.use(BASE_PATH, authMiddleware.verifyUser, orderRoutes.routes());
   app.use(BASE_PATH, authMiddleware.verifyUser, reviewRoutes.routes());
+  app.use(BASE_PATH, authMiddleware.verifyUser, adminRoutes.routes());
 };

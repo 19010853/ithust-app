@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { createWithdrawal, getWithdrawals, updateWithdrawalStatus } from '@users/services/withdrawal.service';
+import { createWithdrawal, getWithdrawals, IWithdrawalFilters, updateWithdrawalStatus } from '@users/services/withdrawal.service';
 import { BadRequestError } from '@19010853/ithust-shared';
 import { withdrawalSchema, withdrawalStatusSchema } from '@users/schemes/withdrawal';
 
@@ -22,8 +22,8 @@ const withdrawals = async (req: Request, res: Response): Promise<void> => {
     throw new BadRequestError('Invalid withdrawal status filter', 'withdrawals()');
   }
 
-  const withdrawalList = await getWithdrawals(status);
-  res.status(StatusCodes.OK).json({ message: 'Seller withdrawals', withdrawals: withdrawalList });
+  const result = await getWithdrawals(req.query as IWithdrawalFilters);
+  res.status(StatusCodes.OK).json({ message: 'Seller withdrawals', ...result });
 };
 
 const updateStatus = async (req: Request, res: Response): Promise<void> => {

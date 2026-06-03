@@ -1,4 +1,4 @@
-import { FC, ReactElement, ReactNode, useCallback, useEffect, useState } from 'react';
+import { FC, ReactElement, ReactNode, useCallback, useEffect } from 'react';
 import { Navigate, NavigateFunction, useNavigate } from 'react-router-dom';
 import { addAuthUser } from 'src/features/auth/reducers/auth.reducer';
 import { useCheckCurrentUserQuery } from 'src/features/auth/services/auth.service';
@@ -12,21 +12,19 @@ export interface IAdminRouteProps {
 
 const AdminRoute: FC<IAdminRouteProps> = ({ children }): ReactElement => {
   const authUser = useAppSelector((state: IReduxState) => state.authUser);
-  const [tokenIsValid, setTokenIsValid] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate: NavigateFunction = useNavigate();
-  const { data, isError } = useCheckCurrentUserQuery();
+  const { data, isError, isLoading, isFetching } = useCheckCurrentUserQuery();
 
   const checkUser = useCallback(async () => {
     if (data && data.user) {
-      setTokenIsValid(true);
       dispatch(addAuthUser({ authInfo: data.user }));
       saveToSessionStorage(JSON.stringify(true), JSON.stringify(data.user.username));
     }
 
     if (isError) {
-      setTokenIsValid(false);
       applicationLogout(dispatch, navigate);
+      navigate('/errors/401');
     }
   }, [data, dispatch, navigate, isError]);
 
@@ -34,14 +32,18 @@ const AdminRoute: FC<IAdminRouteProps> = ({ children }): ReactElement => {
     checkUser();
   }, [checkUser]);
 
-  const currentRole = data?.user?.role || authUser.role;
+  const currentRole = `${data?.user?.role || authUser.role || ''}`.toLowerCase();
 
-  if (!data?.user && !authUser.id) {
-    return <Navigate to="/" />;
+  if (isLoading || isFetching) {
+    return <></>;
   }
 
-  if (tokenIsValid || authUser.id) {
-    return currentRole === 'admin' ? <>{children}</> : <Navigate to="/" />;
+  if (!data?.user && !authUser.id) {
+    return <Navigate to="/errors/401" />;
+  }
+
+  if (data?.user || authUser.id) {
+    return currentRole === 'admin' ? <>{children}</> : <Navigate to="/errors/403" />;
   }
 
   return <></>;

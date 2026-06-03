@@ -10,8 +10,13 @@ export class Withdraw {
   }
 
   public async withdrawals(req: Request, res: Response): Promise<void> {
-    const response: AxiosResponse = await sellerService.getWithdrawals(req.query.status ? `${req.query.status}` : undefined);
-    res.status(StatusCodes.OK).json({ message: response.data.message, withdrawals: response.data.withdrawals });
+    const response: AxiosResponse = await sellerService.getWithdrawals(req.query);
+    res.status(StatusCodes.OK).json({
+      message: response.data.message,
+      withdrawals: response.data.withdrawals,
+      pagination: response.data.pagination,
+      filters: response.data.filters
+    });
   }
 
   public async updateStatus(req: Request, res: Response): Promise<void> {

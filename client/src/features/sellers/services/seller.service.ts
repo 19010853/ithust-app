@@ -1,5 +1,6 @@
 import { IResponse } from 'src/shared/shared.interface';
 import { api } from 'src/store/api';
+import { IWithdrawalFilters } from 'src/features/admin/interfaces/admin.interface';
 
 import { ISellerDocument, IWithdrawalDocument } from '../interfaces/seller.interface';
 
@@ -50,10 +51,10 @@ export const sellerApi = api.injectEndpoints({
       },
       invalidatesTags: ['Seller']
     }),
-    getWithdrawals: build.query<IResponse, string | undefined>({
-      query: (status?: string) => ({
+    getWithdrawals: build.query<IResponse, IWithdrawalFilters | undefined>({
+      query: (params?: IWithdrawalFilters) => ({
         url: 'seller/withdrawals',
-        params: status ? { status } : {}
+        params: params || {}
       }),
       providesTags: ['Withdrawal']
     }),

@@ -23,6 +23,47 @@ interface IWithdrawalStatusUpdate {
   };
 }
 
+interface IWithdrawalFilters {
+  bankName?: string;
+  createdFrom?: string;
+  createdTo?: string;
+  limit?: string;
+  maxAmount?: string;
+  minAmount?: string;
+  page?: string;
+  processedFrom?: string;
+  processedTo?: string;
+  q?: string;
+  sellerEmail?: string;
+  sellerUsername?: string;
+  sortBy?: string;
+  sortOrder?: string;
+  status?: string;
+}
+
+const parsePositiveInt = (value: string | undefined, fallback: number, max = 100): number => {
+  const parsed = parseInt(`${value || ''}`, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return fallback;
+  }
+  return Math.min(parsed, max);
+};
+
+const escapedRegex = (value: string): RegExp => new RegExp(value.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+
+const appendDateRange = (query: Record<string, unknown>, field: string, from?: string, to?: string): void => {
+  const range: Record<string, Date> = {};
+  if (from && !Number.isNaN(Date.parse(from))) {
+    range.$gte = new Date(from);
+  }
+  if (to && !Number.isNaN(Date.parse(to))) {
+    range.$lte = new Date(to);
+  }
+  if (Object.keys(range).length) {
+    query[field] = range;
+  }
+};
+
 const createWithdrawal = async (
   sellerId: string,
   amount: number,
@@ -94,10 +135,80 @@ const createWithdrawal = async (
   return withdrawal;
 };
 
-const getWithdrawals = async (status?: string): Promise<any[]> => {
-  const query = status ? { status } : {};
-  const withdrawals = await WithdrawalModel.find(query).sort({ createdAt: -1 }).populate('sellerId', 'username fullName email').exec();
-  return withdrawals;
+const getWithdrawals = async (filters: IWithdrawalFilters = {}): Promise<any> => {
+  const page = parsePositiveInt(filters.page, 1);
+  const limit = parsePositiveInt(filters.limit, 20);
+  const skip = (page - 1) * limit;
+  const query: Record<string, unknown> = {};
+
+  if (filters.status) {
+    query.status = filters.status;
+  }
+  if (filters.bankName?.trim()) {
+    query['bankInfo.bankName'] = escapedRegex(filters.bankName);
+  }
+
+  const amountRange: Record<string, number> = {};
+  const minAmount = Number(filters.minAmount);
+  const maxAmount = Number(filters.maxAmount);
+  if (Number.isFinite(minAmount)) {
+    amountRange.$gte = minAmount;
+  }
+  if (Number.isFinite(maxAmount)) {
+    amountRange.$lte = maxAmount;
+  }
+  if (Object.keys(amountRange).length) {
+    query.amount = amountRange;
+  }
+
+  appendDateRange(query, 'createdAt', filters.createdFrom, filters.createdTo);
+  appendDateRange(query, 'processedDate', filters.processedFrom, filters.processedTo);
+
+  const sellerQuery: Record<string, unknown> = {};
+  const sellerOr = [];
+  if (filters.q?.trim()) {
+    const regex = escapedRegex(filters.q);
+    sellerOr.push({ username: regex }, { fullName: regex }, { email: regex });
+    query.$or = [{ 'bankInfo.bankName': regex }, { 'bankInfo.accountNumber': regex }, { 'bankInfo.accountName': regex }];
+  }
+  if (filters.sellerUsername?.trim()) {
+    sellerQuery.username = escapedRegex(filters.sellerUsername);
+  }
+  if (filters.sellerEmail?.trim()) {
+    sellerQuery.email = escapedRegex(filters.sellerEmail);
+  }
+  if (sellerOr.length) {
+    sellerQuery.$or = sellerOr;
+  }
+
+  if (Object.keys(sellerQuery).length) {
+    const sellers = await SellerModel.find(sellerQuery).select('_id').lean().exec();
+    query.sellerId = { $in: sellers.map((seller) => seller._id) };
+  }
+
+  const allowedSort = new Set(['createdAt', 'processedDate', 'amount', 'status']);
+  const sortBy = allowedSort.has(`${filters.sortBy}`) ? `${filters.sortBy}` : 'createdAt';
+  const sortOrder = filters.sortOrder === 'asc' ? 1 : -1;
+  const [withdrawals, total] = await Promise.all([
+    WithdrawalModel.find(query)
+      .sort({ [sortBy]: sortOrder })
+      .skip(skip)
+      .limit(limit)
+      .populate('sellerId', 'username fullName email')
+      .exec(),
+    WithdrawalModel.countDocuments(query).exec()
+  ]);
+
+  return {
+    withdrawals,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.max(Math.ceil(total / limit), 1)
+    },
+    filters
+  };
 };
 
 const updateWithdrawalStatus = async (withdrawalId: string, data: IWithdrawalStatusUpdate): Promise<any> => {
@@ -159,4 +270,4 @@ const updateWithdrawalStatus = async (withdrawalId: string, data: IWithdrawalSta
   return withdrawal;
 };
 
-export { createWithdrawal, getWithdrawals, updateWithdrawalStatus };
+export { createWithdrawal, getWithdrawals, updateWithdrawalStatus, IWithdrawalFilters };

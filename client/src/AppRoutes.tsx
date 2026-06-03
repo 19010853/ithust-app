@@ -4,6 +4,7 @@ import { RouteObject, useRoutes } from 'react-router-dom';
 import AppPage from './features/AppPage';
 import AdminRoute from './features/AdminRoute';
 import AdminSettings from './features/admin/components/AdminSettings';
+import AdminUsers from './features/admin/components/AdminUsers';
 import AdminWithdrawals from './features/admin/components/AdminWithdrawals';
 import ConfirmEmail from './features/auth/components/ConfirmEmail';
 import ResetPassword from './features/auth/components/ResetPassword';
@@ -77,6 +78,14 @@ const AppRouter: FC = () => {
       )
     },
     {
+      path: '/errors/:statusCode',
+      element: (
+        <Suspense>
+          <Error />
+        </Suspense>
+      )
+    },
+    {
       path: '/search/categories/:category',
       element: (
         <Suspense>
@@ -130,7 +139,7 @@ const AppRouter: FC = () => {
         <Suspense>
           <AdminRoute>
             <AdminLayout>
-              <AdminWithdrawals />
+              <AdminUsers />
             </AdminLayout>
           </AdminRoute>
         </Suspense>
@@ -143,6 +152,18 @@ const AppRouter: FC = () => {
           <AdminRoute>
             <AdminLayout>
               <AdminWithdrawals />
+            </AdminLayout>
+          </AdminRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/admin/users',
+      element: (
+        <Suspense>
+          <AdminRoute>
+            <AdminLayout>
+              <AdminUsers />
             </AdminLayout>
           </AdminRoute>
         </Suspense>

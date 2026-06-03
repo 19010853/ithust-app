@@ -19,6 +19,19 @@ const AdminHeader: FC = (): ReactElement => {
   return (
     <header className="border-b border-grey bg-white">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        <div className="flex items-center gap-8">
+          <Link to="/admin/users" className="text-2xl font-semibold text-black">
+            ITHust
+          </Link>
+          <nav className="flex items-center gap-5 text-sm font-bold text-gray-900">
+            <Link to="/admin/withdrawals" className="hover:text-sky-500">
+              Withdrawals
+            </Link>
+            <Link to="/admin/users" className="hover:text-sky-500">
+              Users
+            </Link>
+          </nav>
+        </div>
         <div className="relative">
           <Button
             className="flex items-center gap-3 rounded px-2 py-1 text-left hover:bg-gray-50"
@@ -35,7 +48,7 @@ const AdminHeader: FC = (): ReactElement => {
             }
           />
           {showMenu && (
-            <div className="absolute left-0 top-12 z-50 w-44 divide-y divide-gray-100 rounded border border-grey bg-white shadow-md">
+            <div className="absolute right-0 top-12 z-50 w-44 divide-y divide-gray-100 rounded border border-grey bg-white shadow-md">
               <ul className="py-2 text-sm text-gray-700">
                 <li>
                   <Link
@@ -55,9 +68,6 @@ const AdminHeader: FC = (): ReactElement => {
             </div>
           )}
         </div>
-        <Link to="/admin/dashboard" className="text-sm font-bold text-gray-900">
-          Admin Dashboard
-        </Link>
       </div>
     </header>
   );

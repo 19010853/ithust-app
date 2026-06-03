@@ -13,8 +13,10 @@ class AuthService {
     axiosAuthInstance = this.axiosService.axios;
   }
 
-  async getCurrentUser(): Promise<AxiosResponse> {
-    const response: AxiosResponse = await axiosAuthInstance.get('/currentuser');
+  async getCurrentUser(token?: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosAuthInstance.get('/currentuser', {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    });
     return response;
   }
 
@@ -23,8 +25,14 @@ class AuthService {
     return response;
   }
 
-  async changePassword(currentPassword: string, newPassword: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await axiosAuthInstance.put('/change-password', { currentPassword, newPassword });
+  async changePassword(currentPassword: string, newPassword: string, token?: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosAuthInstance.put(
+      '/change-password',
+      { currentPassword, newPassword },
+      {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      }
+    );
     return response;
   }
 

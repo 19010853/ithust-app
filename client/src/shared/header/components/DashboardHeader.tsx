@@ -71,9 +71,9 @@ const DashboardHeader: FC = (): ReactElement => {
                         <span>Earnings</span>
                       </Link>
                     </li>
-                    {authUser.role === 'admin' && (
+                    {`${authUser.role || ''}`.toLowerCase() === 'admin' && (
                       <li className="relative flex items-center">
-                        <Link to="/admin/dashboard" className="px-3">
+                        <Link to="/admin/users" className="px-3">
                           <span>Admin</span>
                         </Link>
                       </li>

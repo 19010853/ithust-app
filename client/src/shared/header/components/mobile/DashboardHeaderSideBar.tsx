@@ -67,7 +67,7 @@ const DashboardHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): Re
           >
             <Link to={`/${lowerCase(`${seller?.username}`)}/${seller?._id}/manage_earnings`}>Earnings</Link>
           </div>
-          {authUser.role === 'admin' && (
+          {`${authUser.role || ''}`.toLowerCase() === 'admin' && (
             <div
               onClick={(event: MouseEvent) => {
                 event.stopPropagation();
@@ -77,7 +77,7 @@ const DashboardHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): Re
               }}
               className="cursor-pointer text-base font-medium text-gray-400"
             >
-              <Link to="/admin/dashboard">Admin Dashboard</Link>
+              <Link to="/admin/users">Admin Dashboard</Link>
             </div>
           )}
           <div

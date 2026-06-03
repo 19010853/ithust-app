@@ -1,4 +1,4 @@
-import { FC, ReactElement, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useMemo, useState } from 'react';
 import { IWithdrawalDocument } from 'src/features/sellers/interfaces/seller.interface';
 import { useGetWithdrawalsQuery, useUpdateWithdrawalStatusMutation } from 'src/features/sellers/services/seller.service';
 import Button from 'src/shared/button/Button';
@@ -9,15 +9,46 @@ type WithdrawalStatus = 'PENDING' | 'COMPLETED' | 'REJECTED';
 const statusOptions: WithdrawalStatus[] = ['PENDING', 'COMPLETED', 'REJECTED'];
 
 const AdminWithdrawals: FC = (): ReactElement => {
-  const [statusFilter, setStatusFilter] = useState<WithdrawalStatus>('PENDING');
+  const [statusFilter, setStatusFilter] = useState<string>('PENDING');
+  const [q, setQ] = useState<string>('');
+  const [bankName, setBankName] = useState<string>('');
+  const [minAmount, setMinAmount] = useState<string>('');
+  const [maxAmount, setMaxAmount] = useState<string>('');
+  const [createdFrom, setCreatedFrom] = useState<string>('');
+  const [createdTo, setCreatedTo] = useState<string>('');
+  const [processedFrom, setProcessedFrom] = useState<string>('');
+  const [processedTo, setProcessedTo] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
   const [selectedWithdrawal, setSelectedWithdrawal] = useState<IWithdrawalDocument | null>(null);
   const [nextStatus, setNextStatus] = useState<'COMPLETED' | 'REJECTED'>('COMPLETED');
   const [paymentReference, setPaymentReference] = useState<string>('');
   const [adminNote, setAdminNote] = useState<string>('');
-  const { data, isLoading, isFetching } = useGetWithdrawalsQuery(statusFilter);
+  const filters = useMemo(
+    () => ({
+      status: statusFilter,
+      q,
+      bankName,
+      minAmount,
+      maxAmount,
+      createdFrom,
+      createdTo,
+      processedFrom,
+      processedTo,
+      page,
+      limit: 20
+    }),
+    [bankName, createdFrom, createdTo, maxAmount, minAmount, page, processedFrom, processedTo, q, statusFilter]
+  );
+  const { data, isLoading, isFetching } = useGetWithdrawalsQuery(filters);
   const [updateWithdrawalStatus, { isLoading: isUpdating }] = useUpdateWithdrawalStatusMutation();
 
   const withdrawals = (data?.withdrawals || []) as IWithdrawalDocument[];
+  const pagination = data?.pagination;
+
+  const resetPageOnChange = (setter: (value: string) => void) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+    setter(event.target.value);
+    setPage(1);
+  };
 
   const openStatusModal = (withdrawal: IWithdrawalDocument, status: 'COMPLETED' | 'REJECTED'): void => {
     setSelectedWithdrawal(withdrawal);
@@ -76,17 +107,66 @@ const AdminWithdrawals: FC = (): ReactElement => {
           <h1 className="text-2xl font-bold text-gray-900">Withdrawal Requests</h1>
           <p className="text-sm text-gray-600">Review seller payout requests and record manual payment outcomes.</p>
         </div>
+        <div className="text-sm text-gray-500">
+          {pagination?.total || 0} request{(pagination?.total || 0) === 1 ? '' : 's'} found
+        </div>
+      </div>
+
+      <div className="mb-4 grid gap-3 bg-white p-4 md:grid-cols-4">
+        <input
+          className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
+          placeholder="Search seller or bank account"
+          value={q}
+          onChange={resetPageOnChange(setQ)}
+        />
         <select
-          className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-sky-500 sm:w-48"
+          className="rounded border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-sky-500"
           value={statusFilter}
-          onChange={(event) => setStatusFilter(event.target.value as WithdrawalStatus)}
+          onChange={resetPageOnChange(setStatusFilter)}
         >
+          <option value="">All statuses</option>
           {statusOptions.map((status) => (
             <option key={status} value={status}>
               {status}
             </option>
           ))}
         </select>
+        <input
+          className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
+          placeholder="Bank"
+          value={bankName}
+          onChange={resetPageOnChange(setBankName)}
+        />
+        <div className="grid grid-cols-2 gap-2">
+          <input
+            className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
+            placeholder="Min amount"
+            value={minAmount}
+            onChange={resetPageOnChange(setMinAmount)}
+          />
+          <input
+            className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
+            placeholder="Max amount"
+            value={maxAmount}
+            onChange={resetPageOnChange(setMaxAmount)}
+          />
+        </div>
+        <label className="flex flex-col gap-1 text-xs text-gray-500">
+          Requested from
+          <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" type="date" value={createdFrom} onChange={resetPageOnChange(setCreatedFrom)} />
+        </label>
+        <label className="flex flex-col gap-1 text-xs text-gray-500">
+          Requested to
+          <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" type="date" value={createdTo} onChange={resetPageOnChange(setCreatedTo)} />
+        </label>
+        <label className="flex flex-col gap-1 text-xs text-gray-500">
+          Processed from
+          <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" type="date" value={processedFrom} onChange={resetPageOnChange(setProcessedFrom)} />
+        </label>
+        <label className="flex flex-col gap-1 text-xs text-gray-500">
+          Processed to
+          <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" type="date" value={processedTo} onChange={resetPageOnChange(setProcessedTo)} />
+        </label>
       </div>
 
       <div className="overflow-x-auto border border-grey bg-white">
@@ -154,6 +234,25 @@ const AdminWithdrawals: FC = (): ReactElement => {
             )}
           </tbody>
         </table>
+      </div>
+      <div className="mt-3 flex items-center justify-between text-sm">
+        <span>
+          Page {pagination?.page || page} of {pagination?.totalPages || 1}
+        </span>
+        <div className="flex gap-2">
+          <Button
+            className="rounded border border-gray-300 px-3 py-1 font-bold text-gray-700 disabled:opacity-40"
+            label="Prev"
+            disabled={page <= 1}
+            onClick={() => setPage((value) => Math.max(value - 1, 1))}
+          />
+          <Button
+            className="rounded border border-gray-300 px-3 py-1 font-bold text-gray-700 disabled:opacity-40"
+            label="Next"
+            disabled={page >= (pagination?.totalPages || 1)}
+            onClick={() => setPage((value) => value + 1)}
+          />
+        </div>
       </div>
 
       {selectedWithdrawal && (

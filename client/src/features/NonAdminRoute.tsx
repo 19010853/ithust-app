@@ -11,10 +11,14 @@ export interface INonAdminRouteProps {
 
 const NonAdminRoute: FC<INonAdminRouteProps> = ({ children }): ReactElement => {
   const authUser = useAppSelector((state: IReduxState) => state.authUser);
-  const { data } = useCheckCurrentUserQuery(undefined, { skip: authUser.id === null });
-  const currentRole = data?.user?.role || authUser.role;
+  const { data, isLoading, isFetching } = useCheckCurrentUserQuery(undefined, { skip: authUser.id === null });
+  const currentRole = `${data?.user?.role || authUser.role || ''}`.toLowerCase();
 
-  return currentRole === 'admin' ? <Navigate to="/admin/dashboard" /> : <>{children}</>;
+  if (isLoading || isFetching) {
+    return <></>;
+  }
+
+  return currentRole === 'admin' ? <Navigate to="/admin/users" /> : <>{children}</>;
 };
 
 export default NonAdminRoute;

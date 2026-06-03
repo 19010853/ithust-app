@@ -70,11 +70,11 @@ const AppPage: FC = (): ReactElement => {
 
         dispatch(addAuthUser({ authInfo: currentUserData.user }));
 
-        if (currentUserData.user.role === 'admin') {
+        if (`${currentUserData.user.role || ''}`.toLowerCase() === 'admin') {
 
           saveToSessionStorage(JSON.stringify(true), JSON.stringify(currentUserData.user.username));
 
-          navigate('/admin/dashboard');
+          navigate('/admin/users');
 
           return;
 
@@ -152,8 +152,8 @@ const AppPage: FC = (): ReactElement => {
 
         ) : (
 
-          authUser.role === 'admin' ? (
-            <Navigate to="/admin/dashboard" />
+          `${authUser.role || ''}`.toLowerCase() === 'admin' ? (
+            <Navigate to="/admin/users" />
           ) : (
             <>
 

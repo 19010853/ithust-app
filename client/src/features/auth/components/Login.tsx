@@ -56,10 +56,10 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
           dispatch(addAuthUser({ authInfo: result.user }));
           dispatch(updateLogout(false));
           saveToSessionStorage(JSON.stringify(true), JSON.stringify(result.user?.username));
-          if (result.user?.role === 'admin') {
+          if (`${result.user?.role || ''}`.toLowerCase() === 'admin') {
             dispatch(updateHeader('admin'));
             dispatch(updateCategoryContainer(false));
-            navigate('/admin/dashboard');
+            navigate('/admin/users');
             return;
           }
           dispatch(updateHeader('home'));

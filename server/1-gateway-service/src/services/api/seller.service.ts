@@ -41,8 +41,8 @@ class SellerService {
     return response;
   }
 
-  async getWithdrawals(status?: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await axiosSellerInstance.get('/withdrawals', { params: { status } });
+  async getWithdrawals(query?: unknown): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosSellerInstance.get('/withdrawals', { params: query });
     return response;
   }
 
