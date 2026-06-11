@@ -11,13 +11,16 @@ import App from './App.tsx';
 import { store } from './store/store.ts';
 
 const persistor: Persistor = persistStore(store);
+const elasticApmServerUrl = import.meta.env.VITE_ELASTIC_APM_SERVER;
 
-init({
-  serviceName: 'ITHust Client App',
-  serverUrl: import.meta.env.VITE_ELASTIC_APM_SERVER,
-  serviceVersion: '0.0.1',
-  active: true
-});
+if (elasticApmServerUrl) {
+  init({
+    serviceName: 'ITHust Client App',
+    serverUrl: elasticApmServerUrl,
+    serviceVersion: '0.0.1',
+    active: true
+  });
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

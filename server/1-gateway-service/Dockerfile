@@ -6,8 +6,8 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 RUN set -eux; \
-    if [ -n "$NPM_TOKEN" ]; then \
-      printf '@19010853:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "$NPM_TOKEN" > .npmrc; \
+    if [ -n "${NPM_TOKEN:-}" ]; then \
+      printf '@19010853:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "${NPM_TOKEN}" > .npmrc; \
     fi; \
     npm ci --legacy-peer-deps; \
     rm -f .npmrc
@@ -22,8 +22,8 @@ WORKDIR /app
 RUN apk add --no-cache curl
 COPY package*.json ./
 RUN set -eux; \
-    if [ -n "$NPM_TOKEN" ]; then \
-      printf '@19010853:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "$NPM_TOKEN" > .npmrc; \
+    if [ -n "${NPM_TOKEN:-}" ]; then \
+      printf '@19010853:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "${NPM_TOKEN}" > .npmrc; \
     fi; \
     npm ci --omit=dev --legacy-peer-deps; \
     npm cache clean --force; \

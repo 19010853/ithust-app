@@ -29,6 +29,7 @@ const SERVER_PORT = 4000;
 const DEFAULT_ERROR_CODE = 500;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
 export let socketIO: Server;
+const allowedOrigins = config.CLIENT_URLS.length > 0 ? config.CLIENT_URLS : [`${config.CLIENT_URL}`].filter(Boolean);
 
 type RawBodyRequest = Request & {
   rawBody?: Buffer;
@@ -77,7 +78,7 @@ export class GatewayServer {
     app.use(helmet());
     app.use(
       cors({
-        origin: config.CLIENT_URL,
+        origin: allowedOrigins,
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
       })
@@ -173,7 +174,7 @@ export class GatewayServer {
   private async createSocketIO(httpServer: http.Server): Promise<Server> {
     const io: Server = new Server(httpServer, {
       cors: {
-        origin: `${config.CLIENT_URL}`,
+        origin: allowedOrigins,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
       }
     });

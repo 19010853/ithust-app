@@ -31,6 +31,7 @@ class Config {
   public SECRET_KEY_ONE: string | undefined;
   public SECRET_KEY_TWO: string | undefined;
   public CLIENT_URL: string | undefined;
+  public CLIENT_URLS: string[];
   public AUTH_BASE_URL: string | undefined;
   public USERS_BASE_URL: string | undefined;
   public GIG_BASE_URL: string | undefined;
@@ -48,6 +49,10 @@ class Config {
     this.SECRET_KEY_ONE = process.env.SECRET_KEY_ONE || '';
     this.SECRET_KEY_TWO = process.env.SECRET_KEY_TWO || '';
     this.CLIENT_URL = process.env.CLIENT_URL || '';
+    this.CLIENT_URLS = (process.env.CLIENT_URLS || this.CLIENT_URL)
+      .split(',')
+      .map((url: string) => url.trim())
+      .filter(Boolean);
     this.AUTH_BASE_URL = process.env.AUTH_BASE_URL || '';
     this.USERS_BASE_URL = process.env.USERS_BASE_URL || '';
     this.GIG_BASE_URL = process.env.GIG_BASE_URL || '';
