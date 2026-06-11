@@ -9,6 +9,10 @@ export interface IAuthUser {
   emailVerified: boolean | null;
   id: number | null;
   role?: 'user' | 'admin' | null;
+  accountStatus?: 'ACTIVE' | 'ACCOUNT_LOCKED' | null;
+  lockedReason?: string | null;
+  lockedAt?: Date | null;
+  lockedBy?: string | null;
   passwordResetExpires: Date | null;
   passwordResetToken: null | null;
   profilePicture: string | null;
@@ -24,6 +28,10 @@ export interface IAuthDocument {
   username?: string;
   email?: string;
   role?: 'user' | 'admin';
+  accountStatus?: 'ACTIVE' | 'ACCOUNT_LOCKED';
+  lockedReason?: string;
+  lockedAt?: Date;
+  lockedBy?: string;
   password?: string;
   country?: string;
   profilePicture?: string;

@@ -6,9 +6,10 @@ import { ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
 import { useGetGigByIdQuery } from 'src/features/gigs/services/gigs.service';
 import Button from 'src/shared/button/Button';
 import TextAreaInput from 'src/shared/inputs/TextAreaInput';
+import PageMessage from 'src/shared/page-message/PageMessage';
 import { IResponse } from 'src/shared/shared.interface';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
-import { generateRandomNumber, normalizeOrderStatus, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
+import { generateRandomNumber, isFetchBaseQueryError, normalizeOrderStatus, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 import { useAppSelector } from 'src/store/store';
 import { IReduxState } from 'src/store/store.interface';
 
@@ -50,6 +51,10 @@ const Requirement: FC = (): ReactElement => {
 
   if (isSuccess) {
     gigRef.current = data.gig;
+  }
+
+  if (isSuccess && data.gig?.active === false) {
+    return <PageMessage header="Gig paused" body="This gig is currently paused and cannot receive new orders." />;
   }
 
   const isPaidOrder = (order?: IOrderDocument): boolean => normalizeOrderStatus(order?.status || '') === 'in progress';
@@ -156,6 +161,10 @@ const Requirement: FC = (): ReactElement => {
         navigate(`/orders/${orderId}/activities`, { state: response?.order });
       }
     } catch (error) {
+      if (isFetchBaseQueryError(error)) {
+        showErrorToast(error?.data?.message || 'Error starting your order.');
+        return;
+      }
       showErrorToast('Error starting your order.');
     }
   };

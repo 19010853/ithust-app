@@ -2,7 +2,7 @@ import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { ChangeEvent, CSSProperties, Dispatch, KeyboardEvent, ReactNode, SetStateAction } from 'react';
 import { IAuthDocument, IAuthResponse, IResetPassword, ISignInPayload, ISignUpPayload } from 'src/features/auth/interfaces/auth.interface';
-import { IAdminUserDetail, IAdminUserSearchItem, IPagination } from 'src/features/admin/interfaces/admin.interface';
+import { IAdminUserDetail, IAdminUserSearchItem, IPagination, IRestrictionPreview } from 'src/features/admin/interfaces/admin.interface';
 import { IBuyerDocument } from 'src/features/buyer/interfaces/buyer.interface';
 import { IConversationDocument, IMessageDocument } from 'src/features/chat/interfaces/chat.interface';
 import { ICreateGig, ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
@@ -51,6 +51,7 @@ export interface IResponse {
   withdrawals?: IWithdrawalDocument[];
   users?: IAdminUserSearchItem[];
   adminUser?: IAdminUserDetail;
+  preview?: IRestrictionPreview;
   pagination?: IPagination;
   filters?: unknown;
   browserName?: string;
@@ -151,4 +152,5 @@ export interface IStarRatingProps {
 export interface IGigCardItemModal {
   overlay: boolean;
   deleteApproval: boolean;
+  pauseApproval: boolean;
 }

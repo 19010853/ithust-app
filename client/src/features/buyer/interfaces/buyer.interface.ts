@@ -4,6 +4,7 @@ export interface IBuyerDocument {
   email?: string;
   profilePicture?: string;
   country: string;
+  accountStatus?: 'ACTIVE' | 'ACCOUNT_LOCKED';
   isSeller?: boolean;
   purchasedGigs: string[];
   createdAt?: Date | string;

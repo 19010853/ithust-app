@@ -8,6 +8,7 @@ const buyerSchema: Schema = new Schema(
     profilePicture: { type: String, required: true },
     country: { type: String, required: true },
     isSeller: { type: Boolean, default: false },
+    accountStatus: { type: String, enum: ['ACTIVE', 'ACCOUNT_LOCKED'], default: 'ACTIVE' },
     purchasedGigs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Gig' }],
     createdAt: { type: Date }
   },

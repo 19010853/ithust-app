@@ -5,7 +5,8 @@ import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
 import { IGigsProps, ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
 import { useDeleteGigMutation, useUpdateActiveGigMutation } from 'src/features/gigs/services/gigs.service';
 import { rating } from 'src/shared/utils/utils.service';
-import { useAppDispatch } from 'src/store/store';
+import { useAppDispatch, useAppSelector } from 'src/store/store';
+import { IReduxState } from 'src/store/store.interface';
 
 import { updateHeader } from '../header/reducers/header.reducer';
 import ApprovalModal from '../modals/ApprovalModal';
@@ -17,25 +18,52 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
   const gig = gigData as ISellerGig;
   const [gigCardItemModal, setGigCardItemModal] = useState<IGigCardItemModal>({
     overlay: false,
-    deleteApproval: false
+    deleteApproval: false,
+    pauseApproval: false
   });
   const [approvalModalContent, setApprovalModalContent] = useState<IApprovalModalContent>();
   const navigate: NavigateFunction = useNavigate();
+  const seller = useAppSelector((state: IReduxState) => state.seller);
   const dispatch = useAppDispatch();
   const title: string = replaceSpacesWithDash(gig.title);
   const [updateActiveGig] = useUpdateActiveGigMutation();
   const [deleteGig] = useDeleteGigMutation();
+  const sellerIsRestricted =
+    `${seller?._id}` === `${gig.sellerId}` &&
+    (seller?.accountStatus === 'ACCOUNT_LOCKED' || seller?.sellerStatus === 'SELLER_RESTRICTED' || seller?.sellerStatus === 'SELLER_LOCKED_HARD');
 
   const navigateToEditGig = (gigId: string): void => {
+    if (sellerIsRestricted) {
+      showErrorToast('Your seller capability is restricted. Editing gigs is disabled.');
+      return;
+    }
     setGigCardItemModal({ ...gigCardItemModal, overlay: false });
     dispatch(updateHeader('home'));
     navigate(`/manage_gigs/edit/${gigId}`, { state: gig });
   };
 
   const onToggleGig = async (active: boolean): Promise<void> => {
+    if (!active) {
+      setApprovalModalContent({
+        header: 'Pause this Gig',
+        body: 'This gig will stop receiving new orders. Any orders already in progress must still be completed.',
+        btnText: 'Pause',
+        btnColor: 'bg-sky-500 hover:bg-sky-400'
+      });
+      setGigCardItemModal({ ...gigCardItemModal, pauseApproval: true });
+      return;
+    }
+    if (active && sellerIsRestricted) {
+      showErrorToast('Your seller capability is restricted. Reactivating gigs is disabled.');
+      return;
+    }
+    await updateGigStatus(active);
+  };
+
+  const updateGigStatus = async (active: boolean): Promise<void> => {
     try {
       await updateActiveGig({ gigId: `${gig.id}`, active }).unwrap();
-      setGigCardItemModal({ ...gigCardItemModal, overlay: false });
+      setGigCardItemModal({ overlay: false, deleteApproval: false, pauseApproval: false });
       showSuccessToast('Gig status updated successfully.');
     } catch (error) {
       showErrorToast('Error setting gig status.');
@@ -45,7 +73,7 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
   const onDeleteGig = async (): Promise<void> => {
     try {
       await deleteGig({ gigId: `${gig.id}`, sellerId: `${gig.sellerId}` }).unwrap();
-      setGigCardItemModal({ deleteApproval: false, overlay: false });
+      setGigCardItemModal({ deleteApproval: false, overlay: false, pauseApproval: false });
       showSuccessToast('Gig deleted successfully.');
     } catch (error) {
       showErrorToast('Error deleting gig.');
@@ -59,6 +87,13 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
           approvalModalContent={approvalModalContent}
           onClick={onDeleteGig}
           onClose={() => setGigCardItemModal({ ...gigCardItemModal, deleteApproval: false })}
+        />
+      )}
+      {gigCardItemModal.pauseApproval && (
+        <ApprovalModal
+          approvalModalContent={approvalModalContent}
+          onClick={() => updateGigStatus(false)}
+          onClose={() => setGigCardItemModal({ ...gigCardItemModal, pauseApproval: false })}
         />
       )}
       <div className="relative">

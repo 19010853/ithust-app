@@ -38,6 +38,23 @@ const AuthModel: ModelDefined<IAuthDocument, AuthUserCreationAttributes> & AuthM
       allowNull: false,
       defaultValue: 'user'
     },
+    accountStatus: {
+      type: DataTypes.ENUM('ACTIVE', 'ACCOUNT_LOCKED'),
+      allowNull: false,
+      defaultValue: 'ACTIVE'
+    },
+    lockedReason: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    lockedAt: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    lockedBy: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     country: {
       type: DataTypes.STRING,
       allowNull: false

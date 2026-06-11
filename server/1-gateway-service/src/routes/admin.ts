@@ -11,6 +11,9 @@ class AdminRoutes {
 
   public routes(): Router {
     this.router.get('/admin/users', authMiddleware.checkAdmin, AdminUsers.prototype.users);
+    this.router.get('/admin/users/:username/restriction-preview', authMiddleware.checkAdmin, AdminUsers.prototype.restrictionPreview);
+    this.router.patch('/admin/users/:username/account-status', authMiddleware.checkAdmin, AdminUsers.prototype.updateAccountStatus);
+    this.router.patch('/admin/users/:username/seller-status', authMiddleware.checkAdmin, AdminUsers.prototype.updateSellerStatus);
     this.router.get('/admin/users/:username', authMiddleware.checkAdmin, AdminUsers.prototype.userDetail);
 
     return this.router;

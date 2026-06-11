@@ -19,6 +19,21 @@ class AdminService {
     const response: AxiosResponse = await axiosAdminInstance.get(`/users/${username}`);
     return response;
   }
+
+  async getRestrictionPreview(username: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosAdminInstance.get(`/users/${username}/restriction-preview`);
+    return response;
+  }
+
+  async updateAccountStatus(username: string, body: unknown): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosAdminInstance.patch(`/users/${username}/account-status`, body);
+    return response;
+  }
+
+  async updateSellerStatus(username: string, body: unknown): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosAdminInstance.patch(`/users/${username}/seller-status`, body);
+    return response;
+  }
 }
 
 export const adminService: AdminService = new AdminService();

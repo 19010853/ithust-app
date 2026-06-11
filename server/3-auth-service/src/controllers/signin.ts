@@ -20,6 +20,9 @@ export async function read(req: Request, res: Response): Promise<void> {
   if (!existingUser) {
     throw new BadRequestError('Invalid credentials', 'SignIn read() method error');
   }
+  if ((existingUser as IAuthDocument & { accountStatus?: string }).accountStatus === 'ACCOUNT_LOCKED') {
+    throw new BadRequestError('Account is locked. Please contact support.', 'SignIn read() account locked error');
+  }
   const passwordsMatch: boolean = await AuthModel.prototype.comparePassword(password, `${existingUser.password}`);
   if (!passwordsMatch) {
     throw new BadRequestError('Invalid credentials', 'SignIn read() method error');

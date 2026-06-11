@@ -2,9 +2,11 @@ import { AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { Request, Response } from 'express';
 import { sellerService } from '@gateway/services/api/seller.service';
+import { assertSellerCanWithdraw } from '@gateway/services/restriction.service';
 
 export class Withdraw {
   public async withdrawal(req: Request, res: Response): Promise<void> {
+    await assertSellerCanWithdraw(req.params.sellerId);
     const response: AxiosResponse = await sellerService.withdraw(req.params.sellerId, req.body);
     res.status(StatusCodes.CREATED).json({ message: response.data.message, withdrawal: response.data.withdrawal });
   }

@@ -11,6 +11,15 @@ const sellerSchema: Schema = new Schema(
     profilePublicId: { type: String, required: true },
     oneliner: { type: String, default: '' },
     country: { type: String, required: true },
+    accountStatus: { type: String, enum: ['ACTIVE', 'ACCOUNT_LOCKED'], default: 'ACTIVE' },
+    sellerStatus: { type: String, enum: ['ACTIVE', 'SELLER_RESTRICTED', 'SELLER_LOCKED_HARD'], default: 'ACTIVE' },
+    sellerStatusReason: { type: String, default: '' },
+    sellerStatusUpdatedAt: { type: Date },
+    sellerStatusUpdatedBy: {
+      id: { type: Number },
+      username: { type: String },
+      email: { type: String }
+    },
     languages: [
       {
         language: { type: String, required: true },

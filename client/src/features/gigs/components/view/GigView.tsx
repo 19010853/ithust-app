@@ -46,6 +46,11 @@ const GigView: FC = (): ReactElement => {
       ) : (
         <main className="max-w-8xl container mx-auto mt-8">
           <h2 className="mb-4 px-4 text-xl font-bold text-[#404145] lg:text-3xl">{gig.current.title}</h2>
+          {gig.current.active === false && (
+            <div className="mx-4 mb-4 rounded border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              This gig is currently paused and cannot receive new orders. Existing orders are not affected.
+            </div>
+          )}
           <div className="mb-4 flex flex-row gap-x-2 px-4">
             <img className="flex h-8 w-8 self-center rounded-full object-cover" src={gig.current.profilePicture} alt="" />
             <span className="flex self-center font-extrabold">{gig.current.username}</span>

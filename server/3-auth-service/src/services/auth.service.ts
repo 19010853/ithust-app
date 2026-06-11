@@ -194,6 +194,28 @@ export async function updateUserOTP(
   }
 }
 
+export async function updateAccountStatus(
+  username: string,
+  status: 'ACTIVE' | 'ACCOUNT_LOCKED',
+  reason: string,
+  lockedBy?: string
+): Promise<IAuthDocument | undefined> {
+  try {
+    await AuthModel.update(
+      {
+        accountStatus: status,
+        lockedReason: status === 'ACCOUNT_LOCKED' ? reason : '',
+        lockedAt: status === 'ACCOUNT_LOCKED' ? new Date() : null,
+        lockedBy: status === 'ACCOUNT_LOCKED' ? lockedBy || '' : ''
+      },
+      { where: { username: firstLetterToUppercase(username) } }
+    );
+    return getUserByUsername(username);
+  } catch (error) {
+    log.error(error);
+  }
+}
+
 export async function syncAuthRole(authId: number, _email: string): Promise<'user' | 'admin'> {
   try {
     const user = (await AuthModel.findOne({ where: { id: authId } })) as Model | null;

@@ -213,6 +213,10 @@ export interface ISellerDocument extends Record<string, SellerType> {
   profilePicture?: string;
   description: string;
   country: string;
+  accountStatus?: 'ACTIVE' | 'ACCOUNT_LOCKED';
+  sellerStatus?: 'ACTIVE' | 'SELLER_RESTRICTED' | 'SELLER_LOCKED_HARD';
+  sellerStatusReason?: string;
+  sellerStatusUpdatedAt?: Date | string;
   oneliner: string;
   skills: string[];
   bankAccount?: {

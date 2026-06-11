@@ -15,8 +15,19 @@ const GigPackage: FC = (): ReactElement => {
   const [approvalModalContent, setApprovalModalContent] = useState<IApprovalModalContent>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const navigate: NavigateFunction = useNavigate();
+  const gigIsPaused = gig.active === false;
 
   const continueToCheck = () => {
+    if (gigIsPaused) {
+      setApprovalModalContent({
+        header: 'Gig Paused',
+        body: 'This gig is currently paused and cannot receive new orders.',
+        btnText: 'OK',
+        btnColor: 'bg-sky-500 hover:bg-sky-400'
+      });
+      setShowModal(true);
+      return;
+    }
     const deliveryInDays: number = parseInt(gig.expectedDelivery.split(' ')[0]);
     const newDate: Date = new Date();
     newDate.setDate(newDate.getDate() + deliveryInDays);
@@ -59,13 +70,13 @@ const GigPackage: FC = (): ReactElement => {
           <li className="flex justify-between">
             <div className="ml-15 flex w-full py-1">
               <Button
-                disabled={authUser.username === gig.username}
+                disabled={authUser.username === gig.username || gigIsPaused}
                 className={`text-md flex w-full justify-between rounded bg-sky-500 px-8 py-2 font-bold text-white focus:outline-none
-                ${authUser.username === gig.username ? 'opacity-20 cursor-not-allowed' : 'hover:bg-sky-400 cursor-pointer'}
+                ${authUser.username === gig.username || gigIsPaused ? 'opacity-20 cursor-not-allowed' : 'hover:bg-sky-400 cursor-pointer'}
                 `}
                 label={
                   <>
-                    <span className="w-full">Continue</span>
+                    <span className="w-full">{gigIsPaused ? 'Paused' : 'Continue'}</span>
                     <FaArrowRight className="flex self-center" />
                   </>
                 }

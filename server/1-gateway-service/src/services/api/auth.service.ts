@@ -36,6 +36,11 @@ class AuthService {
     return response;
   }
 
+  async updateAccountStatus(username: string, body: unknown): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosAuthInstance.patch(`/admin/users/${username}/account-status`, body);
+    return response;
+  }
+
   async verifyEmail(token: string): Promise<AxiosResponse> {
     const response: AxiosResponse = await axiosAuthInstance.put('/verify-email', { token });
     return response;

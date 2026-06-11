@@ -34,6 +34,7 @@ const ensurePlatformAdmin = async (): Promise<void> => {
           username: ownerUsername,
           email: ownerEmail,
           role: 'admin',
+          accountStatus: 'ACTIVE',
           emailVerified: 1
         },
         { where: { id: existingAdmin.dataValues.id } }
@@ -47,6 +48,7 @@ const ensurePlatformAdmin = async (): Promise<void> => {
       email: ownerEmail,
       password: ownerPassword,
       role: 'admin',
+      accountStatus: 'ACTIVE',
       profilePublicId: uuidV4(),
       country: 'Vietnam',
       profilePicture: 'https://placehold.co/330x220?text=Admin',
@@ -54,7 +56,7 @@ const ensurePlatformAdmin = async (): Promise<void> => {
       emailVerified: 1,
       browserName: 'System',
       deviceType: 'Desktop'
-    } as IAuthDocument & { role: string });
+    } as unknown as IAuthDocument & { role: string });
     log.info('Platform admin account created.');
   } catch (error) {
     log.error(error);

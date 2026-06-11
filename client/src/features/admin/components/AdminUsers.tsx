@@ -1,8 +1,15 @@
 import { ChangeEvent, FC, ReactElement, useMemo, useState } from 'react';
 import Button from 'src/shared/button/Button';
+import { isFetchBaseQueryError, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 
-import { IAdminUserSearchItem } from '../interfaces/admin.interface';
-import { useGetAdminUserDetailQuery, useGetAdminUsersQuery } from '../services/admin.service';
+import { IAdminUserSearchItem, IRestrictionPreview, IRestrictionStatusPayload } from '../interfaces/admin.interface';
+import {
+  useGetAdminUserDetailQuery,
+  useGetAdminUsersQuery,
+  useGetRestrictionPreviewQuery,
+  useUpdateAccountStatusMutation,
+  useUpdateSellerStatusMutation
+} from '../services/admin.service';
 
 const getQueryErrorMessage = (error: unknown, fallback: string): string => {
   if (typeof error === 'object' && error !== null && 'data' in error) {
@@ -24,6 +31,12 @@ const AdminUsers: FC = (): ReactElement => {
   const [isSeller, setIsSeller] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [selectedUsername, setSelectedUsername] = useState<string>('');
+  const [statusAction, setStatusAction] = useState<{
+    label: string;
+    scope: 'account' | 'seller';
+    status: IRestrictionStatusPayload['status'];
+  } | null>(null);
+  const [statusReason, setStatusReason] = useState<string>('');
   const params = useMemo(() => ({ q, country, isSeller, page, limit: 20 }), [country, isSeller, page, q]);
   const { data, isLoading, isFetching, isError, error } = useGetAdminUsersQuery(params);
   const {
@@ -32,9 +45,13 @@ const AdminUsers: FC = (): ReactElement => {
     isError: isDetailError,
     error: detailError
   } = useGetAdminUserDetailQuery(selectedUsername, { skip: !selectedUsername });
+  const { data: previewData, isFetching: isPreviewFetching } = useGetRestrictionPreviewQuery(selectedUsername, { skip: !selectedUsername || !statusAction });
+  const [updateAccountStatus, { isLoading: isUpdatingAccount }] = useUpdateAccountStatusMutation();
+  const [updateSellerStatus, { isLoading: isUpdatingSeller }] = useUpdateSellerStatusMutation();
   const users = (data?.users || []) as IAdminUserSearchItem[];
   const pagination = data?.pagination;
   const detail = detailData?.adminUser;
+  const preview = previewData?.preview as IRestrictionPreview | undefined;
   const isUsersLoading = isLoading || isFetching;
   const usersErrorMessage = getQueryErrorMessage(error, 'Unable to load users.');
   const detailErrorMessage = getQueryErrorMessage(detailError, 'Unable to load user detail.');
@@ -52,6 +69,39 @@ const AdminUsers: FC = (): ReactElement => {
   };
 
   const money = (value?: number): string => `$${Number(value || 0).toFixed(2)}`;
+
+  const openStatusAction = (scope: 'account' | 'seller', status: IRestrictionStatusPayload['status'], label: string): void => {
+    setStatusAction({ scope, status, label });
+    setStatusReason('');
+  };
+
+  const closeStatusAction = (): void => {
+    setStatusAction(null);
+    setStatusReason('');
+  };
+
+  const onSubmitStatusAction = async (): Promise<void> => {
+    if (!selectedUsername || !statusAction || !statusReason.trim()) {
+      showErrorToast('Reason is required.');
+      return;
+    }
+    try {
+      const body = { status: statusAction.status, reason: statusReason.trim() };
+      if (statusAction.scope === 'account') {
+        await updateAccountStatus({ username: selectedUsername, body }).unwrap();
+      } else {
+        await updateSellerStatus({ username: selectedUsername, body }).unwrap();
+      }
+      showSuccessToast(`${statusAction.label} completed.`);
+      closeStatusAction();
+    } catch (error) {
+      if (isFetchBaseQueryError(error)) {
+        showErrorToast(error?.data?.message || 'Unable to update status.');
+        return;
+      }
+      showErrorToast('Unable to update status.');
+    }
+  };
 
   return (
     <div className="container mx-auto mt-8 px-4">
@@ -193,6 +243,33 @@ const AdminUsers: FC = (): ReactElement => {
                   <div className="font-bold">{detail.seller ? 'Yes' : 'No'}</div>
                 </div>
               </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-gray-50 p-3">
+                  <div className="text-xs uppercase text-gray-500">Account status</div>
+                  <div className="font-bold">{detail.buyer?.accountStatus || detail.seller?.accountStatus || 'ACTIVE'}</div>
+                </div>
+                <div className="bg-gray-50 p-3">
+                  <div className="text-xs uppercase text-gray-500">Seller status</div>
+                  <div className="font-bold">{detail.seller?.sellerStatus || 'ACTIVE'}</div>
+                </div>
+              </div>
+              <div className="border-t border-grey pt-3">
+                <div className="mb-2 font-bold text-gray-900">Restriction actions</div>
+                <div className="flex flex-wrap gap-2">
+                  {(detail.buyer?.accountStatus || detail.seller?.accountStatus) === 'ACCOUNT_LOCKED' ? (
+                    <Button className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500" label="Unlock account" onClick={() => openStatusAction('account', 'ACTIVE', 'Unlock account')} />
+                  ) : (
+                    <Button className="rounded bg-red-600 px-3 py-2 text-xs font-bold text-white hover:bg-red-500" label="Lock account" onClick={() => openStatusAction('account', 'ACCOUNT_LOCKED', 'Lock account')} />
+                  )}
+                  {detail.seller && (
+                    <>
+                      <Button className="rounded bg-amber-600 px-3 py-2 text-xs font-bold text-white hover:bg-amber-500" label="Restrict seller" onClick={() => openStatusAction('seller', 'SELLER_RESTRICTED', 'Restrict seller')} />
+                      <Button className="rounded bg-red-700 px-3 py-2 text-xs font-bold text-white hover:bg-red-600" label="Hard lock seller" onClick={() => openStatusAction('seller', 'SELLER_LOCKED_HARD', 'Hard lock seller')} />
+                      <Button className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500" label="Restore seller" onClick={() => openStatusAction('seller', 'ACTIVE', 'Restore seller')} />
+                    </>
+                  )}
+                </div>
+              </div>
               {detail.seller && (
                 <>
                   <div className="border-t border-grey pt-3 font-bold text-gray-900">Seller finance</div>
@@ -208,6 +285,45 @@ const AdminUsers: FC = (): ReactElement => {
           )}
         </aside>
       </div>
+      {statusAction && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-lg bg-white p-5 shadow-xl">
+            <h2 className="mb-2 text-lg font-bold text-gray-900">{statusAction.label}</h2>
+            {isPreviewFetching && <div className="mb-4 text-sm text-gray-500">Loading preview...</div>}
+            {preview && (
+              <div className="mb-4 grid grid-cols-2 gap-2 text-sm">
+                <div className="bg-gray-50 p-3">Buyer orders: {preview.activeBuyerOrders}</div>
+                <div className="bg-gray-50 p-3">Seller orders: {preview.activeSellerOrders}</div>
+                <div className="bg-gray-50 p-3">Pending withdrawals: {preview.pendingWithdrawals}</div>
+                <div className="bg-gray-50 p-3">Active gigs: {preview.activeGigs}</div>
+                <div className="bg-gray-50 p-3">Available: {money(preview.availableBalance)}</div>
+                <div className="bg-gray-50 p-3">Current: {statusAction.scope === 'account' ? preview.accountStatus : preview.sellerStatus}</div>
+              </div>
+            )}
+            {preview && statusAction.status === 'ACCOUNT_LOCKED' && (preview.activeBuyerOrders > 0 || preview.activeSellerOrders > 0) && (
+              <div className="mb-4 rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
+                Active orders exist. Seller restriction is recommended when the goal is to stop new marketplace activity without breaking active orders.
+              </div>
+            )}
+            <label className="mb-1 block text-sm font-bold text-gray-700">Reason</label>
+            <textarea
+              className="mb-4 min-h-[100px] w-full rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
+              value={statusReason}
+              onChange={(event) => setStatusReason(event.target.value)}
+              placeholder="Reason required for audit and user notification"
+            />
+            <div className="flex justify-end gap-2">
+              <Button className="rounded border border-gray-300 px-4 py-2 text-sm font-bold text-gray-700" label="Cancel" onClick={closeStatusAction} />
+              <Button
+                className="rounded bg-sky-500 px-4 py-2 text-sm font-bold text-white hover:bg-sky-400 disabled:cursor-not-allowed disabled:bg-gray-400"
+                label={isUpdatingAccount || isUpdatingSeller ? 'Saving...' : 'Confirm'}
+                disabled={isUpdatingAccount || isUpdatingSeller}
+                onClick={onSubmitStatusAction}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

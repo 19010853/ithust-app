@@ -73,6 +73,8 @@ const AddGig: FC = (): ReactElement => {
   const { sellerId } = useParams();
   const [schemaValidation] = useGigSchema({ schema: gigInfoSchema, gigInfo });
   const [createGig, { isLoading }] = useCreateGigMutation();
+  const sellerIsRestricted =
+    seller?.accountStatus === 'ACCOUNT_LOCKED' || seller?.sellerStatus === 'SELLER_RESTRICTED' || seller?.sellerStatus === 'SELLER_LOCKED_HARD';
 
   const handleFileChange = async (event: ChangeEvent): Promise<void> => {
     const target: HTMLInputElement = event.target as HTMLInputElement;
@@ -88,6 +90,10 @@ const AddGig: FC = (): ReactElement => {
   };
 
   const onCreateGig = async (): Promise<void> => {
+    if (sellerIsRestricted) {
+      showErrorToast('Your seller capability is restricted. You cannot create new gigs.');
+      return;
+    }
     try {
       const editor: Quill | undefined = reactQuillRef?.current?.editor;
       // In React, it is not recommended to mutate objects directly. It is better to update with useState method.
@@ -147,6 +153,11 @@ const AddGig: FC = (): ReactElement => {
           {authUser && !authUser.emailVerified && (
             <div className="absolute left-0 top-0 z-[80] flex h-full w-full justify-center bg-white/[0.8] text-sm font-bold md:text-base lg:text-xl">
               <span className="mt-40">Please verify your email.</span>
+            </div>
+          )}
+          {sellerIsRestricted && (
+            <div className="mb-4 rounded border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              Your seller capability is currently {seller?.sellerStatus || seller?.accountStatus}. Creating new gigs is disabled.
             </div>
           )}
 
@@ -370,7 +381,7 @@ const AddGig: FC = (): ReactElement => {
               <div className="pb-2 text-base font-medium lg:mt-0"></div>
               <div className="col-span-4 flex gap-x-4 md:w-11/12 lg:w-8/12">
                 <Button
-                  disabled={isLoading}
+                  disabled={isLoading || sellerIsRestricted}
                   className="rounded bg-sky-500 px-8 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-3 md:text-base"
                   label="Create Gig"
                   onClick={onCreateGig}

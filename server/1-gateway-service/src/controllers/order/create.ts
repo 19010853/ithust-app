@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import { createHmac, timingSafeEqual } from 'crypto';
 import { config } from '@gateway/config';
 import { orderService } from '@gateway/services/api/order.service';
+import { assertGigCanReceiveNewOrders, assertSellerCanOpenMarketplaceActivity } from '@gateway/services/restriction.service';
 
 const SEPAY_WEBHOOK_TIMESTAMP_TOLERANCE_SECONDS = 5 * 60;
 
@@ -72,6 +73,8 @@ export class Create {
   }
 
   public async order(req: Request, res: Response): Promise<void> {
+    await assertGigCanReceiveNewOrders(req.body.gigId);
+    await assertSellerCanOpenMarketplaceActivity(req.body.sellerId);
     const response: AxiosResponse = await orderService.createOrder(req.body);
     res.status(StatusCodes.CREATED).json({ message: response.data.message, order: response.data.order, payment: response.data.payment });
   }
