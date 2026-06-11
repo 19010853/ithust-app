@@ -30,15 +30,12 @@ const CurrentSellerProfile: FC = (): ReactElement => {
   const [type, setType] = useState<string>('Overview');
   const { sellerId } = useParams();
   const dispatch = useAppDispatch();
-  const { data, isSuccess: isSellerGigSuccess, isLoading: isSellerGigLoading } = useGetGigsBySellerIdQuery(`${sellerId}`);
-  const { data: sellerData, isSuccess: isGigReviewSuccess, isLoading: isGigReviewLoading } = useGetReviewsBySellerIdQuery(`${sellerId}`);
+  const { data, isLoading: isSellerGigLoading } = useGetGigsBySellerIdQuery(`${sellerId}`);
+  const { data: sellerData, isLoading: isGigReviewLoading } = useGetReviewsBySellerIdQuery(`${sellerId}`);
   const [updateSeller, { isLoading }] = useUpdateSellerMutation();
-  let reviews: IReviewDocument[] = [];
-  if (isGigReviewSuccess) {
-    reviews = sellerData.reviews as IReviewDocument[];
-  }
+  const reviews: IReviewDocument[] = (sellerData?.reviews as IReviewDocument[]) ?? [];
 
-  const isDataLoading: boolean = isSellerGigLoading || isGigReviewLoading || !isSellerGigSuccess || !isGigReviewSuccess;
+  const isDataLoading: boolean = isSellerGigLoading || isGigReviewLoading;
 
   const onUpdateSeller = async (): Promise<void> => {
     try {

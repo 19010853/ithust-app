@@ -6,7 +6,13 @@ import { languageLevel } from 'src/shared/utils/utils.service';
 
 import Dropdown from '../../../../../shared/dropdown/Dropdown';
 
-const SellerLanguageFields: FC<ILanguageProps> = ({ languageFields, setLanguageFields }): ReactElement => {
+const SellerLanguageFields: FC<ILanguageProps> = ({ languageFields, setLanguageFields, languagesErrors }): ReactElement => {
+  const getErrorMessage = (field: keyof ILanguage): string => {
+    const error = languagesErrors?.find((item: ILanguage) => item[field]);
+    const message = error?.[field];
+    return typeof message === 'string' ? message : '';
+  };
+
   const addLanguageFields = (): void => {
     const newfield: ILanguage = {
       language: '',
@@ -56,6 +62,7 @@ const SellerLanguageFields: FC<ILanguageProps> = ({ languageFields, setLanguageF
                 placeholder="Language"
                 onChange={(event: ChangeEvent) => handleLanguageFieldsChange(event, index)}
               />
+              {getErrorMessage('language') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('language')}</p>}
             </div>
             <div className="relative">
               <Dropdown
@@ -71,6 +78,7 @@ const SellerLanguageFields: FC<ILanguageProps> = ({ languageFields, setLanguageF
                   }
                 }}
               />
+              {getErrorMessage('level') && <p className="mt-12 text-xs text-red-500">{getErrorMessage('level')}</p>}
             </div>
             <div className="mb-2">
               {languageFields.length > 1 && index > 0 && (

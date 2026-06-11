@@ -2,6 +2,13 @@ import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 import { elasticSearchClient } from '@gig/elasticsearch';
 import { IHitsTotal, IPaginateProps, IQueryList, ISearchResult } from '@19010853/ithust-shared';
 
+const emptySearchResult = (): ISearchResult => ({ total: 0, hits: [] });
+
+const isIndexNotFoundError = (error: unknown): boolean => {
+  const elasticError = error as { meta?: { statusCode?: number; body?: { error?: { type?: string } } } };
+  return elasticError.meta?.statusCode === 404 || elasticError.meta?.body?.error?.type === 'index_not_found_exception';
+};
+
 const gigsSearchBySellerId = async (searchQuery: string, active: boolean): Promise<ISearchResult> => {
   const queryList: IQueryList[] = [
     {
@@ -16,19 +23,26 @@ const gigsSearchBySellerId = async (searchQuery: string, active: boolean): Promi
       }
     }
   ];
-  const result: SearchResponse = await elasticSearchClient.search({
-    index: 'gigs',
-    query: {
-      bool: {
-        must: [...queryList]
+  try {
+    const result: SearchResponse = await elasticSearchClient.search({
+      index: 'gigs',
+      query: {
+        bool: {
+          must: [...queryList]
+        }
       }
+    });
+    const total: IHitsTotal = result.hits.total as IHitsTotal;
+    return {
+      total: total.value,
+      hits: result.hits.hits
+    };
+  } catch (error) {
+    if (isIndexNotFoundError(error)) {
+      return emptySearchResult();
     }
-  });
-  const total: IHitsTotal = result.hits.total as IHitsTotal;
-  return {
-    total: total.value,
-    hits: result.hits.hits
-  };
+    throw error;
+  }
 };
 
 const gigsSearch = async (

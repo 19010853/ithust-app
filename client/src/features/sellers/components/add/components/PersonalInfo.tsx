@@ -3,13 +3,17 @@ import { IPersonalInfoProps } from 'src/features/sellers/interfaces/seller.inter
 import TextAreaInput from 'src/shared/inputs/TextAreaInput';
 import TextInput from 'src/shared/inputs/TextInput';
 
-const PersonalInfo: FC<IPersonalInfoProps> = ({ personalInfo, setPersonalInfo }): ReactElement => {
+const PersonalInfo: FC<IPersonalInfoProps> = ({ personalInfo, setPersonalInfo, personalInfoErrors }): ReactElement => {
   const [allowedInfoLength, setAllowedInfoLength] = useState({
     description: '600/600',
     oneliner: '70/70'
   });
   const maxDescriptionCharacters = 600;
   const maxOneLinerCharacters = 70;
+  const getErrorMessage = (field: keyof typeof personalInfo): string => {
+    const error = personalInfoErrors.find((item) => item[field]);
+    return error?.[field] ?? '';
+  };
 
   return (
     <div className="border-b border-grey p-6">
@@ -27,6 +31,7 @@ const PersonalInfo: FC<IPersonalInfoProps> = ({ personalInfo, setPersonalInfo })
               setPersonalInfo({ ...personalInfo, fullName: (event.target as HTMLInputElement).value });
             }}
           />
+          {getErrorMessage('fullName') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('fullName')}</p>}
         </div>
       </div>
       <div className="grid md:grid-cols-5 mb-6">
@@ -53,6 +58,7 @@ const PersonalInfo: FC<IPersonalInfoProps> = ({ personalInfo, setPersonalInfo })
               }
             }}
           />
+          {getErrorMessage('oneliner') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('oneliner')}</p>}
           <span className="flex justify-end text-[#95979d] text-xs">{allowedInfoLength.oneliner} Characters</span>
         </div>
       </div>
@@ -79,6 +85,7 @@ const PersonalInfo: FC<IPersonalInfoProps> = ({ personalInfo, setPersonalInfo })
               }
             }}
           />
+          {getErrorMessage('description') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('description')}</p>}
           <span className="flex justify-end text-[#95979d] text-xs">{allowedInfoLength.description} Characters</span>
         </div>
       </div>
@@ -98,6 +105,7 @@ const PersonalInfo: FC<IPersonalInfoProps> = ({ personalInfo, setPersonalInfo })
               setPersonalInfo({ ...personalInfo, responseTime: parseInt(value) > 0 ? value : '' });
             }}
           />
+          {getErrorMessage('responseTime') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('responseTime')}</p>}
         </div>
       </div>
     </div>

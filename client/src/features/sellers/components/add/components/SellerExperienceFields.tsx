@@ -6,7 +6,13 @@ import TextAreaInput from 'src/shared/inputs/TextAreaInput';
 import TextInput from 'src/shared/inputs/TextInput';
 import { yearsList } from 'src/shared/utils/utils.service';
 
-const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExperienceFields }): ReactElement => {
+const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExperienceFields, experienceErrors }): ReactElement => {
+  const getErrorMessage = (field: keyof IExperience): string => {
+    const error = experienceErrors?.find((item: IExperience) => item[field]);
+    const message = error?.[field];
+    return typeof message === 'string' ? message : '';
+  };
+
   const handleExperienceFieldsChange = (event: ChangeEvent, index: number): void => {
     const target: HTMLInputElement = event.target as HTMLInputElement;
     if (experienceFields && setExperienceFields) {
@@ -84,6 +90,7 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
             value={input.title}
             onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
           />
+          {getErrorMessage('title') && <p className="-mt-3 mb-3 text-xs text-red-500">{getErrorMessage('title')}</p>}
           <TextInput
             className="border-grey mb-4 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
             placeholder="Company name"
@@ -91,6 +98,7 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
             value={input.company}
             onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
           />
+          {getErrorMessage('company') && <p className="-mt-3 mb-3 text-xs text-red-500">{getErrorMessage('company')}</p>}
           <div className="mb-16 grid h-1/5 grid-cols-2 gap-x-2 gap-y-3">
             <div className="relative">
               <Dropdown
@@ -106,6 +114,7 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
                   }
                 }}
               />
+              {getErrorMessage('startDate') && <p className="mt-12 text-xs text-red-500">{getErrorMessage('startDate')}</p>}
             </div>
             <div
               className="relative"
@@ -127,6 +136,7 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
                   }
                 }}
               />
+              {getErrorMessage('endDate') && <p className="mt-12 text-xs text-red-500">{getErrorMessage('endDate')}</p>}
             </div>
           </div>
           <div className="mb-4 mt-2 flex items-center">
@@ -153,6 +163,7 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
               placeholder="Write description..."
             />
           </div>
+          {getErrorMessage('description') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('description')}</p>}
           <div className="mt-2">
             {experienceFields.length > 1 && index > 0 && (
               <Button

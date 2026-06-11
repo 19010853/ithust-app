@@ -3,7 +3,7 @@ import { ISkillProps } from 'src/features/sellers/interfaces/seller.interface';
 import Button from 'src/shared/button/Button';
 import TextInput from 'src/shared/inputs/TextInput';
 
-const SellerSkillField: FC<ISkillProps> = ({ skillsFields, setSkillsFields }): ReactElement => {
+const SellerSkillField: FC<ISkillProps> = ({ skillsFields, setSkillsFields, skillsErrors }): ReactElement => {
   const addSkillFields = (): void => {
     if (setSkillsFields && skillsFields) {
       setSkillsFields([...skillsFields, '']);
@@ -48,6 +48,7 @@ const SellerSkillField: FC<ISkillProps> = ({ skillsFields, setSkillsFields }): R
               value={input}
               onChange={(event: ChangeEvent) => handleSkillsFieldsChange(event, index)}
             />
+            {!input && skillsErrors?.[index] && <p className="mt-1 text-xs text-red-500">{skillsErrors[index]}</p>}
             <div className="my-3">
               {skillsFields.length > 1 && index > 0 && (
                 <Button

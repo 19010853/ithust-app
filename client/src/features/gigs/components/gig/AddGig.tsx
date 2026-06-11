@@ -71,10 +71,15 @@ const AddGig: FC = (): ReactElement => {
   const navigate: NavigateFunction = useNavigate();
   const dispatch = useAppDispatch();
   const { sellerId } = useParams();
-  const [schemaValidation] = useGigSchema({ schema: gigInfoSchema, gigInfo });
+  const [schemaValidation, validationErrors] = useGigSchema({ schema: gigInfoSchema, gigInfo });
   const [createGig, { isLoading }] = useCreateGigMutation();
   const sellerIsRestricted =
     seller?.accountStatus === 'ACCOUNT_LOCKED' || seller?.sellerStatus === 'SELLER_RESTRICTED' || seller?.sellerStatus === 'SELLER_LOCKED_HARD';
+  const getErrorMessage = (field: keyof ICreateGig): string => {
+    const error = validationErrors.find((item) => typeof item === 'object' && field in item);
+    const message = typeof error === 'object' ? (error as Record<string, unknown>)[field] : '';
+    return typeof message === 'string' ? message : '';
+  };
 
   const handleFileChange = async (event: ChangeEvent): Promise<void> => {
     const target: HTMLInputElement = event.target as HTMLInputElement;
@@ -313,11 +318,13 @@ const AddGig: FC = (): ReactElement => {
                   placeholder="Enter minimum price"
                   name="price"
                   value={`${gigInfo.price}`}
+                  min={5}
                   onChange={(event: ChangeEvent) => {
                     const value: string = (event.target as HTMLInputElement).value;
                     setGigInfo({ ...gigInfo, price: parseInt(value) > 0 ? parseInt(value) : 0 });
                   }}
                 />
+                {getErrorMessage('price') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('price')}</p>}
               </div>
             </div>
             <div className="mb-12 grid md:grid-cols-5">

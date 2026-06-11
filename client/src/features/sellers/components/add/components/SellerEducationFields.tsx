@@ -5,7 +5,13 @@ import Dropdown from 'src/shared/dropdown/Dropdown';
 import TextInput from 'src/shared/inputs/TextInput';
 import { countriesList, degreeList, yearsList } from 'src/shared/utils/utils.service';
 
-const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducationFields }): ReactElement => {
+const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducationFields, educationErrors }): ReactElement => {
+  const getErrorMessage = (field: keyof IEducation): string => {
+    const error = educationErrors?.find((item: IEducation) => item[field]);
+    const message = error?.[field];
+    return typeof message === 'string' ? message : '';
+  };
+
   const handleEducationFieldsChange = (event: ChangeEvent, index: number): void => {
     if (setEducationFields && educationFields) {
       const target: HTMLInputElement = event.target as HTMLInputElement;
@@ -58,6 +64,7 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
               value={input.university}
               onChange={(event: ChangeEvent) => handleEducationFieldsChange(event, index)}
             />
+            {getErrorMessage('university') && <p className="-mt-3 mb-3 text-xs text-red-500">{getErrorMessage('university')}</p>}
           </div>
           <div className="relative h-[55px]">
             <Dropdown
@@ -74,6 +81,7 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
                 }
               }}
             />
+            {getErrorMessage('country') && <p className="mt-12 text-xs text-red-500">{getErrorMessage('country')}</p>}
           </div>
           <div className="mt-4 grid h-1/5 grid-cols-4 gap-x-2 gap-y-3">
             <div className="relative">
@@ -90,6 +98,7 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
                   }
                 }}
               />
+              {getErrorMessage('title') && <p className="mt-12 text-xs text-red-500">{getErrorMessage('title')}</p>}
             </div>
             <div className="col-span-2">
               <TextInput
@@ -100,6 +109,7 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
                 value={input.major}
                 onChange={(event: ChangeEvent) => handleEducationFieldsChange(event, index)}
               />
+              {getErrorMessage('major') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('major')}</p>}
             </div>
             <div className="relative">
               <Dropdown
@@ -115,6 +125,7 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
                   }
                 }}
               />
+              {getErrorMessage('year') && <p className="mt-12 text-xs text-red-500">{getErrorMessage('year')}</p>}
             </div>
             <div className="mb-2">
               {educationFields.length > 1 && index > 0 && (

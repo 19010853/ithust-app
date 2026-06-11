@@ -26,7 +26,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
   const deviceData = useDeviceData(window.navigator.userAgent);
   const [step, setStep] = useState<number>(1);
   const [alertMessage, setAlertMessage] = useState<string>('');
-  const [country, setCountry] = useState<string>('Select Country');
+  const [country, setCountry] = useState<string>('');
   const [passwordType, setPasswordType] = useState<string>('password');
   const [profileImage, setProfileImage] = useState<string>('https://placehold.co/330x220?text=Profile+Image');
   const [showImageSelect, setShowImageSelect] = useState<boolean>(false);
@@ -215,6 +215,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
               <div id="country" className="relative mb-5 mt-2">
                 <Dropdown
                   text={country}
+                  placeholder="Select a country"
                   maxHeight="200"
                   mainClassNames="absolute bg-white z-50"
                   showSearchInput={true}

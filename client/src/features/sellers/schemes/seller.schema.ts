@@ -18,7 +18,7 @@ const experienceSchema: ObjectSchema<IExperience> = object({
     .notOneOf(['Start Year'], { startDate: 'Select a start year' })
     .required({ startDate: 'Start year is a required field' }),
   endDate: string().notOneOf(['End Year'], { endDate: 'Select an end year' }).required({ endDate: 'End year is a required field' }),
-  description: string().required({ description: 'Decription is a required field' }),
+  description: string().required({ description: 'Description is a required field' }),
   currentlyWorkingHere: boolean().optional()
 });
 

@@ -86,6 +86,7 @@ export interface IDropdownProps {
   text: string;
   values: string[];
   maxHeight: string;
+  placeholder?: string;
   mainClassNames?: string;
   dropdownClassNames?: string;
   showSearchInput?: boolean;

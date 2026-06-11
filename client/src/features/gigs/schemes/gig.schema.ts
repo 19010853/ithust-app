@@ -25,7 +25,7 @@ const gigInfoSchema: ObjectSchema<ICreateGig | any> = object({
     .required({ basicTitle: 'Gig basic title is a required field' }),
   subCategories: array(string()).min(1, { subCategories: 'Subcategory is a required field' }),
   tags: array(string()).min(1, { tags: 'Tags is a required field' }),
-  price: number().min(5, { price: 'Price is a required field' })
+  price: number().min(5, { price: 'Price must be at least 5' }).required({ price: 'Price is a required field' })
 });
 
 export { gigInfoSchema };
