@@ -69,7 +69,7 @@ export interface ISignUpPayload {
 
 export interface ISignInPayload {
   [key: string]: string | null | undefined;
-  username: string;
+  email: string;
   password: string;
   browserName: string | null | undefined;
   deviceType: string | null | undefined;

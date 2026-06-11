@@ -1,8 +1,9 @@
 import { randomInt } from 'crypto';
+
 import { AuthModel } from '@auth/models/auth.schema';
 import { loginSchema } from '@auth/schemes/signin';
-import { getUserByEmail, getUserByUsername, signToken, syncAuthRole, updateUserOTP } from '@auth/services/auth.service';
-import { BadRequestError, IAuthDocument, IEmailMessageDetails, isEmail } from '@19010853/ithust-shared';
+import { getUserByEmail, signToken, syncAuthRole, updateUserOTP } from '@auth/services/auth.service';
+import { BadRequestError, IAuthDocument, IEmailMessageDetails } from '@19010853/ithust-shared';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { omit } from 'lodash';
@@ -14,9 +15,8 @@ export async function read(req: Request, res: Response): Promise<void> {
   if (error?.details) {
     throw new BadRequestError(error.details[0].message, 'SignIn read() method error');
   }
-  const { username, password, browserName, deviceType } = req.body;
-  const isValidEmail: boolean = isEmail(username);
-  const existingUser: IAuthDocument | undefined = !isValidEmail ? await getUserByUsername(username) : await getUserByEmail(username);
+  const { email, password, browserName, deviceType } = req.body;
+  const existingUser: IAuthDocument | undefined = await getUserByEmail(email);
   if (!existingUser) {
     throw new BadRequestError('Invalid credentials', 'SignIn read() method error');
   }

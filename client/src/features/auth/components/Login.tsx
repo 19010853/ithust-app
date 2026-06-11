@@ -26,7 +26,7 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
   const [alertMessage, setAlertMessage] = useState<string>('');
   const [passwordType, setPasswordType] = useState<string>('password');
   const [userInfo, setUserInfo] = useState<ISignInPayload>({
-    username: '',
+    email: '',
     password: '',
     browserName: deviceData.browser.name,
     deviceType: mobileOrientation.isLandscape ? 'browser' : 'mobile'
@@ -87,18 +87,18 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
           </div>
           {alertMessage && <Alert type="error" message={alertMessage} />}
           <div>
-            <label htmlFor="email or username" className="text-sm font-bold leading-tight tracking-normal text-gray-800">
-              Email or username
+            <label htmlFor="email" className="text-sm font-bold leading-tight tracking-normal text-gray-800">
+              Email
             </label>
             <TextInput
-              id="username"
-              name="username"
-              type="text"
-              value={userInfo.username}
+              id="email"
+              name="email"
+              type="email"
+              value={userInfo.email}
               className="mb-5 mt-2 flex h-10 w-full items-center rounded border border-gray-300 pl-3 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-              placeholder="Enter email or username"
+              placeholder="Enter email"
               onChange={(event: ChangeEvent) => {
-                setUserInfo({ ...userInfo, username: (event.target as HTMLInputElement).value });
+                setUserInfo({ ...userInfo, email: (event.target as HTMLInputElement).value });
               }}
             />
           </div>
@@ -142,9 +142,10 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
           <div className="flex w-full items-center justify-center">
             <Button
               testId="submit"
-              disabled={!userInfo.username || !userInfo.password}
-              className={`text-md block w-full cursor-pointer rounded bg-sky-500 px-8 py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none ${!userInfo.username || !userInfo.password ? 'cursor-not-allowed' : 'cursor-pointer'
-                }`}
+              disabled={!userInfo.email || !userInfo.password}
+              className={`text-md block w-full cursor-pointer rounded bg-sky-500 px-8 py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none ${
+                !userInfo.email || !userInfo.password ? 'cursor-not-allowed' : 'cursor-pointer'
+              }`}
               label={`${isLoading ? 'LOGIN IN PROGRESS...' : 'LOGIN'}`}
               onClick={onLoginUser}
             />
