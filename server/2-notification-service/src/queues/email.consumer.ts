@@ -7,6 +7,15 @@ import { sendEmail } from '@notifications/queues/mail.transport';
 
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'notificationQueueConnection', 'debug');
 
+interface IAuthEmailMessage {
+  receiverEmail: string;
+  resetLink?: string;
+  template: string;
+  username?: string;
+  verifyLink?: string;
+  otp?: string;
+}
+
 async function consumeAuthEmailMessages(channel: Channel): Promise<void> {
   try {
     if (!channel) {
@@ -19,17 +28,36 @@ async function consumeAuthEmailMessages(channel: Channel): Promise<void> {
     const jobQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
     await channel.bindQueue(jobQueue.queue, exchangeName, routingKey);
     channel.consume(jobQueue.queue, async (msg: ConsumeMessage | null) => {
-      const { receiverEmail, username, verifyLink, resetLink, template, otp } = JSON.parse(msg!.content.toString());
-      const locals: IEmailLocals = {
-        appLink: `${config.CLIENT_URL}`,
-        appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
-        username,
-        verifyLink,
-        resetLink,
-        otp
-      };
-      await sendEmail(template, receiverEmail, locals);
-      channel.ack(msg!);
+      if (!msg) {
+        return;
+      }
+
+      let receiverEmail = '';
+      let template = '';
+
+      try {
+        const parsedMessage = JSON.parse(msg.content.toString()) as IAuthEmailMessage;
+        const { username, verifyLink, resetLink, otp } = parsedMessage;
+        receiverEmail = parsedMessage.receiverEmail;
+        template = parsedMessage.template;
+        const locals: IEmailLocals = {
+          appLink: `${config.CLIENT_URL}`,
+          appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
+          username,
+          verifyLink,
+          resetLink,
+          otp
+        };
+        await sendEmail(template, receiverEmail, locals);
+        channel.ack(msg);
+      } catch (error) {
+        log.log(
+          'error',
+          `NotificationService EmailConsumer auth email failed for template "${template}" and receiver "${receiverEmail}". Message will not be requeued:`,
+          error
+        );
+        channel.nack(msg, false, false);
+      }
     });
   } catch (error) {
     log.log('error', 'NotificationService EmailConsumer consumeAuthMessages() method error:', error);
