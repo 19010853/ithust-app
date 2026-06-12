@@ -49,6 +49,14 @@ const parsePositiveInt = (value: string | undefined, fallback: number, max = 100
   return Math.min(parsed, max);
 };
 
+const parseOptionalNumber = (value: string | undefined): number | undefined => {
+  if (!value?.trim()) {
+    return undefined;
+  }
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+};
+
 const escapedRegex = (value: string): RegExp => new RegExp(value.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
 
 const appendDateRange = (query: Record<string, unknown>, field: string, from?: string, to?: string): void => {
@@ -149,12 +157,12 @@ const getWithdrawals = async (filters: IWithdrawalFilters = {}): Promise<any> =>
   }
 
   const amountRange: Record<string, number> = {};
-  const minAmount = Number(filters.minAmount);
-  const maxAmount = Number(filters.maxAmount);
-  if (Number.isFinite(minAmount)) {
+  const minAmount = parseOptionalNumber(filters.minAmount);
+  const maxAmount = parseOptionalNumber(filters.maxAmount);
+  if (minAmount !== undefined) {
     amountRange.$gte = minAmount;
   }
-  if (Number.isFinite(maxAmount)) {
+  if (maxAmount !== undefined) {
     amountRange.$lte = maxAmount;
   }
   if (Object.keys(amountRange).length) {

@@ -145,4 +145,24 @@ describe('Withdrawal service', () => {
       ]
     });
   });
+
+  it('ignores blank amount filters from the admin withdrawals page', async () => {
+    const withdrawalFindQuery = {
+      sort: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      populate: jest.fn().mockReturnThis(),
+      exec: jest.fn().mockResolvedValue([])
+    };
+    const countQuery = {
+      exec: jest.fn().mockResolvedValue(0)
+    };
+    (WithdrawalModel.find as jest.Mock).mockReturnValue(withdrawalFindQuery);
+    (WithdrawalModel.countDocuments as jest.Mock).mockReturnValue(countQuery);
+
+    await getWithdrawals({ status: 'PENDING', minAmount: '', maxAmount: '' });
+
+    expect(WithdrawalModel.find).toHaveBeenCalledWith({ status: 'PENDING' });
+    expect(WithdrawalModel.countDocuments).toHaveBeenCalledWith({ status: 'PENDING' });
+  });
 });

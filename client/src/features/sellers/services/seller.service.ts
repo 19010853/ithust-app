@@ -4,6 +4,12 @@ import { IWithdrawalFilters } from 'src/features/admin/interfaces/admin.interfac
 
 import { ISellerDocument, IWithdrawalDocument } from '../interfaces/seller.interface';
 
+const cleanQueryParams = (params?: IWithdrawalFilters): Record<string, string | number> => {
+  return Object.fromEntries(
+    Object.entries(params || {}).filter(([, value]) => value !== undefined && value !== null && `${value}`.trim() !== '')
+  ) as Record<string, string | number>;
+};
+
 export const sellerApi = api.injectEndpoints({
   endpoints: (build) => ({
     getSellerByUsername: build.query<IResponse, string>({
@@ -54,7 +60,7 @@ export const sellerApi = api.injectEndpoints({
     getWithdrawals: build.query<IResponse, IWithdrawalFilters | undefined>({
       query: (params?: IWithdrawalFilters) => ({
         url: 'seller/withdrawals',
-        params: params || {}
+        params: cleanQueryParams(params)
       }),
       providesTags: ['Withdrawal']
     }),
