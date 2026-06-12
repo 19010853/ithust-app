@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: ['dev/se-pay']
+    branches: ['production']
     paths:
       - 'server/8-review-service/**'
       - 'kubernetes/k3s/8-review-service/**'

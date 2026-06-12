@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: ['dev/se-pay']
+    branches: ['production']
     paths:
       - 'server/5-gig-service/**'
       - 'kubernetes/k3s/5-gig-service/**'

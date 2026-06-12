@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: ['dev/se-pay']
+    branches: ['production']
     paths:
       - 'server/2-notification-service/**'
       - 'kubernetes/k3s/2-notifications-service/**'
