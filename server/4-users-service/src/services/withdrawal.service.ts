@@ -165,25 +165,36 @@ const getWithdrawals = async (filters: IWithdrawalFilters = {}): Promise<any> =>
   appendDateRange(query, 'processedDate', filters.processedFrom, filters.processedTo);
 
   const sellerQuery: Record<string, unknown> = {};
-  const sellerOr = [];
-  if (filters.q?.trim()) {
-    const regex = escapedRegex(filters.q);
-    sellerOr.push({ username: regex }, { fullName: regex }, { email: regex });
-    query.$or = [{ 'bankInfo.bankName': regex }, { 'bankInfo.accountNumber': regex }, { 'bankInfo.accountName': regex }];
-  }
   if (filters.sellerUsername?.trim()) {
     sellerQuery.username = escapedRegex(filters.sellerUsername);
   }
   if (filters.sellerEmail?.trim()) {
     sellerQuery.email = escapedRegex(filters.sellerEmail);
   }
-  if (sellerOr.length) {
-    sellerQuery.$or = sellerOr;
-  }
 
   if (Object.keys(sellerQuery).length) {
     const sellers = await SellerModel.find(sellerQuery).select('_id').lean().exec();
     query.sellerId = { $in: sellers.map((seller) => seller._id) };
+  }
+
+  if (filters.q?.trim()) {
+    const regex = escapedRegex(filters.q);
+    const matchingSellers = await SellerModel.find({
+      $or: [{ username: regex }, { fullName: regex }, { email: regex }]
+    })
+      .select('_id')
+      .lean()
+      .exec();
+
+    const searchConditions: Record<string, unknown>[] = [
+      { 'bankInfo.bankName': regex },
+      { 'bankInfo.accountNumber': regex },
+      { 'bankInfo.accountName': regex }
+    ];
+    if (matchingSellers.length) {
+      searchConditions.push({ sellerId: { $in: matchingSellers.map((seller) => seller._id) } });
+    }
+    query.$or = searchConditions;
   }
 
   const allowedSort = new Set(['createdAt', 'processedDate', 'amount', 'status']);

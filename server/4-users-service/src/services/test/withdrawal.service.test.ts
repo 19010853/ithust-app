@@ -2,10 +2,12 @@ import { SellerModel } from '@users/models/seller.schema';
 import { WithdrawalModel } from '@users/models/withdrawal.schema';
 import { createConnection } from '@users/queues/connection';
 import { publishDirectMessage } from '@users/queues/user.producer';
-import { updateWithdrawalStatus } from '@users/services/withdrawal.service';
+import { getWithdrawals, updateWithdrawalStatus } from '@users/services/withdrawal.service';
 
 jest.mock('@users/models/withdrawal.schema', () => ({
   WithdrawalModel: {
+    countDocuments: jest.fn(),
+    find: jest.fn(),
     findOneAndUpdate: jest.fn()
   }
 }));
@@ -13,6 +15,7 @@ jest.mock('@users/models/withdrawal.schema', () => ({
 jest.mock('@users/models/seller.schema', () => ({
   SellerModel: {
     updateOne: jest.fn(),
+    find: jest.fn(),
     findById: jest.fn()
   }
 }));
@@ -101,5 +104,45 @@ describe('Withdrawal service', () => {
       'Withdrawal is not pending or does not exist'
     );
     expect(SellerModel.updateOne).not.toHaveBeenCalled();
+  });
+
+  it('searches withdrawals by seller username without requiring bank fields to match', async () => {
+    const withdrawalFindQuery = {
+      sort: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      populate: jest.fn().mockReturnThis(),
+      exec: jest.fn().mockResolvedValue([])
+    };
+    const countQuery = {
+      exec: jest.fn().mockResolvedValue(0)
+    };
+    const sellerFindQuery = {
+      select: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
+      exec: jest.fn().mockResolvedValue([{ _id: 'seller-id' }])
+    };
+    (SellerModel.find as jest.Mock).mockReturnValue(sellerFindQuery);
+    (WithdrawalModel.find as jest.Mock).mockReturnValue(withdrawalFindQuery);
+    (WithdrawalModel.countDocuments as jest.Mock).mockReturnValue(countQuery);
+
+    await getWithdrawals({ status: 'PENDING', q: 'Minhkhoi1502' });
+
+    expect(SellerModel.find).toHaveBeenCalledWith({
+      $or: [
+        { username: expect.any(RegExp) },
+        { fullName: expect.any(RegExp) },
+        { email: expect.any(RegExp) }
+      ]
+    });
+    expect(WithdrawalModel.find).toHaveBeenCalledWith({
+      status: 'PENDING',
+      $or: [
+        { 'bankInfo.bankName': expect.any(RegExp) },
+        { 'bankInfo.accountNumber': expect.any(RegExp) },
+        { 'bankInfo.accountName': expect.any(RegExp) },
+        { sellerId: { $in: ['seller-id'] } }
+      ]
+    });
   });
 });

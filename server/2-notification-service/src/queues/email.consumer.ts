@@ -76,77 +76,92 @@ async function consumeOrderEmailMessages(channel: Channel): Promise<void> {
     const jobQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
     await channel.bindQueue(jobQueue.queue, exchangeName, routingKey);
     channel.consume(jobQueue.queue, async (msg: ConsumeMessage | null) => {
-      const {
-        receiverEmail,
-        username,
-        template,
-        sender,
-        offerLink,
-        amount,
-        buyerUsername,
-        sellerUsername,
-        title,
-        description,
-        deliveryDays,
-        orderId,
-        orderDue,
-        requirements,
-        orderUrl,
-        originalDate,
-        newDate,
-        reason,
-        subject,
-        header,
-        type,
-        message,
-        serviceFee,
-        total
-      } = JSON.parse(msg!.content.toString());
-      const {
-        buyerEmail,
-        bankName,
-        accountNumber,
-        accountName,
-        refundRequestId
-      } = JSON.parse(msg!.content.toString());
-      const locals: IEmailLocals & Record<string, unknown> = {
-        appLink: `${config.CLIENT_URL}`,
-        appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
-        username,
-        sender,
-        offerLink,
-        amount,
-        buyerUsername,
-        sellerUsername,
-        title,
-        description,
-        deliveryDays,
-        orderId,
-        orderDue,
-        requirements,
-        orderUrl,
-        originalDate,
-        newDate,
-        reason,
-        subject,
-        header,
-        type,
-        message,
-        serviceFee,
-        total,
-        buyerEmail,
-        bankName,
-        accountNumber,
-        accountName,
-        refundRequestId
-      };
-      if (template === 'orderPlaced') {
-        await sendEmail('orderPlaced', receiverEmail, locals);
-        await sendEmail('orderReceipt', receiverEmail, locals);
-      } else {
-        await sendEmail(template, receiverEmail, locals);
+      if (!msg) {
+        return;
       }
-      channel.ack(msg!);
+
+      let receiverEmail = '';
+      let template = '';
+
+      try {
+        const parsedMessage = JSON.parse(msg.content.toString());
+        const {
+          username,
+          sender,
+          offerLink,
+          amount,
+          buyerUsername,
+          sellerUsername,
+          title,
+          description,
+          deliveryDays,
+          orderId,
+          orderDue,
+          requirements,
+          orderUrl,
+          originalDate,
+          newDate,
+          reason,
+          subject,
+          header,
+          type,
+          message,
+          serviceFee,
+          total,
+          buyerEmail,
+          bankName,
+          accountNumber,
+          accountName,
+          refundRequestId
+        } = parsedMessage;
+        receiverEmail = parsedMessage.receiverEmail;
+        template = parsedMessage.template;
+        const locals: IEmailLocals & Record<string, unknown> = {
+          appLink: `${config.CLIENT_URL}`,
+          appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
+          username,
+          sender,
+          offerLink,
+          amount,
+          buyerUsername,
+          sellerUsername,
+          title,
+          description,
+          deliveryDays,
+          orderId,
+          orderDue,
+          requirements,
+          orderUrl,
+          originalDate,
+          newDate,
+          reason,
+          subject,
+          header,
+          type,
+          message,
+          serviceFee,
+          total,
+          buyerEmail,
+          bankName,
+          accountNumber,
+          accountName,
+          refundRequestId
+        };
+        if (template === 'orderPlaced') {
+          await sendEmail('orderPlaced', receiverEmail, locals);
+          await sendEmail('orderReceipt', receiverEmail, locals);
+        } else {
+          await sendEmail(template, receiverEmail, locals);
+        }
+        channel.ack(msg);
+      } catch (error) {
+        log.log(
+          'error',
+          `NotificationService EmailConsumer order email failed for template "${template}" and receiver "${receiverEmail}". Message will not be requeued:`,
+          error
+        );
+        channel.nack(msg, false, false);
+      }
     });
   } catch (error) {
     log.log('error', 'NotificationService EmailConsumer consumeOrderEmailMessages() method error:', error);
@@ -165,41 +180,58 @@ async function consumeWithdrawalEmailMessages(channel: Channel): Promise<void> {
     const jobQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
     await channel.bindQueue(jobQueue.queue, exchangeName, routingKey);
     channel.consume(jobQueue.queue, async (msg: ConsumeMessage | null) => {
-      const {
-        receiverEmail,
-        template,
-        sellerUsername,
-        sellerFullName,
-        amount,
-        bankName,
-        accountNumber,
-        accountName,
-        withdrawalId,
-        requestDate,
-        status,
-        processedDate,
-        adminNote,
-        paymentReference
-      } = JSON.parse(msg!.content.toString());
-      const locals: IEmailLocals & Record<string, unknown> = {
-        appLink: `${config.CLIENT_URL}`,
-        appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
-        username: sellerUsername,
-        sellerUsername,
-        sellerFullName,
-        amount,
-        bankName,
-        accountNumber,
-        accountName,
-        withdrawalId,
-        requestDate,
-        status,
-        processedDate,
-        adminNote,
-        paymentReference
-      };
-      await sendEmail(template, receiverEmail, locals);
-      channel.ack(msg!);
+      if (!msg) {
+        return;
+      }
+
+      let receiverEmail = '';
+      let template = '';
+
+      try {
+        const parsedMessage = JSON.parse(msg.content.toString());
+        const {
+          sellerUsername,
+          sellerFullName,
+          amount,
+          bankName,
+          accountNumber,
+          accountName,
+          withdrawalId,
+          requestDate,
+          status,
+          processedDate,
+          adminNote,
+          paymentReference
+        } = parsedMessage;
+        receiverEmail = parsedMessage.receiverEmail;
+        template = parsedMessage.template;
+        const locals: IEmailLocals & Record<string, unknown> = {
+          appLink: `${config.CLIENT_URL}`,
+          appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
+          username: sellerUsername,
+          sellerUsername,
+          sellerFullName,
+          amount,
+          bankName,
+          accountNumber,
+          accountName,
+          withdrawalId,
+          requestDate,
+          status,
+          processedDate,
+          adminNote,
+          paymentReference
+        };
+        await sendEmail(template, receiverEmail, locals);
+        channel.ack(msg);
+      } catch (error) {
+        log.log(
+          'error',
+          `NotificationService EmailConsumer withdrawal email failed for template "${template}" and receiver "${receiverEmail}". Message will not be requeued:`,
+          error
+        );
+        channel.nack(msg, false, false);
+      }
     });
   } catch (error) {
     log.log('error', 'NotificationService EmailConsumer consumeWithdrawalEmailMessages() method error:', error);
