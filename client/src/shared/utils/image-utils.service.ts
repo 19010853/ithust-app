@@ -43,8 +43,8 @@ export const checkFile = (file: File): boolean => {
     window.alert('File is too large. Max. size is 1 GB.');
     hasError = true;
   }
-  if (!file.name.match(/\.(jpg|jpeg|png|gif|pdf|webp|zip|m4v|avi|mpg|mp4|webm)$/)) {
-    window.alert('Only files of type jpg, jpeg, png, gif or pdf are allowed');
+  if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif|pdf|webp|zip|m4v|avi|mpg|mp4|webm)$/)) {
+    window.alert('Only files of type jpg, jpeg, png, gif, webp, pdf, zip, m4v, avi, mpg, mp4 or webm are allowed');
     hasError = true;
   }
   return hasError;
@@ -72,7 +72,7 @@ export const checkUrlExtension = (fileExtension: string): string => {
 
 export const fileType = (file: File): string => {
   const list: string[] = file.name.split('.');
-  const fileType: string = list[list.length - 1];
+  const fileType: string = list[list.length - 1].toLowerCase();
   return fileType;
 };
 

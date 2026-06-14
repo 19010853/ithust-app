@@ -7,7 +7,7 @@ import Button from '../button/Button';
 import TextAreaInput from '../inputs/TextAreaInput';
 import TextInput from '../inputs/TextInput';
 import { checkFile, fileType, readAsBase64 } from '../utils/image-utils.service';
-import { bytesToSize, showErrorToast, showSuccessToast } from '../utils/utils.service';
+import { bytesToSize, isFetchBaseQueryError, showErrorToast, showSuccessToast } from '../utils/utils.service';
 import { IModalProps } from './interfaces/modal.interface';
 import ModalBg from './ModalBg';
 
@@ -40,13 +40,18 @@ const DeliverWorkModal: FC<IModalProps> = ({ order, onClose }): ReactElement => 
         fileSize: selectedWorkFile.size,
         fileName: selectedWorkFile.name
       };
-      await deliverOrder({ orderId: `${order?.orderId}`, body: completedWork });
+      await deliverOrder({ orderId: `${order?.orderId}`, body: completedWork }).unwrap();
       showSuccessToast('Order delivered successfully.');
       if (onClose) {
         onClose();
       }
     } catch (error) {
-      showErrorToast('Error deliverying order.');
+      if (isFetchBaseQueryError(error)) {
+        const queryError = error as { data?: { message?: string } };
+        showErrorToast(queryError.data?.message || 'Error delivering order.');
+        return;
+      }
+      showErrorToast('Error delivering order.');
     }
   };
 

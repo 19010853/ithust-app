@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import cloudinary, { UploadApiOptions, UploadApiResponse } from 'cloudinary';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import {
@@ -10,8 +11,7 @@ import {
   sellerDeliverOrder
 } from '@order/services/order.service';
 import { orderUpdateSchema } from '@order/schemes/order';
-import { BadRequestError, IDeliveredWork, IOrderDocument, uploads } from '@19010853/ithust-shared';
-import { UploadApiResponse } from 'cloudinary';
+import { BadRequestError, IDeliveredWork, IOrderDocument } from '@19010853/ithust-shared';
 
 const cancel = async (req: Request, res: Response): Promise<void> => {
   const { orderId } = req.params;
@@ -45,6 +45,24 @@ const buyerApproveOrder = async (req: Request, res: Response): Promise<void> => 
   res.status(StatusCodes.OK).json({ message: 'Order approved successfully.', order });
 };
 
+const uploadDeliveredWork = async (file: string, fileType: string, publicId: string): Promise<UploadApiResponse> => {
+  const normalizedFileType = fileType.toLowerCase();
+  const uploadOptions: UploadApiOptions = {
+    resource_type: 'auto'
+  };
+
+  if (['pdf', 'zip'].includes(normalizedFileType)) {
+    uploadOptions.public_id = `${publicId}.${normalizedFileType}`;
+  }
+
+  try {
+    return await cloudinary.v2.uploader.upload(file, uploadOptions);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'File upload error. Try again';
+    throw new BadRequestError(message, 'Update uploadDeliveredWork() method');
+  }
+};
+
 const deliverOrder = async (req: Request, res: Response): Promise<void> => {
   const { orderId } = req.params;
   let file: string = req.body.file;
@@ -52,7 +70,7 @@ const deliverOrder = async (req: Request, res: Response): Promise<void> => {
   const randomCharacters: string = randomBytes.toString('hex');
   let result: UploadApiResponse;
   if (file) {
-    result = (req.body.fileType === 'zip' ? await uploads(file, `${randomCharacters}.zip`) : await uploads(file)) as UploadApiResponse;
+    result = await uploadDeliveredWork(file, `${req.body.fileType}`, randomCharacters);
     if (!result.public_id) {
       throw new BadRequestError('File upload error. Try again', 'Update deliverOrder() method');
     }
