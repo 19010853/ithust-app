@@ -7,14 +7,14 @@ import { saveToLocalStorage } from 'src/shared/utils/utils.service';
 import { v4 as uuidv4 } from 'uuid';
 
 const deliveryTime = [
-  { label: 'Up to 1 day', value: '1' },
-  { label: 'Up to 2 days', value: '2' },
-  { label: 'Up to 3 days', value: '3' },
-  { label: 'Up to 4 days', value: '4' },
-  { label: 'Up to 5 days', value: '5' },
-  { label: 'Up to 6 days', value: '6' },
-  { label: 'Up to 7 days', value: '7' },
-  { label: 'Anytime', value: 'Anytime' }
+  { label: 'Tối đa 1 ngày', value: '1' },
+  { label: 'Tối đa 2 ngày', value: '2' },
+  { label: 'Tối đa 3 ngày', value: '3' },
+  { label: 'Tối đa 4 ngày', value: '4' },
+  { label: 'Tối đa 5 ngày', value: '5' },
+  { label: 'Tối đa 6 ngày', value: '6' },
+  { label: 'Tối đa 7 ngày', value: '7' },
+  { label: 'Bất kỳ lúc nào', value: 'Anytime' }
 ];
 
 const DeliveryTimeDropdown: FC = (): ReactElement => {
@@ -29,7 +29,7 @@ const DeliveryTimeDropdown: FC = (): ReactElement => {
           className="flex justify-between gap-5 rounded-lg border border-gray-400 px-5 py-3 font-medium"
           label={
             <>
-              <span className="truncate">Delivery time</span>
+              <span className="truncate">Thời gian giao</span>
               {!toggleDropdown ? (
                 <FaChevronDown className="float-right mt-§ h-4 fill-current text-slate-900" />
               ) : (
@@ -75,7 +75,7 @@ const DeliveryTimeDropdown: FC = (): ReactElement => {
                   setToggleDropdown(false);
                 }}
               >
-                Clear All
+                Xóa tất cả
               </div>
               <div
                 className="rounded bg-sky-500 px-4 py-2 text-sm font-bold text-white hover:bg-sky-400"
@@ -87,7 +87,7 @@ const DeliveryTimeDropdown: FC = (): ReactElement => {
                   saveToLocalStorage('filterApplied', JSON.stringify(true));
                 }}
               >
-                Apply
+                Áp dụng
               </div>
             </div>
           </div>
@@ -99,7 +99,7 @@ const DeliveryTimeDropdown: FC = (): ReactElement => {
             className="flex gap-4 self-center rounded-full bg-gray-200 px-5 py-1 font-bold hover:text-gray-500"
             label={
               <>
-                {`Up to ${selectedTime} ${selectedTime === '1' ? 'Day' : 'Days'}`}
+                {`Tối đa ${selectedTime} ngày`}
                 <FaTimes className="self-center font-normal" />
               </>
             }

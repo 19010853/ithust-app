@@ -11,7 +11,7 @@ import ModalBg from './ModalBg';
 
 const ExtendDateModal: FC<IExtendedDateModalProps> = ({ order, onClose }): ReactElement => {
   const [reason, setReason] = useState<string>('');
-  const [selectedDay, setSelectedDay] = useState<string>('Select number of days');
+  const [selectedDay, setSelectedDay] = useState<string>('Chọn số ngày');
   const [deliveryDate, setDeliveryDate] = useState<string>('');
   const [requestDeliveryDateExtension] = useRequestDeliveryDateExtensionMutation();
 
@@ -26,7 +26,7 @@ const ExtendDateModal: FC<IExtendedDateModalProps> = ({ order, onClose }): React
       await requestDeliveryDateExtension({ orderId: order.orderId, body: extended }).unwrap();
       onClose();
     } catch (error) {
-      showErrorToast('Error sending request');
+      showErrorToast('Không thể gửi yêu cầu.');
     }
   };
 
@@ -35,18 +35,18 @@ const ExtendDateModal: FC<IExtendedDateModalProps> = ({ order, onClose }): React
       <div className="fixed bottom-0 left-0 right-0 top-0 z-[30] flex w-full items-center justify-center">
         <div className="relative bottom-auto left-auto right-auto top-auto max-h-[90vh] min-w-[350px] bg-white p-4">
           <div className="w-full text-left">
-            <h4 className="mb-3 text-base font-bold">Request: Extend delivery date</h4>
+            <h4 className="mb-3 text-base font-bold">Yêu cầu: Gia hạn ngày giao</h4>
             <div className="alerts alert-warning rounded-none pb-[6px] text-sm font-semibold text-white">
-              Extending the delivery date might affect buyer satisfaction.
+              Gia hạn ngày giao có thể ảnh hưởng đến mức độ hài lòng của người mua.
             </div>
           </div>
           <div className="">
             <div className="mb-5">
-              <h4 className="mb-0 text-sm font-bold">Original date</h4>
+              <h4 className="mb-0 text-sm font-bold">Ngày ban đầu</h4>
               <span className="text-[13px]">{TimeAgo.dayMonthYear(order.offer.oldDeliveryDate)}</span>
             </div>
             <div className="relative mb-[66px]">
-              <h4 className="mb-[5px] text-sm font-bold">How many days do you want to add?</h4>
+              <h4 className="mb-[5px] text-sm font-bold">Bạn muốn cộng thêm bao nhiêu ngày?</h4>
               <Dropdown
                 text={selectedDay}
                 maxHeight="300"
@@ -62,10 +62,11 @@ const ExtendDateModal: FC<IExtendedDateModalProps> = ({ order, onClose }): React
               />
             </div>
             <div className="mb-5">
-              <h4 className="mb-[5px] text-sm font-bold">Help the buyer understand</h4>
+              <h4 className="mb-[5px] text-sm font-bold">Giúp người mua hiểu lý do</h4>
               <TextAreaInput
                 className="border-grey mb-1 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
                 name="description"
+                placeholder="Nhập lý do gia hạn..."
                 value={reason}
                 rows={3}
                 onChange={(event: ChangeEvent) => setReason((event.target as HTMLTextAreaElement).value)}
@@ -75,7 +76,7 @@ const ExtendDateModal: FC<IExtendedDateModalProps> = ({ order, onClose }): React
           <div className="flex justify-end gap-2">
             <Button
               className="rounded bg-gray-200 px-6 py-3 text-center text-sm font-bold text-black focus:outline-none md:px-4 md:py-2 md:text-base"
-              label="Cancel"
+              label="Hủy"
               onClick={onClose}
             />
             <Button
@@ -83,7 +84,7 @@ const ExtendDateModal: FC<IExtendedDateModalProps> = ({ order, onClose }): React
               className={`cursor-pointer rounded px-6 py-3 text-center text-sm font-bold text-white focus:outline-none md:px-4 md:py-2 md:text-base ${
                 !reason || !deliveryDate ? 'cursor-not-allowed bg-sky-200' : 'bg-sky-500 hover:bg-sky-400'
               }`}
-              label="Send Request"
+              label="Gửi yêu cầu"
               onClick={requestExtension}
             />
           </div>

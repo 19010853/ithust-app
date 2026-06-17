@@ -13,6 +13,17 @@ import OrderActivities from './order-activities/OrderActivities';
 import OrderDetailsTable from './OrderDetailsTable';
 import RefundRequest from './RefundRequest';
 
+const orderStatusLabel = (status?: string): string => {
+  const labels: Record<string, string> = {
+    pending: 'Đang chờ',
+    'in progress': 'Đang thực hiện',
+    delivered: 'Đã giao',
+    completed: 'Hoàn thành',
+    cancelled: 'Đã hủy'
+  };
+  return labels[`${status}`.toLowerCase()] || `${status || ''}`;
+};
+
 const Order: FC = (): ReactElement => {
   const authUser = useAppSelector((state: IReduxState) => state.authUser);
   const [showDeliveryPanel, setShowDeliveryPanel] = useState<boolean>(false);
@@ -46,17 +57,17 @@ const Order: FC = (): ReactElement => {
             <div className="mt-4 flex flex-col justify-between bg-white md:flex-row">
               <div className="flex w-full flex-col flex-wrap p-4 md:w-2/3">
                 <span className="text-base font-bold text-black lg:text-lg">
-                  {order.delivered ? 'Your delivery is here!' : 'Your delivery is now in the works'}
+                  {order.delivered ? 'Đơn giao của bạn đã sẵn sàng!' : 'Đơn hàng của bạn đang được thực hiện'}
                 </span>
                 {order?.delivered ? (
                   <p className="mt-1 w-5/6 flex-wrap text-sm">
-                    View the delivery to make sure you have exactly what you need. Let {order.sellerUsername} know your thoughts.
+                    Xem phần bàn giao để chắc chắn bạn đã nhận đúng nội dung cần thiết. Hãy cho {order.sellerUsername} biết phản hồi của bạn.
                   </p>
                 ) : (
                   <>
-                    <p className="mt-1 w-5/6 flex-wrap text-sm">We notified {order.sellerUsername} about your order.</p>
+                    <p className="mt-1 w-5/6 flex-wrap text-sm">Chúng tôi đã thông báo đơn hàng của bạn cho {order.sellerUsername}.</p>
                     <p className="mt-1 w-5/6 flex-wrap text-sm">
-                      You should receive your delivery by {TimeAgo.dayMonthYear(order.offer.newDeliveryDate)}
+                      Bạn dự kiến sẽ nhận bàn giao trước {TimeAgo.dayMonthYear(order.offer.newDeliveryDate)}
                     </p>
                   </>
                 )}
@@ -65,7 +76,7 @@ const Order: FC = (): ReactElement => {
                 {order && order.delivered && order.buyerUsername === authUser.username && (
                   <Button
                     className="rounded bg-sky-500 px-2 py-2 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
-                    label="View Delivery"
+                    label="Xem bàn giao"
                     onClick={() => {
                       if (elementRef.current) {
                         elementRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -91,7 +102,7 @@ const Order: FC = (): ReactElement => {
 
               <div className="bg-white">
                 <div className="mb-2 flex flex-col border-b px-4 pb-4 pt-3 md:flex-row">
-                  <img className="h-11 w-20 object-cover" src={order?.gigCoverImage} alt="Gig Cover Image" />
+                  <img className="h-11 w-20 object-cover" src={order?.gigCoverImage} alt="Ảnh bìa gig" />
                   <div className="flex flex-col">
                     <h4 className="mt-2 text-sm font-bold text-[#161c2d] md:mt-0 md:pl-4">{order.offer.gigTitle}</h4>
                     <span
@@ -100,25 +111,25 @@ const Order: FC = (): ReactElement => {
                         ''
                       )}`}
                     >
-                      {order.status}
+                      {orderStatusLabel(order.status)}
                     </span>
                   </div>
                 </div>
                 <ul className="mb-0 list-none">
                   <li className="flex justify-between px-4 pb-2 pt-2">
-                    <div className="flex gap-2 text-sm font-normal">Ordered from</div>
+                    <div className="flex gap-2 text-sm font-normal">Đặt từ</div>
                     <span className="text-sm font-bold text-green-500">{order?.sellerUsername}</span>
                   </li>
                   <li className="flex justify-between px-4 pb-2 pt-2">
-                    <div className="flex gap-2 text-sm font-normal">Order</div>
+                    <div className="flex gap-2 text-sm font-normal">Đơn hàng</div>
                     <span className="text-sm font-bold">#{order?.orderId}</span>
                   </li>
                   <li className="flex justify-between px-4 pb-2 pt-2">
-                    <div className="flex gap-2 text-sm font-normal">Delivery date</div>
+                    <div className="flex gap-2 text-sm font-normal">Ngày giao</div>
                     <span className="text-sm font-bold">{TimeAgo.dayMonthYear(order?.offer?.newDeliveryDate)}</span>
                   </li>
                   <li className="flex justify-between px-4 pb-4 pt-2">
-                    <div className="flex gap-2 text-sm font-normal">Total price</div>
+                    <div className="flex gap-2 text-sm font-normal">Tổng giá</div>
                     <span className="text-sm font-bold">${order?.price}</span>
                   </li>
                 </ul>

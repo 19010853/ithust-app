@@ -5,11 +5,35 @@ import { TimeAgo } from 'src/shared/utils/timeago.utils';
 import { normalizeOrderStatus } from 'src/shared/utils/utils.service';
 import { v4 as uuidv4 } from 'uuid';
 
+const orderTypeLabel = (type: string): string => {
+  const labels: Record<string, string> = {
+    active: 'đang hoạt động',
+    completed: 'đã hoàn tất',
+    cancelled: 'đã hủy'
+  };
+  return labels[type] || type;
+};
+
+const orderStatusLabel = (status: string): string => {
+  const labels: Record<string, string> = {
+    approved: 'Đã duyệt',
+    cancelled: 'Đã hủy',
+    completed: 'Đã hoàn tất',
+    delivered: 'Đã giao',
+    'in progress': 'Đang thực hiện',
+    pending: 'Chờ xử lý',
+    placed: 'Đã đặt',
+    revision: 'Yêu cầu chỉnh sửa'
+  };
+  const normalizedStatus = normalizeOrderStatus(status);
+  return labels[normalizedStatus] || status;
+};
+
 const BuyerTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): ReactElement => {
   return (
     <div className="flex flex-col">
       <div className="border-grey border border-b-0 px-3 py-3">
-        <div className="text-xs font-bold uppercase sm:text-sm md:text-base">{type} orders </div>
+        <div className="text-xs font-bold uppercase sm:text-sm md:text-base">Đơn hàng {orderTypeLabel(type)} </div>
       </div>
       <table className="border-grey flex-no-wrap flex w-full table-auto flex-row overflow-hidden border text-sm text-gray-500 sm:inline-table">
         {orderTypes > 0 ? (
@@ -21,15 +45,15 @@ const BuyerTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): ReactEl
                   className="mb-1 flex flex-col flex-nowrap bg-sky-500 text-white sm:mb-0 sm:table-row md:table-row lg:bg-transparent lg:text-black"
                 >
                   <th className="p-3 text-center md:w-[6%]">
-                    <span className="block lg:hidden">Image</span>
+                    <span className="block lg:hidden">Ảnh</span>
                   </th>
                   <th className="p-3 text-center md:w-[40%]">
-                    <span className="block lg:hidden">Title</span>
+                    <span className="block lg:hidden">Tiêu đề</span>
                   </th>
-                  <th className="p-3 text-center">Order Date</th>
-                  <th className="p-3 text-center">{type === 'cancelled' ? 'Cancelled On' : 'Due On'}</th>
-                  <th className="p-3 text-center">Total</th>
-                  <th className="p-3 text-center">Status</th>
+                  <th className="p-3 text-center">Ngày đặt</th>
+                  <th className="p-3 text-center">{type === 'cancelled' ? 'Ngày hủy' : 'Hạn giao'}</th>
+                  <th className="p-3 text-center">Tổng</th>
+                  <th className="p-3 text-center">Trạng thái</th>
                 </tr>
               ))}
             </thead>
@@ -37,7 +61,7 @@ const BuyerTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): ReactEl
               {orders.map((order: IOrderDocument) => (
                 <tr key={uuidv4()} className="border-grey mb-2 flex flex-col flex-nowrap border-b bg-white sm:mb-0 sm:table-row ">
                   <td className="px-3 py-3 lg:flex lg:justify-center">
-                    <img className="h-6 w-10 object-cover lg:h-8 lg:w-11" src={order.gigCoverImage} alt="Gig cover image" />
+                    <img className="h-6 w-10 object-cover lg:h-8 lg:w-11" src={order.gigCoverImage} alt="Ảnh bìa gig" />
                   </td>
                   <td className="p-3 text-left">
                     <div className="grid">
@@ -59,7 +83,7 @@ const BuyerTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): ReactEl
                         order.status
                       ).replace(/ /g, '')}`}
                     >
-                      {order.status}
+                      {orderStatusLabel(order.status)}
                     </span>
                   </td>
                 </tr>
@@ -69,7 +93,7 @@ const BuyerTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): ReactEl
         ) : (
           <tbody>
             <tr>
-              <td className="w-full px-4 py-2 text-sm">No {type} orders to show.</td>
+              <td className="w-full px-4 py-2 text-sm">Không có đơn hàng {orderTypeLabel(type)} để hiển thị.</td>
             </tr>
           </tbody>
         )}

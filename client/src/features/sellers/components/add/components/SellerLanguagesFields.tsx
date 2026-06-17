@@ -16,7 +16,7 @@ const SellerLanguageFields: FC<ILanguageProps> = ({ languageFields, setLanguageF
   const addLanguageFields = (): void => {
     const newfield: ILanguage = {
       language: '',
-      level: 'Level'
+      level: 'Trình độ'
     };
     if (languageFields && setLanguageFields) {
       setLanguageFields([...languageFields, newfield]);
@@ -44,11 +44,11 @@ const SellerLanguageFields: FC<ILanguageProps> = ({ languageFields, setLanguageF
     <>
       <div className="border-grey flex w-full flex-col border-b px-6 pb-3 pt-6">
         <div className="flex justify-between">
-          <h2 className="pb-4 text-xl font-bold">Languages</h2>
+          <h2 className="pb-4 text-xl font-bold">Ngôn ngữ</h2>
           <Button
             className="md:text-md h-7 rounded bg-sky-500 px-6 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-8"
             onClick={addLanguageFields}
-            label="Add More"
+            label="Thêm"
           />
         </div>
         {languageFields?.map((input: ILanguage, index: number) => (
@@ -59,7 +59,7 @@ const SellerLanguageFields: FC<ILanguageProps> = ({ languageFields, setLanguageF
                 type="text"
                 name="language"
                 value={input.language}
-                placeholder="Language"
+                placeholder="Ngôn ngữ"
                 onChange={(event: ChangeEvent) => handleLanguageFieldsChange(event, index)}
               />
               {getErrorMessage('language') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('language')}</p>}
@@ -85,7 +85,7 @@ const SellerLanguageFields: FC<ILanguageProps> = ({ languageFields, setLanguageF
                 <Button
                   className="md:text-md h-7 rounded bg-red-500 px-6 text-center text-sm font-bold text-white hover:bg-red-400 focus:outline-none md:px-8"
                   onClick={() => removeLanguageFields(index)}
-                  label="Delete"
+                  label="Xóa"
                 />
               )}
             </div>

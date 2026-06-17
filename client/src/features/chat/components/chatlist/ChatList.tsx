@@ -74,7 +74,7 @@ const ChatList: FC = (): ReactElement => {
   return (
     <>
       <div className="border-grey truncate border-b px-5 py-3 text-base font-medium">
-        <h2 className="w-6/12 truncate text-sm md:text-base lg:text-lg">All Conversations</h2>
+        <h2 className="w-6/12 truncate text-sm md:text-base lg:text-lg">Tất cả cuộc trò chuyện</h2>
       </div>
       <div className="absolute h-full w-full overflow-scroll pb-14">
         {chatList.map((data: IMessageDocument, index: number) => (
@@ -86,9 +86,9 @@ const ChatList: FC = (): ReactElement => {
           >
             <LazyLoadImage
               src={data.receiverUsername !== authUser?.username ? data.receiverPicture : data.senderPicture}
-              alt="profile image"
+              alt="Ảnh đại diện"
               className="h-10 w-10 object-cover rounded-full"
-              placeholderSrc="https://placehold.co/330x220?text=Profile+Image"
+              placeholderSrc="https://placehold.co/330x220?text=%E1%BA%A2nh+%C4%91%E1%BA%A1i+di%E1%BB%87n"
               effect="blur"
               wrapperClassName="h-10 w-10 object-cover rounded-full"
             />
@@ -101,7 +101,7 @@ const ChatList: FC = (): ReactElement => {
               </div>
               <div className="flex justify-between text-[#777d74]">
                 <span>
-                  {data.receiverUsername === authUser.username ? '' : 'Me: '}
+                  {data.receiverUsername === authUser.username ? '' : 'Tôi: '}
                   {data.body}
                 </span>
                 {!data.isRead ? (

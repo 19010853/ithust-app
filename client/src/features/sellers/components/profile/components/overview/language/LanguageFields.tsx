@@ -14,7 +14,7 @@ const LanguageFields: FC<ILanguageEditFieldsProps> = ({
   setShowLanguageEditForm
 }): ReactElement => {
   const { sellerProfile, setSellerProfile } = useContext(SellerContext);
-  const [level, setLevel] = useState<string>(selectedLanguage ? `${selectedLanguage.level}` : '');
+  const [level, setLevel] = useState<string>(selectedLanguage ? `${selectedLanguage.level}` : 'Trình độ');
   const [language, setLanguage] = useState<string>(selectedLanguage ? `${selectedLanguage.language}` : '');
 
   const onHandleUpdate = (): void => {
@@ -39,7 +39,7 @@ const LanguageFields: FC<ILanguageEditFieldsProps> = ({
         setSellerProfile({ ...sellerProfile, languages: clonedLanguages });
         setShowLanguageEditForm(false);
       } else {
-        showErrorToast('You need to have at least one language.');
+        showErrorToast('Bạn cần có ít nhất một ngôn ngữ.');
       }
     }
   };
@@ -50,7 +50,7 @@ const LanguageFields: FC<ILanguageEditFieldsProps> = ({
         <div className="">
           <TextInput
             className="border-grey w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-            placeholder="Language"
+            placeholder="Ngôn ngữ"
             type="text"
             name="language"
             value={language}
@@ -65,17 +65,17 @@ const LanguageFields: FC<ILanguageEditFieldsProps> = ({
       </div>
       <div className="z-20 my-4 mt-10 flex cursor-pointer justify-center md:z-0 md:mt-0">
         <Button
-          disabled={(level === 'Level' || !language) && type === 'add'}
+          disabled={(level === 'Trình độ' || !level || !language) && type === 'add'}
           className={`md:text-md rounded bg-sky-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-2
-            ${(level === 'Level' || !language) && type === 'add' ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}
+            ${(level === 'Trình độ' || !level || !language) && type === 'add' ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}
           `}
-          label={`${type === 'add' ? 'Add' : 'Update'}`}
+          label={type === 'add' ? 'Thêm' : 'Cập nhật'}
           onClick={onHandleUpdate}
         />
         &nbsp;&nbsp;
         <Button
           className="md:text-md rounded bg-gray-300 px-6 py-1 text-center text-sm font-bold hover:bg-gray-200 focus:outline-none md:py-2"
-          label="Cancel"
+          label="Hủy"
           onClick={() => {
             if (type === 'add' && setShowLanguageAddForm) {
               setShowLanguageAddForm(false);

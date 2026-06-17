@@ -16,6 +16,21 @@ import FeaturedExperts from './FeaturedExperts';
 import HomeGigsView from './HomeGigsView';
 import HomeSlider from './HomeSlider';
 
+const categoryLabel = (category?: string): string => {
+  const labels: Record<string, string> = {
+    Business: 'Kinh doanh',
+    Data: 'Dữ liệu',
+    'Digital Marketing': 'Marketing số',
+    'Graphics & Design': 'Thiết kế đồ họa',
+    'Music & Audio': 'Âm nhạc & âm thanh',
+    Photography: 'Nhiếp ảnh',
+    'Programming & Tech': 'Lập trình & công nghệ',
+    'Video & Animation': 'Video & hoạt hình',
+    'Writing & Translation': 'Viết lách & dịch thuật'
+  };
+  return labels[`${category}`] || `${category || ''}`;
+};
+
 const Home: FC = (): ReactElement => {
   const authUser = useAppSelector((state: IReduxState) => state.authUser);
   const { data, isSuccess } = useGetRandomSellersQuery('10');
@@ -52,15 +67,15 @@ const Home: FC = (): ReactElement => {
       {topGigs.length > 0 && (
         <TopGigsView
           gigs={topGigs}
-          title="Top rated services in"
-          subTitle={`Highest rated talents for all your ${lowerCase(topGigs[0].categories)} needs.`}
+          title="Dịch vụ được đánh giá cao trong"
+          subTitle={`Những tài năng được đánh giá cao nhất cho nhu cầu ${lowerCase(categoryLabel(topGigs[0].categories))} của bạn.`}
           category={topGigs[0].categories}
           width="w-72"
           type="home"
         />
       )}
       {categoryGigs.length > 0 && (
-        <HomeGigsView gigs={categoryGigs} title="Because you viewed a gig on" subTitle="" category={categoryGigs[0].categories} />
+        <HomeGigsView gigs={categoryGigs} title="Vì bạn đã xem một gig về" subTitle="" category={categoryGigs[0].categories} />
       )}
       <FeaturedExperts sellers={sellers} />
     </div>

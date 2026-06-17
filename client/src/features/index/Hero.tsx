@@ -8,6 +8,13 @@ import Typed from 'typed.js';
 import { v4 as uuidv4 } from 'uuid';
 
 const categories: string[] = ['Graphics & Design', 'Digital Marketing', 'Writing & Translation', 'Programming & Tech'];
+const categoryLabels: Record<string, string> = {
+  'Digital Marketing': 'Marketing số',
+  'Graphics & Design': 'Thiết kế đồ họa',
+  'Programming & Tech': 'Lập trình & công nghệ',
+  'Video & Animation': 'Video & hoạt hình',
+  'Writing & Translation': 'Viết lách & dịch thuật'
+};
 
 const Hero: FC = (): ReactElement => {
   const typedElement: RefObject<HTMLSpanElement> = useRef<HTMLSpanElement>(null);
@@ -21,7 +28,7 @@ const Hero: FC = (): ReactElement => {
 
   useEffect(() => {
     const typed = new Typed(typedElement.current, {
-      strings: [...categories, 'Video & Animation'],
+      strings: [...categories, 'Video & Animation'].map((category) => categoryLabels[category] || category),
       startDelay: 300,
       typeSpeed: 120,
       backSpeed: 200,
@@ -37,19 +44,19 @@ const Hero: FC = (): ReactElement => {
     <div className="relative bg-white pb-20 pt-40 dark:bg-gray-900 lg:pt-44">
       <div className="relative m-auto px-6 xl:container md:px-12 lg:px-6">
         <h3 className="mb-4 mt-4 max-w-2xl pb-2 text-center text-2xl font-normal dark:text-white lg:text-left">
-          Expert categories: <span ref={typedElement}></span>
+          Danh mục chuyên gia: <span ref={typedElement}></span>
         </h3>
         <h1 className="text-center text-4xl font-black text-blue-900 dark:text-white sm:mx-auto sm:w-10/12 sm:text-5xl md:w-10/12 md:text-5xl lg:w-auto lg:text-left xl:text-7xl">
-          Hire expert freelancers <br className="hidden lg:block" />{' '}
+          Thuê freelancer chuyên nghiệp <br className="hidden lg:block" />{' '}
           <span className="relative bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-cyan-300">
-            for your project
+            cho dự án của bạn
           </span>
           .
         </h1>
         <div className="lg:flex">
           <div className="relative mt-8 space-y-8 text-center sm:mx-auto sm:w-10/12 md:mt-16 md:w-2/3 lg:ml-0 lg:mr-auto lg:w-7/12 lg:text-left">
             <p className="text-gray-700 dark:text-gray-300 sm:text-lg lg:w-11/12">
-              Find the right freelance service for your next project.
+              Tìm dịch vụ freelance phù hợp cho dự án tiếp theo của bạn.
             </p>
 
             <div className="flex w-full justify-between gap-6 lg:gap-12">
@@ -64,7 +71,7 @@ const Hero: FC = (): ReactElement => {
                   <TextInput
                     type="search"
                     className="w-full rounded-full px-4 py-1 text-gray-800 focus:outline-none"
-                    placeholder="Search"
+                    placeholder="Tìm kiếm"
                     value={searchTerm}
                     onChange={(event: ChangeEvent) => {
                       setSearchTerm((event.target as HTMLInputElement).value);
@@ -90,7 +97,7 @@ const Hero: FC = (): ReactElement => {
                 >
                   <div className="flex justify-center">
                     <span className="block truncate font-medium dark:text-white">
-                      <a href={`/search/categories/${replaceSpacesWithDash(category)}`}>{category}</a>
+                      <a href={`/search/categories/${replaceSpacesWithDash(category)}`}>{categoryLabels[category] || category}</a>
                     </span>
                   </div>
                 </div>

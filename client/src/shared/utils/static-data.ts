@@ -130,10 +130,10 @@ export const sliderImages: string[] = [
 ];
 
 export const sliderImagesText: ISliderImagesText[] = [
-  { header: 'Leading the Way to Excellence', subHeader: 'Your Journey, Our Expertise' },
-  { header: 'Turning Ideas into Impactful Content', subHeader: 'Innovate. Create. Elevate.' },
-  { header: 'Turning Magic into Results', subHeader: 'Spelling Success, One Task at a Time' },
-  { header: 'Creating Futures, Delivering Now', subHeader: 'Your Vision, Our Innovation' }
+  { header: 'Dẫn lối đến sự xuất sắc', subHeader: 'Hành trình của bạn, chuyên môn của chúng tôi' },
+  { header: 'Biến ý tưởng thành nội dung ấn tượng', subHeader: 'Đổi mới. Sáng tạo. Nâng tầm.' },
+  { header: 'Biến điều kỳ diệu thành kết quả', subHeader: 'Từng nhiệm vụ, từng thành công' },
+  { header: 'Kiến tạo tương lai, bàn giao hôm nay', subHeader: 'Tầm nhìn của bạn, đổi mới của chúng tôi' }
 ];
 
 export const categories: ICategory[] = [

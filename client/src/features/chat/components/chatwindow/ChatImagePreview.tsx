@@ -27,7 +27,7 @@ const ChatImagePreview: FC<IFilePreviewProps> = ({
                   type="text"
                   value={message}
                   className="border-grey mb-1 w-full rounded border p-3 text-sm font-normal text-gray-600 focus:outline-none"
-                  placeholder="Enter your message..."
+                  placeholder="Nhập tin nhắn của bạn..."
                   onChange={(event: ChangeEvent) => handleChange(event)}
                 />
               </form>
@@ -49,7 +49,7 @@ const ChatImagePreview: FC<IFilePreviewProps> = ({
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center bg-red-50">
             <FaCircleNotch className="mr-3 h-10 w-10 animate-spin" size={40} color="#50b5ff" />
-            <span>Uploading...</span>
+            <span>Đang tải lên...</span>
           </div>
         )}
       </>

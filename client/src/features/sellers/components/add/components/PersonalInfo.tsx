@@ -19,7 +19,7 @@ const PersonalInfo: FC<IPersonalInfoProps> = ({ personalInfo, setPersonalInfo, p
     <div className="border-b border-grey p-6">
       <div className="mb-6 grid md:grid-cols-5">
         <div className="pb-2 text-base font-medium">
-          Fullname<sup className="top-[-0.3em] text-base text-red-500">*</sup>
+          Họ và tên<sup className="top-[-0.3em] text-base text-red-500">*</sup>
         </div>
         <div className="col-span-4 w-full">
           <TextInput
@@ -36,7 +36,7 @@ const PersonalInfo: FC<IPersonalInfoProps> = ({ personalInfo, setPersonalInfo, p
       </div>
       <div className="grid md:grid-cols-5 mb-6">
         <div className="text-base font-medium pb-2 mt-6 md:mt-0">
-          Oneliner<sup className="text-red-500 text-base top-[-0.3em]">*</sup>
+          Mô tả ngắn<sup className="text-red-500 text-base top-[-0.3em]">*</sup>
         </div>
         <div className="w-full col-span-4">
           <TextInput
@@ -44,7 +44,7 @@ const PersonalInfo: FC<IPersonalInfoProps> = ({ personalInfo, setPersonalInfo, p
             type="text"
             name="oneliner"
             value={personalInfo.oneliner}
-            placeholder="E.g. Expert Mobile and Web Developer"
+            placeholder="Ví dụ: Chuyên gia phát triển mobile và web"
             onChange={(event: ChangeEvent) => {
               const onelinerValue: string = (event.target as HTMLInputElement).value;
               setPersonalInfo({ ...personalInfo, oneliner: onelinerValue });
@@ -59,12 +59,12 @@ const PersonalInfo: FC<IPersonalInfoProps> = ({ personalInfo, setPersonalInfo, p
             }}
           />
           {getErrorMessage('oneliner') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('oneliner')}</p>}
-          <span className="flex justify-end text-[#95979d] text-xs">{allowedInfoLength.oneliner} Characters</span>
+          <span className="flex justify-end text-[#95979d] text-xs">{allowedInfoLength.oneliner} ký tự</span>
         </div>
       </div>
       <div className="grid md:grid-cols-5 mb-6">
         <div className="text-base font-medium pb-2">
-          Description<sup className="text-red-500 text-base top-[-0.3em]">*</sup>
+          Mô tả<sup className="text-red-500 text-base top-[-0.3em]">*</sup>
         </div>
         <div className="w-full col-span-4">
           <TextAreaInput
@@ -86,19 +86,19 @@ const PersonalInfo: FC<IPersonalInfoProps> = ({ personalInfo, setPersonalInfo, p
             }}
           />
           {getErrorMessage('description') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('description')}</p>}
-          <span className="flex justify-end text-[#95979d] text-xs">{allowedInfoLength.description} Characters</span>
+          <span className="flex justify-end text-[#95979d] text-xs">{allowedInfoLength.description} ký tự</span>
         </div>
       </div>
       <div className="grid md:grid-cols-5 mb-6">
         <div className="text-base font-medium pb-2">
-          Response Time<sup className="text-red-500 text-base top-[-0.3em]">*</sup>
+          Thời gian phản hồi<sup className="text-red-500 text-base top-[-0.3em]">*</sup>
         </div>
         <div className="w-full col-span-4">
           <TextInput
             className="w-full rounded border border-grey p-2.5 mb-1 text-sm font-normal text-gray-600 focus:outline-none"
             type="number"
             name="responseTime"
-            placeholder="E.g. 1"
+            placeholder="Ví dụ: 1"
             value={personalInfo.responseTime}
             onChange={(event: ChangeEvent) => {
               const value = (event.target as HTMLInputElement).value;

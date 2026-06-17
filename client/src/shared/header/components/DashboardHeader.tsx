@@ -63,18 +63,18 @@ const DashboardHeader: FC = (): ReactElement => {
                   <ul className="flex text-base font-medium">
                     <li className="relative flex items-center">
                       <Link to={`/${lowerCase(`${seller?.username}`)}/${seller?._id}/manage_orders`} className="px-3">
-                        <span>Orders</span>
+                        <span>Đơn hàng</span>
                       </Link>
                     </li>
                     <li className="relative flex items-center">
                       <Link to={`/${lowerCase(`${seller?.username}`)}/${seller?._id}/manage_earnings`} className="px-3">
-                        <span>Earnings</span>
+                        <span>Doanh thu</span>
                       </Link>
                     </li>
                     {`${authUser.role || ''}`.toLowerCase() === 'admin' && (
                       <li className="relative flex items-center">
                         <Link to="/admin/users" className="px-3">
-                          <span>Admin</span>
+                          <span>Quản trị</span>
                         </Link>
                       </li>
                     )}
@@ -86,9 +86,9 @@ const DashboardHeader: FC = (): ReactElement => {
                           <>
                             <LazyLoadImage
                               src={seller?.profilePicture}
-                              alt="profile image"
+                              alt="Ảnh đại diện"
                               className="h-7 w-7 rounded-full object-cover"
-                              placeholderSrc="https://placehold.co/330x220?text=Profile+Image"
+                              placeholderSrc="https://placehold.co/330x220?text=Anh+dai+dien"
                               effect="blur"
                             />
                             {authUsername === authUser.username && (

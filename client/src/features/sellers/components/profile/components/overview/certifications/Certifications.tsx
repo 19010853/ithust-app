@@ -15,7 +15,7 @@ const Certifications: FC = (): ReactElement => {
   return (
     <div className="border-grey mt-6 border bg-white">
       <div className="mb-1 flex justify-between border-b">
-        <h4 className="flex py-2.5 pl-3.5 text-sm font-bold text-[#161c2d] md:text-base">CERTIFICATIONS</h4>
+        <h4 className="flex py-2.5 pl-3.5 text-sm font-bold text-[#161c2d] md:text-base">CHỨNG CHỈ</h4>
         {showEditIcons && (
           <span
             onClick={() => {
@@ -24,7 +24,7 @@ const Certifications: FC = (): ReactElement => {
             }}
             className="flex cursor-pointer items-center pr-3.5 text-sm text-[#00698c] md:text-base"
           >
-            Add New
+            Thêm mới
           </span>
         )}
       </div>
@@ -72,7 +72,7 @@ const Certifications: FC = (): ReactElement => {
         )}
 
         {sellerProfile.certificates.length === 0 && !showCertificateAddForm && !showCertificateEditForm && (
-          <li className="flex justify-between mb-2 ml-4">No information</li>
+          <li className="flex justify-between mb-2 ml-4">Chưa có thông tin</li>
         )}
       </ul>
     </div>

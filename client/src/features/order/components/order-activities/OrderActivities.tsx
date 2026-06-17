@@ -42,7 +42,7 @@ const OrderActivities: ForwardRefExoticComponent<Omit<IOrderActivitiesProps, 're
         <OrderReview />
       </OrderContext.Provider>
       <div className="px-3 pt-2 flex">
-        If you need to contact the {order.buyerUsername === authUser.username ? 'seller' : 'buyer'},
+        Nếu bạn cần liên hệ với {order.buyerUsername === authUser.username ? 'người bán' : 'người mua'},
         <div
           onClick={() => {
             void navigateToInbox({
@@ -54,7 +54,7 @@ const OrderActivities: ForwardRefExoticComponent<Omit<IOrderActivitiesProps, 're
           }}
           className="px-2 text-blue-500 cursor-pointer hover:underline"
         >
-          Go to Inbox
+          Đi đến hộp thư
         </div>
       </div>
     </div>

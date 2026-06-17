@@ -27,13 +27,13 @@ const GigViewReviews: FC<IGigViewReviewsProps> = ({ showRatings, reviews, hasFet
       {showRatings && gig && (
         <>
           <div className="mb-10">
-            <h2 className="mb-4 text-lg font-bold">Reviews</h2>
+            <h2 className="mb-4 text-lg font-bold">Đánh giá</h2>
             <div className="flex flex-col gap-y-3 pt-2 lg:flex-row lg:gap-x-6">
               <div className="w-full">
                 {Object.entries(gig?.ratingCategories as IRatingCategories).map((rating: [string, IRatingCategoryItem]) => (
                   <div key={uuidv4()} className="mb-8 flex flex-col gap-y-2 lg:flex-row lg:gap-x-2">
                     <div className="w-full truncate text-sm lg:w-1/12">
-                      {ratingTypes[`${rating[0]}`]} Star{rating[0] === 'one' ? '' : 's'}
+                      {ratingTypes[`${rating[0]}`]} sao
                     </div>
                     <div className="flex h-2.5 w-full self-center rounded-full bg-slate-200 lg:w-full">
                       <div
@@ -59,7 +59,7 @@ const GigViewReviews: FC<IGigViewReviewsProps> = ({ showRatings, reviews, hasFet
                 <img
                   className="flex self-center h-12 w-12 mt-4 rounded-full object-cover md:self-auto"
                   src={item.reviewerImage}
-                  alt="Reviewer Image"
+                  alt="Ảnh người đánh giá"
                 />
                 <div className="flex flex-col self-center">
                   <div className="flex cursor-pointer self-center pt-0 no-underline md:block md:self-start md:pt-4">

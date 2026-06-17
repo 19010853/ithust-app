@@ -8,6 +8,21 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { IHomeProps } from '../interfaces/home.interface';
 
+const categoryLabel = (category?: string): string => {
+  const labels: Record<string, string> = {
+    Business: 'Kinh doanh',
+    Data: 'Dữ liệu',
+    'Digital Marketing': 'Marketing số',
+    'Graphics & Design': 'Thiết kế đồ họa',
+    'Music & Audio': 'Âm nhạc & âm thanh',
+    Photography: 'Nhiếp ảnh',
+    'Programming & Tech': 'Lập trình & công nghệ',
+    'Video & Animation': 'Video & hoạt hình',
+    'Writing & Translation': 'Viết lách & dịch thuật'
+  };
+  return labels[`${category}`] || `${category || ''}`;
+};
+
 const HomeGigsView: FC<IHomeProps> = ({ gigs, title, subTitle, category }): ReactElement => {
   return (
     <div className="border-grey mx-auto my-8 flex flex-col overflow-hidden rounded-lg border">
@@ -18,7 +33,7 @@ const HomeGigsView: FC<IHomeProps> = ({ gigs, title, subTitle, category }): Reac
             {category && (
               <span className="flex self-center text-base font-bold cursor-pointer text-sky-500 md:text-lg lg:text-2xl hover:text-sky-400 hover:underline">
                 <Link onClick={() => socket.emit('getLoggedInUsers', '')} to={`/categories/${replaceSpacesWithDash(category)}`}>
-                  {category}
+                  {categoryLabel(category)}
                 </Link>
               </span>
             )}

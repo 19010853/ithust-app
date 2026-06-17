@@ -60,7 +60,7 @@ const VerifyOTP: FC = (): ReactElement => {
       navigate('/');
     } catch (error) {
       setHasLoaded(false);
-      showErrorToast(error?.data?.message ?? 'Error verifying OTP');
+      showErrorToast(error?.data?.message ?? 'Không thể xác minh OTP');
     }
   };
 
@@ -69,13 +69,13 @@ const VerifyOTP: FC = (): ReactElement => {
       <>
         <IndexHeader navClass="navbar peer-checked:navbar-active fixed z-20 w-full border-b border-gray-100 bg-white/90 shadow-2xl shadow-gray-600/5 backdrop-blur dark:border-gray-800 dark:bg-gray-900/80 dark:shadow-none" />
         <div className="container mx-auto flex flex-col items-center justify-center px-6 py-8 mt-32 lg:py-0">
-          <div className="md:w-[30%] font-bold border-b pb-2 sm:w-[60%]">Authentication</div>
+          <div className="md:w-[30%] font-bold border-b pb-2 sm:w-[60%]">Xác thực</div>
           <div className="md:w-[30%] flex flex-col justify-center sm:w-[60%]">
             <span className="flex self-center rounded-full w-10 h-10 shrink-0 grow-0 p-3 m-5 border border-gray-300">
               <FaEnvelope />
             </span>
             <p className="text-center mb-3">
-              Check your inbox, we've sent you a code which expires in <span className="font-bold">10 minutes</span>.
+              Vui lòng kiểm tra hộp thư, chúng tôi đã gửi mã hết hạn sau <span className="font-bold">10 phút</span>.
             </p>
             <div className="relative mb-3">
               <div className="absolute left-0 flex h-full cursor-pointer items-center pl-3 text-gray-600">
@@ -87,7 +87,7 @@ const VerifyOTP: FC = (): ReactElement => {
                 type="number"
                 value={otp}
                 className="flex h-10 w-full pl-9 items-center rounded border border-gray-300 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-                placeholder="6-Digit Code"
+                placeholder="Mã 6 chữ số"
                 onChange={(event: ChangeEvent) => {
                   setOTP((event.target as HTMLInputElement).value);
                 }}
@@ -99,7 +99,7 @@ const VerifyOTP: FC = (): ReactElement => {
                 className={`text-md block w-full cursor-pointer rounded bg-sky-500 px-8 py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none ${
                   !otp ? 'cursor-not-allowed' : 'cursor-pointer'
                 }`}
-                label={`${isLoading ? 'VERIFICATION IN PROGRESS...' : 'VERIFY'}`}
+                label={`${isLoading ? 'ĐANG XÁC MINH...' : 'XÁC MINH'}`}
                 onClick={onVerifyOTP}
               />
             </div>

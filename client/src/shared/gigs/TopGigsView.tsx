@@ -6,7 +6,7 @@ import GigIndexItem from 'src/features/index/gig-tabs/GigIndexItem';
 import { socket } from 'src/sockets/socket.service';
 import { v4 as uuidv4 } from 'uuid';
 
-import { replaceSpacesWithDash } from '../utils/utils.service';
+import { categoryDisplayLabel, replaceSpacesWithDash } from '../utils/utils.service';
 import GigCardDisplayItem from './GigCardDisplayItem';
 
 interface IScrollProps {
@@ -49,7 +49,7 @@ const TopGigsView: FC<IGigTopProps> = ({ gigs, title, subTitle, category, width,
               {category && (
                 <span className="flex self-center text-base font-bold cursor-pointer text-sky-500 md:text-lg lg:text-2xl hover:text-sky-400 hover:underline">
                   <Link onClick={() => socket.emit('getLoggedInUsers', '')} to={`/categories/${replaceSpacesWithDash(category)}`}>
-                    {category}
+                    {categoryDisplayLabel(category)}
                   </Link>
                 </span>
               )}

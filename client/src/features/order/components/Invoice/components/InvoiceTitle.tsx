@@ -21,7 +21,7 @@ const InvoiceTitle: FC = (): ReactElement => {
     <View style={styles.container}>
       <View style={styles.spaceBetween}>
         <Text style={styles.reportTitle}>ITHust</Text>
-        <Text style={styles.reportTitle}>Invoice {orderInvoice && Object.keys(orderInvoice).length ? orderInvoice?.invoiceId : ''}</Text>
+        <Text style={styles.reportTitle}>Hóa đơn {orderInvoice && Object.keys(orderInvoice).length ? orderInvoice?.invoiceId : ''}</Text>
       </View>
     </View>
   );

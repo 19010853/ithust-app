@@ -15,18 +15,18 @@ const GigIndexItem: FC<IGigsProps> = ({ gig }): ReactElement => {
         <Link to={`/gig/${gigData.id}/${title}`}>
           <LazyLoadImage
             src={gigData.coverImage}
-            alt="Gig cover image"
+            alt="Ảnh bìa gig"
             className="w-full rounded-lg"
-            placeholderSrc="https://placehold.co/330x220?text=Profile+Image"
+            placeholderSrc="https://placehold.co/330x220?text=%E1%BA%A2nh+gig"
             effect="blur"
           />
         </Link>
         <div className="flex items-center gap-2">
           <LazyLoadImage
             src={gigData.profilePicture}
-            alt="profile"
+            alt="Ảnh đại diện"
             className="h-7 w-7 rounded-full object-cover"
-            placeholderSrc="https://placehold.co/330x220?text=Profile+Image"
+            placeholderSrc="https://placehold.co/330x220?text=%E1%BA%A2nh+%C4%91%E1%BA%A1i+di%E1%BB%87n"
             effect="blur"
           />
           <div className="flex w-full justify-between">
@@ -45,7 +45,7 @@ const GigIndexItem: FC<IGigsProps> = ({ gig }): ReactElement => {
           <strong className="text-sm font-bold">({rating(parseInt(`${gigData.ratingSum}`) / parseInt(`${gigData.ratingsCount}`))})</strong>
         </div>
         <div>
-          <strong className="text-sm font-bold md:text-base">From ${gigData.price}</strong>
+          <strong className="text-sm font-bold md:text-base">Từ ${gigData.price}</strong>
         </div>
       </div>
     </div>

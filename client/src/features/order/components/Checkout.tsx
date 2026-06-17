@@ -26,7 +26,7 @@ const Checkout: FC = (): ReactElement => {
   }, [currentGig, gigIsPaused, navigate]);
 
   if (gigIsPaused) {
-    return <PageMessage header="Gig paused" body="This gig is currently paused and cannot receive new orders." />;
+    return <PageMessage header="Gig đã tạm dừng" body="Gig này hiện đang tạm dừng và chưa thể nhận đơn mới." />;
   }
 
   return (
@@ -35,7 +35,7 @@ const Checkout: FC = (): ReactElement => {
         <div className="w-full p-4 lg:w-2/3 order-last lg:order-first">
           <div className="border border-grey">
             <div className="text-xl font-medium mb-3 pt-3 pb-4 px-4">
-              <span>Checkout</span>
+              <span>Thanh toán</span>
             </div>
             <CheckoutForm gigId={`${gigId}`} offer={offer} />
           </div>
@@ -44,7 +44,7 @@ const Checkout: FC = (): ReactElement => {
         <div className="w-full p-4 lg:w-1/3">
           <div className="border border-grey mb-8">
             <div className="pt-3 pb-4 px-4 mb-2 flex flex-col border-b md:flex-row">
-              <img className="object-cover w-20 h-11" src={currentGig.coverImage} alt="Gig Cover Image" />
+              <img className="object-cover w-20 h-11" src={currentGig.coverImage} alt="Ảnh bìa gig" />
               <h4 className="font-bold text-sm text-[#161c2d] mt-2 md:pl-4 md:mt-0">{currentGig.title}</h4>
             </div>
             <ul className="list-none mb-0">
@@ -53,28 +53,26 @@ const Checkout: FC = (): ReactElement => {
               </li>
               <li className="flex justify-between px-4 pt-2 pb-2">
                 <div className="text-sm font-normal flex gap-2">
-                  <FaRegClock className="self-center" /> Expected delivery time
+                  <FaRegClock className="self-center" /> Thời gian giao dự kiến
                 </div>
-                <span className="text-sm">
-                  {offer.deliveryInDays} day{offer.deliveryInDays > 1 ? 's' : ''}
-                </span>
+                <span className="text-sm">{offer.deliveryInDays} ngày</span>
               </li>
               <li className="flex justify-between px-4 pt-2 pb-2">
                 <div className="text-sm font-normal flex gap-2">
-                  <FaRegMoneyBillAlt className="self-center" /> Price
+                  <FaRegMoneyBillAlt className="self-center" /> Giá
                 </div>
                 <span className="text-sm">${offer.price}</span>
               </li>
               <li className="flex justify-between px-4 pt-2 pb-2">
                 <div className="text-sm font-normal flex gap-2">
-                  <FaCog className="self-center" /> Service fee
+                  <FaCog className="self-center" /> Phí dịch vụ
                 </div>
                 <span className="text-sm">${serviceFee.toFixed(2)}</span>
               </li>
               <div className="border-b border-grey" />
               <li className="flex justify-between px-4 py-4">
                 <div className="text-sm md:text-base font-semibold flex gap-2">
-                  <FaCog className="self-center" /> Total
+                  <FaCog className="self-center" /> Tổng cộng
                 </div>
                 <span className="text-sm md:text-base font-semibold">${offer.price + serviceFee}</span>
               </li>

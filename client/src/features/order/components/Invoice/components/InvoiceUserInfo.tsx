@@ -23,11 +23,11 @@ const InvoiceUserInfo: FC = (): ReactElement => {
           <View style={styles.titleContainer}>
             <View style={styles.spaceBetween}>
               <View style={{ maxWidth: 200 }}>
-                <Text style={styles.title}>To </Text>
+                <Text style={styles.title}>Người nhận </Text>
                 <Text style={styles.subTitle}>{orderInvoice.buyerUsername}</Text>
               </View>
               <View style={{ maxWidth: 200 }}>
-                <Text style={styles.title}>Date issued</Text>
+                <Text style={styles.title}>Ngày phát hành</Text>
                 <Text style={styles.subTitle}>{TimeAgo.dayMonthYear(`${orderInvoice.date}`)}</Text>
               </View>
             </View>
@@ -36,7 +36,7 @@ const InvoiceUserInfo: FC = (): ReactElement => {
             <View style={styles.spaceBetween}>
               <View></View>
               <View style={{ maxWidth: 200 }}>
-                <Text style={styles.title}>Order number</Text>
+                <Text style={styles.title}>Mã đơn hàng</Text>
                 <Link src={`${`${CLIENT_ENDPOINT}/orders/${orderInvoice.orderId}/activities`}`} style={styles.link}>
                   {orderInvoice.orderId}
                 </Link>

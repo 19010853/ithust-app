@@ -18,7 +18,7 @@ const OrderPlaced: FC = (): ReactElement => {
           <div className="w-full cursor-pointer">
             <div className="border-grey mt-2 flex items-center gap-2 border-b pb-6 text-gray-500">
               <span className="text-base font-bold">
-                {order?.buyerUsername === authUser?.username ? 'You' : order?.buyerUsername} placed the order
+                {order?.buyerUsername === authUser?.username ? 'Bạn' : order?.buyerUsername} đã đặt đơn hàng
               </span>
               <p className="text-sm font-normal italic">{TimeAgo.dayWithTime(`${order?.events.placeOrder}`)}</p>
             </div>
@@ -35,7 +35,7 @@ const OrderPlaced: FC = (): ReactElement => {
             <div className="w-full cursor-pointer border-grey border-b pb-6">
               <div className="mt-2 flex items-center gap-2 text-gray-500">
                 <span className="text-base font-bold">
-                  {order?.buyerUsername === authUser?.username ? 'You' : order?.buyerUsername} submiited the requirements
+                  {order?.buyerUsername === authUser?.username ? 'Bạn' : order?.buyerUsername} đã gửi yêu cầu
                 </span>
                 <p className="text-sm font-normal italic">{TimeAgo.dayWithTime(`${order?.events.requirements}`)}</p>
               </div>
@@ -59,7 +59,7 @@ const OrderPlaced: FC = (): ReactElement => {
           </div>
           <div className="w-full cursor-pointer">
             <div className="border-grey mt-2 flex items-center gap-2 border-b pb-6 text-gray-500">
-              <span className="text-base font-bold">{order?.buyerUsername === authUser?.username ? 'Your' : 'The'} order started</span>
+              <span className="text-base font-bold">{order?.buyerUsername === authUser?.username ? 'Đơn hàng của bạn' : 'Đơn hàng'} đã bắt đầu</span>
               <p className="text-sm font-normal italic">{TimeAgo.dayWithTime(`${order?.events.orderStarted}`)}</p>
             </div>
           </div>
@@ -72,7 +72,7 @@ const OrderPlaced: FC = (): ReactElement => {
           </div>
           <div className="w-full cursor-pointer">
             <div className="border-grey mt-2 flex items-center gap-2 border-b pb-6 text-gray-500">
-              <span className="text-base font-bold">Your delivery date was updated to</span>
+              <span className="text-base font-bold">Ngày giao của bạn đã được cập nhật thành</span>
               <p className="text-sm font-normal italic">{TimeAgo.dayWithTime(`${order?.offer.newDeliveryDate}`)}</p>
             </div>
           </div>

@@ -61,7 +61,7 @@ const Gigs: FC<IGigsProps> = ({ type }) => {
           {!isLoading && data && data.gigs && data?.gigs.length > 0 ? (
             <>
               <h3 className="mb-5 flex gap-3 text-4xl">
-                {type === 'search' && <span className="text-black">Results for</span>}
+                {type === 'search' && <span className="text-black">Kết quả cho</span>}
                 <strong className="text-black">{gigCategories}</strong>
               </h3>
               <div className="mb-4 flex gap-4">
@@ -70,7 +70,7 @@ const Gigs: FC<IGigsProps> = ({ type }) => {
               </div>
               <div className="my-5">
                 <div className="">
-                  <span className="font-medium text-[#74767e]">{data.total} services available</span>
+                  <span className="font-medium text-[#74767e]">{data.total} dịch vụ khả dụng</span>
                 </div>
                 {filterApplied ? (
                   <CircularPageLoader />
@@ -87,11 +87,11 @@ const Gigs: FC<IGigsProps> = ({ type }) => {
             </>
           ) : (
             <PageMessage
-              header="No services found for your search"
-              body="Try a new search or get a free quote for your project from our commnunity of freelancers."
+              header="Không tìm thấy dịch vụ phù hợp"
+              body="Hãy thử tìm kiếm mới hoặc nhận báo giá miễn phí cho dự án của bạn từ cộng đồng freelancer."
             />
           )}
-          {isError && <PageMessage header="Services issue" body="A network issue occured. Try agin later." />}
+          {isError && <PageMessage header="Sự cố dịch vụ" body="Đã xảy ra lỗi mạng. Vui lòng thử lại sau." />}
           {isSuccess && !filterApplied && data && data.gigs && data.gigs.length > 0 && (
             <GigPaginate
               gigs={gigs.current}

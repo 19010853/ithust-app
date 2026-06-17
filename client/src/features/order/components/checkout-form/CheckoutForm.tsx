@@ -24,14 +24,14 @@ const CheckoutForm: FC<ICheckoutProps> = ({ gigId, offer }): ReactElement => {
   return (
     <form id="payment-form" onSubmit={handleSubmit} className="px-4 py-2">
       <div className="mb-6 text-sm text-gray-600">
-        You are about to place an order. Click the button below to continue to the requirements page, where you will provide instructions for the seller and receive your payment QR code.
+        Bạn sắp đặt đơn hàng. Nhấn nút bên dưới để chuyển sang trang yêu cầu, nơi bạn gửi hướng dẫn cho người bán và nhận mã QR thanh toán.
       </div>
       <Button
         id="submit"
         className={`w-full rounded px-6 py-3 text-center text-sm font-bold text-white focus:outline-none md:px-4 md:py-2 md:text-base ${
           isLoading ? 'cursor-not-allowed bg-sky-200' : 'bg-sky-500 hover:bg-sky-400'
         }`}
-        label={<span id="button-text">{isLoading ? <div className="spinner" id="spinner"></div> : 'Confirm & Continue'}</span>}
+        label={<span id="button-text">{isLoading ? <div className="spinner" id="spinner"></div> : 'Xác nhận và tiếp tục'}</span>}
       />
     </form>
   );

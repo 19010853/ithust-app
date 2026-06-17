@@ -27,7 +27,7 @@ const DashboardMain: FC = (): ReactElement => {
               <img
                 className="flex h-20 w-20 self-center rounded-full object-cover md:h-24 md:w-24 lg:h-28 lg:w-28"
                 src={seller?.profilePicture}
-                alt="Seller image"
+                alt="Ảnh người bán"
               />
               <div className="flex flex-col self-center">
                 <div className="flex cursor-pointer self-center">
@@ -54,30 +54,30 @@ const DashboardMain: FC = (): ReactElement => {
               <li className="mb-4 flex flex-col justify-between text-xs sm:mb-2 sm:flex-row sm:text-sm">
                 <div className="col-span-3 ml-3 flex pb-0 sm:pb-3">
                   <FaMapMarkerAlt className="mr-2 mt-1" />
-                  <div className="mr-3">From</div>
+                  <div className="mr-3">Đến từ</div>
                 </div>
                 <div className="ml-8 mr-4 font-bold sm:ml-0">{seller?.country}</div>
               </li>
               <li className="mb-4 flex flex-col justify-between text-xs sm:mb-2 sm:flex-row sm:text-sm">
                 <div className="col-span-3 ml-3 flex pb-0 sm:pb-3">
                   <FaUserAlt className="mr-2 mt-1" />
-                  <div className="mr-3">Member since</div>
+                  <div className="mr-3">Thành viên từ</div>
                 </div>
                 <div className="ml-8 mr-4 font-bold sm:ml-0">{TimeAgo.formatDateToMonthAndYear(`${seller?.createdAt || new Date()}`)}</div>
               </li>
               <li className="mb-4 flex flex-col justify-between text-xs sm:mb-2 sm:flex-row sm:text-sm">
                 <div className="col-span-3 ml-3 flex pb-0 sm:pb-3">
                   <FaRegClock className="mr-2 mt-1" />
-                  <div className="mr-3">Avg. Response Time</div>
+                  <div className="mr-3">Thời gian phản hồi TB</div>
                 </div>
                 <div className="ml-8 mr-4 font-bold sm:ml-0">
-                  {seller?.responseTime} hour{seller?.responseTime === 1 ? '' : 's'}
+                  {seller?.responseTime} giờ
                 </div>
               </li>
               <li className="mb-4 flex flex-col justify-between text-xs sm:mb-2 sm:flex-row sm:text-sm">
                 <div className="col-span-3 ml-3 flex pb-0 sm:pb-3">
                   <FaRegClock className="mr-2 mt-1" />
-                  <div className="mr-3">Last Delivery</div>
+                  <div className="mr-3">Lần giao gần nhất</div>
                 </div>
                 <div className="ml-8 mr-4 font-bold sm:ml-0">{TimeAgo.dateInDays(`${seller?.recentDelivery}`)}</div>
               </li>
@@ -95,7 +95,7 @@ const DashboardMain: FC = (): ReactElement => {
                 type === 'active' ? 'text-sky-500 md:border-b-2 md:border-sky-500' : ''
               }`}
             >
-              ACTIVE GIGS
+              GIG ĐANG HOẠT ĐỘNG
             </li>
             <li
               onClick={() => setType('paused')}
@@ -103,7 +103,7 @@ const DashboardMain: FC = (): ReactElement => {
                 type === 'paused' ? 'text-sky-500 md:border-b-2 md:border-sky-500' : ''
               }`}
             >
-              PAUSED
+              ĐÃ TẠM DỪNG
             </li>
             <li
               onClick={() => setType('orders')}
@@ -111,7 +111,7 @@ const DashboardMain: FC = (): ReactElement => {
                 type === 'orders' ? 'text-sky-500 md:border-b-2 md:border-sky-500' : ''
               }`}
             >
-              ACTIVE ORDERS
+              ĐƠN ĐANG LÀM
             </li>
           </ul>
         </div>

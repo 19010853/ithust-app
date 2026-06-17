@@ -15,11 +15,11 @@ const EducationFields: FC<IEducationEditProps> = ({
   setShowEducationEditForm
 }): ReactElement => {
   const { sellerProfile, setSellerProfile } = useContext(SellerContext);
-  const [country, setCountry] = useState<string>(selectedEducation?.country ?? 'Country');
+  const [country, setCountry] = useState<string>(selectedEducation?.country ?? 'Quốc gia');
   const [university, setUniversity] = useState<string>(selectedEducation?.university ?? '');
-  const [title, setTitle] = useState<string>(selectedEducation?.title ?? 'Title');
+  const [title, setTitle] = useState<string>(selectedEducation?.title ?? 'Bằng cấp');
   const [major, setMajor] = useState<string>(selectedEducation?.major ?? '');
-  const [year, setYear] = useState<string>(selectedEducation?.year ?? 'Year');
+  const [year, setYear] = useState<string>(selectedEducation?.year ?? 'Năm');
 
   const onHandleUpdate = (): void => {
     if (type === 'add') {
@@ -62,7 +62,7 @@ const EducationFields: FC<IEducationEditProps> = ({
         <div className="relative">
           <TextInput
             className="border-grey mb-4 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-            placeholder="University/College Name"
+            placeholder="Tên trường đại học/cao đẳng"
             type="text"
             name="university"
             value={university}
@@ -86,7 +86,7 @@ const EducationFields: FC<IEducationEditProps> = ({
           <div className="col-span-2">
             <TextInput
               className="border-grey mb-4 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-              placeholder="Major e.g: Computer Engineering"
+              placeholder="Chuyên ngành, ví dụ: Kỹ thuật máy tính"
               type="text"
               name="major"
               value={major}
@@ -100,14 +100,14 @@ const EducationFields: FC<IEducationEditProps> = ({
       </div>
       <div className="mx-3 my-4 flex cursor-pointer justify-start md:z-0 md:mt-0">
         <Button
-          disabled={(country === 'Country' || title === 'Title' || year === 'Year' || !university || !major) && type === 'add'}
+          disabled={(country === 'Quốc gia' || title === 'Bằng cấp' || year === 'Năm' || !university || !major) && type === 'add'}
           className={`md:text-md rounded bg-sky-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-2 ${
-            (country === 'Country' || title === 'Title' || year === 'Year' || !university || !major) && type === 'add'
+            (country === 'Quốc gia' || title === 'Bằng cấp' || year === 'Năm' || !university || !major) && type === 'add'
               ? 'cursor-not-allowed opacity-40'
               : 'cursor-pointer'
           }`}
           onClick={onHandleUpdate}
-          label={`${type === 'edit' ? 'Update' : 'Add'}`}
+          label={type === 'edit' ? 'Cập nhật' : 'Thêm'}
         />
         &nbsp;&nbsp;
         <Button
@@ -119,7 +119,7 @@ const EducationFields: FC<IEducationEditProps> = ({
             }
           }}
           className="md:text-md rounded bg-gray-300 px-6 py-1 text-center text-sm font-bold hover:bg-gray-200 focus:outline-none md:py-2"
-          label="Cancel"
+          label="Hủy"
         />
       </div>
     </div>

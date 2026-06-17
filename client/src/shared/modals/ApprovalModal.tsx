@@ -19,7 +19,7 @@ const ApprovalModal: FC<IModalProps> = ({ approvalModalContent, hideCancel = fal
             {!hideCancel && (
               <Button
                 className="rounded bg-gray-200 px-6 py-3 text-center text-sm font-bold text-black focus:outline-none md:px-4 md:py-2 md:text-base"
-                label="Cancel"
+                label="Hủy"
                 onClick={onClose}
               />
             )}

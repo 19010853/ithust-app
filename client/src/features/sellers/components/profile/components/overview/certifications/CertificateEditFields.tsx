@@ -17,9 +17,9 @@ const CertificateEditFields: FC<ICertificateEditProps> = ({
   const [certificateItem, setCertificateItem] = useState<ICertificate>({
     name: selectedCertificate && selectedCertificate.name ? selectedCertificate.name : '',
     from: selectedCertificate && selectedCertificate.from ? selectedCertificate.from : '',
-    year: selectedCertificate && selectedCertificate.year ? selectedCertificate.year : 'Year'
+    year: selectedCertificate && selectedCertificate.year ? selectedCertificate.year : 'Năm'
   });
-  const [year, setYear] = useState<string>(selectedCertificate && selectedCertificate.year ? `${selectedCertificate.year}` : 'Year');
+  const [year, setYear] = useState<string>(selectedCertificate && selectedCertificate.year ? `${selectedCertificate.year}` : 'Năm');
 
   const onHandleUpdate = (): void => {
     setCertificateItem({ ...certificateItem, year });
@@ -53,7 +53,7 @@ const CertificateEditFields: FC<ICertificateEditProps> = ({
       <div className="mb-16 px-3">
         <TextInput
           className="border-grey mb-4 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-          placeholder="Certificate or Award"
+          placeholder="Chứng chỉ hoặc giải thưởng"
           type="text"
           name="name"
           value={certificateItem.name}
@@ -63,7 +63,7 @@ const CertificateEditFields: FC<ICertificateEditProps> = ({
         />
         <TextInput
           className="border-grey mb-4 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-          placeholder="Certificate From (e.g: Google)"
+          placeholder="Đơn vị cấp (ví dụ: Google)"
           type="text"
           name="from"
           value={certificateItem.from}
@@ -77,21 +77,21 @@ const CertificateEditFields: FC<ICertificateEditProps> = ({
       </div>
       <div className="z-20 my-4 mt-10 flex cursor-pointer justify-center md:z-0 md:mt-0">
         <Button
-          disabled={(year === 'Year' || !certificateItem.name || !certificateItem.from) && type === 'add'}
+          disabled={(year === 'Năm' || !certificateItem.name || !certificateItem.from) && type === 'add'}
           className={`md:text-md rounded bg-sky-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-2
           ${
-            (year === 'Year' || !certificateItem.name || !certificateItem.from) && type === 'add'
+            (year === 'Năm' || !certificateItem.name || !certificateItem.from) && type === 'add'
               ? 'cursor-not-allowed opacity-40'
               : 'cursor-pointer'
           }
           `}
-          label={`${type === 'add' ? 'Add' : 'Update'}`}
+          label={type === 'add' ? 'Thêm' : 'Cập nhật'}
           onClick={onHandleUpdate}
         />
         &nbsp;&nbsp;
         <Button
           className="md:text-md rounded bg-gray-300 px-6 py-1 text-center text-sm font-bold hover:bg-gray-200 focus:outline-none md:py-2"
-          label="Cancel"
+          label="Hủy"
           onClick={() => {
             if (type === 'add' && setShowCertificateAddForm) {
               setShowCertificateAddForm(false);

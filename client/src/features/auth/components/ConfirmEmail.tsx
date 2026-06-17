@@ -18,7 +18,7 @@ const ConfirmEmail: FC = (): ReactElement => {
   const onVerifyEmail = useCallback(async (): Promise<void> => {
     try {
       const result: IResponse = await verifyEmail(`${searchParams.get('v_token')}`).unwrap();
-      setAlertMessage('Email verified successfully.');
+      setAlertMessage('Xác minh email thành công.');
       setStatus(AUTH_FETCH_STATUS.SUCCESS);
       dispatch(addAuthUser({ authInfo: result.user }));
     } catch (error) {
@@ -40,7 +40,7 @@ const ConfirmEmail: FC = (): ReactElement => {
         to="/"
         className="rounded bg-sky-500 px-6 py-3 mt-5 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
       >
-        Continue to Home
+        Tiếp tục về trang chủ
       </Link>
     </div>
   );

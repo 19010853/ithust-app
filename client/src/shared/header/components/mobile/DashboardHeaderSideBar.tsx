@@ -30,7 +30,7 @@ const DashboardHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): Re
       <div className={'absolute left-0 top-0 z-20 flex h-screen w-[250px] flex-col items-start justify-start gap-4 bg-white p-6'}>
         <div className="z-2 sticky top-0 flex w-full flex-col items-start justify-start gap-6 bg-white">
           <div className="flex cursor-pointer gap-4 py-3 text-base font-semibold transition-all duration-300">
-            <img src={`${authUser?.profilePicture}`} alt="profile" className="h-10 w-10 rounded-full object-cover" />
+            <img src={`${authUser?.profilePicture}`} alt="Ảnh đại diện" className="h-10 w-10 rounded-full object-cover" />
             <span className="text-blacks flex self-center">{authUser?.username}</span>
           </div>
           <div
@@ -43,7 +43,7 @@ const DashboardHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): Re
             }}
             className="cursor-pointer text-base font-medium text-gray-400"
           >
-            <Link to={`/${lowerCase(`${seller?.username}`)}/${seller?._id}/seller_dashboard`}>Seller Dashboard</Link>
+            <Link to={`/${lowerCase(`${seller?.username}`)}/${seller?._id}/seller_dashboard`}>Bảng điều khiển người bán</Link>
           </div>
           <div
             onClick={(event: MouseEvent) => {
@@ -54,7 +54,7 @@ const DashboardHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): Re
             }}
             className="cursor-pointer text-base font-medium text-gray-400"
           >
-            <Link to={`/${lowerCase(`${seller?.username}`)}/${seller?._id}/manage_orders`}>Orders</Link>
+            <Link to={`/${lowerCase(`${seller?.username}`)}/${seller?._id}/manage_orders`}>Đơn hàng</Link>
           </div>
           <div
             onClick={(event: MouseEvent) => {
@@ -65,7 +65,7 @@ const DashboardHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): Re
             }}
             className="cursor-pointer text-base font-medium text-gray-400"
           >
-            <Link to={`/${lowerCase(`${seller?.username}`)}/${seller?._id}/manage_earnings`}>Earnings</Link>
+            <Link to={`/${lowerCase(`${seller?.username}`)}/${seller?._id}/manage_earnings`}>Doanh thu</Link>
           </div>
           {`${authUser.role || ''}`.toLowerCase() === 'admin' && (
             <div
@@ -77,7 +77,7 @@ const DashboardHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): Re
               }}
               className="cursor-pointer text-base font-medium text-gray-400"
             >
-              <Link to="/admin/users">Admin Dashboard</Link>
+              <Link to="/admin/users">Bảng điều khiển quản trị</Link>
             </div>
           )}
           <div
@@ -91,7 +91,7 @@ const DashboardHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): Re
             }}
             className="cursor-pointer text-base font-medium text-gray-400"
           >
-            <Link to="/">Switch to Buying</Link>
+            <Link to="/">Chuyển sang mua hàng</Link>
           </div>
           <div
             onClick={(event: MouseEvent) => {
@@ -104,7 +104,7 @@ const DashboardHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): Re
             }}
             className="cursor-pointer text-base font-medium text-gray-400"
           >
-            <Link to={`/${lowerCase(`${seller?.username}`)}/edit`}>Settings</Link>
+            <Link to={`/${lowerCase(`${seller?.username}`)}/edit`}>Cài đặt</Link>
           </div>
           <div
             onClick={(event: MouseEvent) => {
@@ -116,7 +116,7 @@ const DashboardHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): Re
             }}
             className="cursor-pointer text-base font-medium text-gray-400"
           >
-            Logout
+            Đăng xuất
           </div>
         </div>
       </div>

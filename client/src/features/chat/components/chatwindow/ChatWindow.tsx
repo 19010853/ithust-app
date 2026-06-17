@@ -126,7 +126,7 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
       if (selectedFile) {
         const dataImage: string | ArrayBuffer | null = await readAsBase64(selectedFile);
         messageBody.file = dataImage as string;
-        messageBody.body = messageBody.body ? messageBody.body : '1 file sent';
+        messageBody.body = messageBody.body ? messageBody.body : 'Đã gửi 1 tệp';
         messageBody.fileType = fileType(selectedFile);
         messageBody.fileName = selectedFile.name;
         messageBody.fileSize = `${selectedFile.size}`;
@@ -140,7 +140,7 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
     } catch (error) {
       setMessage(MESSAGE_STATUS.EMPTY);
       setIsUploadingFile(MESSAGE_STATUS.IS_LOADING);
-      showErrorToast('Error sending message.');
+      showErrorToast('Không thể gửi tin nhắn.');
     }
   };
 
@@ -164,8 +164,8 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
   return (
     <>
       {!isLoading && displayCustomOffer && (
-        <OfferModal
-          header="Create Custom Offer"
+          <OfferModal
+          header="Tạo đề nghị tùy chỉnh"
           gigTitle={data && data?.gig?.title ? data?.gig?.title : ''}
           singleMessage={singleMessageRef?.current}
           receiver={receiverRef?.current}
@@ -180,7 +180,7 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
               <>
                 <div className="text-lg font-semibold">{firstLetterUppercase(`${username}`)}</div>
                 <div className="flex gap-1 pb-1 text-xs font-normal">
-                  Online
+                  Đang trực tuyến
                   <span className="flex h-2.5 w-2.5 self-center rounded-full border-2 border-white bg-green-400"></span>
                 </div>
               </>
@@ -238,7 +238,7 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
                     name="message"
                     value={message}
                     className="border-grey mb-1 w-full rounded border p-3.5 text-sm font-normal text-gray-600 focus:outline-none"
-                    placeholder="Enter your message..."
+                    placeholder="Nhập tin nhắn của bạn..."
                     onChange={(event: ChangeEvent) => setMessage((event.target as HTMLInputElement).value)}
                   />
                 </form>
@@ -249,7 +249,7 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
                       <Button
                         className="rounded bg-sky-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
                         disabled={false}
-                        label="Add Offer"
+                        label="Thêm đề nghị"
                         onClick={() => setDisplayCustomOffer(MESSAGE_STATUS.LOADING)}
                       />
                     )}

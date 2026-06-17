@@ -35,13 +35,13 @@ const OrderReview: FC = (): ReactElement => {
               </div>
               <div className="w-full cursor-pointer pb-6">
                 <div className="mt-2 flex items-center justify-between font-medium text-gray-500">
-                  <span>Ready to review the seller?</span>
+                  <span>Bạn đã sẵn sàng đánh giá người bán?</span>
                 </div>
                 <div className="my-3 flex">
                   <Button
                     onClick={() => setOrderReviewModal({ ...orderReviewModal, buyerReview: true })}
                     className="rounded bg-green-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-green-400 focus:outline-none md:px-4 md:py-2 md:text-base"
-                    label="Leave a Review"
+                    label="Viết đánh giá"
                   />
                 </div>
               </div>
@@ -62,10 +62,10 @@ const OrderReview: FC = (): ReactElement => {
               <div className="border-grey w-full cursor-pointer border-b pb-6">
                 <div className="mt-2 flex items-center justify-between font-medium text-gray-500">
                   <div className="flex gap-2">
-                    {authUser?.username === order.buyerUsername && <span>You left a {order.buyerReview?.rating}-star review</span>}
+                    {authUser?.username === order.buyerUsername && <span>Bạn đã để lại đánh giá {order.buyerReview?.rating} sao</span>}
                     {authUser?.username === order.sellerUsername && (
                       <span>
-                        {order.buyerUsername} gave you a {order.buyerReview?.rating}-star review
+                        {order.buyerUsername} đã đánh giá bạn {order.buyerReview?.rating} sao
                       </span>
                     )}
                     <p className="flex self-center text-sm font-normal italic">{TimeAgo.dayWithTime(`${order?.events.buyerReview}`)}</p>
@@ -80,17 +80,17 @@ const OrderReview: FC = (): ReactElement => {
                       <div className="border-grey w-full rounded border text-left text-sm text-gray-500">
                         <div className="border-grey border-b bg-[#fafafb] py-3 font-medium uppercase">
                           <span className="px-5">
-                            {authUser?.username === order.buyerUsername ? 'Your Review' : `${order.buyerUsername}'s Review`}
+                            {authUser?.username === order.buyerUsername ? 'Đánh giá của bạn' : `Đánh giá của ${order.buyerUsername}`}
                           </span>
                         </div>
                         <div className="flex w-full cursor-pointer flex-col items-center space-x-4 px-5 py-4 md:flex-row">
                           <div className="flex w-full justify-center md:w-12 md:self-start">
-                            <img className="h-10 w-10 rounded-full object-cover" src={order.buyerImage} alt="Buyer Image" />
+                            <img className="h-10 w-10 rounded-full object-cover" src={order.buyerImage} alt="Ảnh người mua" />
                           </div>
                           <div className="w-full text-sm dark:text-white">
                             <div className="flex justify-between text-sm font-bold text-[#777d74] md:text-base">
                               <div className="flex flex-row gap-2">
-                                {authUser?.username === order.buyerUsername ? 'Me' : order.buyerUsername}
+                                {authUser?.username === order.buyerUsername ? 'Tôi' : order.buyerUsername}
                                 <div className="flex self-center">
                                   <div className="flex flex-row items-center gap-x-1">
                                     <StarRating value={order.buyerReview?.rating} size={14} />
@@ -131,13 +131,13 @@ const OrderReview: FC = (): ReactElement => {
                 </div>
                 <div className="w-full cursor-pointer pb-6">
                   <div className="mt-2 flex items-center justify-between font-medium text-gray-500">
-                    <span>Ready to review the buyer?</span>
+                    <span>Bạn đã sẵn sàng đánh giá người mua?</span>
                   </div>
                   <div className="my-3 flex">
                     <Button
                       onClick={() => setOrderReviewModal({ ...orderReviewModal, sellerReview: true })}
                       className="rounded bg-green-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-green-400 focus:outline-none md:px-4 md:py-2 md:text-base"
-                      label="Leave a Review"
+                      label="Viết đánh giá"
                     />
                   </div>
                 </div>
@@ -160,12 +160,12 @@ const OrderReview: FC = (): ReactElement => {
                   <div className="flex gap-2">
                     {authUser?.username === order.sellerUsername && (
                       <span>
-                        You left {order.buyerUsername} a {order.sellerReview?.rating}-star review
+                        Bạn đã đánh giá {order.buyerUsername} {order.sellerReview?.rating} sao
                       </span>
                     )}
                     {authUser?.username === order.buyerUsername && (
                       <span>
-                        {order.sellerUsername} gave you a {order.sellerReview?.rating}-star review
+                        {order.sellerUsername} đã đánh giá bạn {order.sellerReview?.rating} sao
                       </span>
                     )}
                     <p className="flex self-center text-sm font-normal italic">{TimeAgo.dayWithTime(`${order?.events.sellerReview}`)}</p>
@@ -180,17 +180,17 @@ const OrderReview: FC = (): ReactElement => {
                       <div className="border-grey w-full rounded border text-left text-sm text-gray-500">
                         <div className="border-grey border-b bg-[#fafafb] py-3 font-medium uppercase">
                           <span className="px-5">
-                            {authUser?.username === order.sellerUsername ? 'Your Review' : `${order.buyerUsername}'s Review`}
+                            {authUser?.username === order.sellerUsername ? 'Đánh giá của bạn' : `Đánh giá của ${order.sellerUsername}`}
                           </span>
                         </div>
                         <div className="flex w-full cursor-pointer flex-col items-center space-x-4 px-5 py-4 md:flex-row">
                           <div className="flex w-full justify-center md:w-12 md:self-start">
-                            <img className="h-10 w-10 rounded-full object-cover" src={order.sellerImage} alt="Buyer Image" />
+                            <img className="h-10 w-10 rounded-full object-cover" src={order.sellerImage} alt="Ảnh người bán" />
                           </div>
                           <div className="w-full text-sm dark:text-white">
                             <div className="flex justify-between text-sm font-bold text-[#777d74] md:text-base">
                               <div className="flex flex-row gap-2">
-                                {authUser?.username === order.sellerUsername ? 'Me' : order.sellerUsername}
+                                {authUser?.username === order.sellerUsername ? 'Tôi' : order.sellerUsername}
                                 <div className="flex self-center">
                                   <div className="flex flex-row items-center gap-x-1">
                                     <StarRating value={order.sellerReview.rating} size={14} />

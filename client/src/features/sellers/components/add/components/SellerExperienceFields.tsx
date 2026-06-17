@@ -19,7 +19,7 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
       const data: IExperience[] = [...experienceFields];
       if (target.name === 'currentlyWorkingHere') {
         data[index]['currentlyWorkingHere'] = target.checked;
-        data[index]['endDate'] = target.checked ? '' : 'Present';
+        data[index]['endDate'] = target.checked ? '' : 'Hiện tại';
         updatePresentEndDate(data, index);
       } else {
         data[index][target.name] = target.value;
@@ -32,8 +32,8 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
     const newField: IExperience = {
       title: '',
       company: '',
-      startDate: 'Start Year',
-      endDate: 'End Year',
+      startDate: 'Năm bắt đầu',
+      endDate: 'Năm kết thúc',
       currentlyWorkingHere: false,
       description: ''
     };
@@ -53,17 +53,17 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
   const updatePresentEndDate = (data: IExperience[], index: number): void => {
     if (setExperienceFields) {
       if (!data[index]['currentlyWorkingHere']) {
-        if (data[index]['endDate'] === 'Present') {
-          data[index]['endDate'] = 'End Year';
+        if (data[index]['endDate'] === 'Hiện tại') {
+          data[index]['endDate'] = 'Năm kết thúc';
           setExperienceFields(data);
         } else {
-          data[index]['endDate'] = `${data[index]['endDate'] ?? 'End Year'}`;
+          data[index]['endDate'] = `${data[index]['endDate'] ?? 'Năm kết thúc'}`;
           setExperienceFields([...data]);
         }
       } else {
         if (setExperienceFields && experienceFields) {
           const data: IExperience[] = [...experienceFields];
-          data[index]['endDate'] = 'Present';
+          data[index]['endDate'] = 'Hiện tại';
           setExperienceFields([...data]);
         }
       }
@@ -73,10 +73,10 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
   return (
     <div className="border-grey flex w-full flex-col border-b px-6 pb-3 pt-6">
       <div className="flex justify-between">
-        <h2 className="pb-4 text-xl font-bold">Experience</h2>
+        <h2 className="pb-4 text-xl font-bold">Kinh nghiệm</h2>
         <Button
           className="md:text-md h-7 rounded bg-sky-500 px-6 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-8"
-          label="Add More"
+          label="Thêm"
           onClick={() => addExperienceFields()}
         />
       </div>
@@ -86,14 +86,14 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
           <TextInput
             className="border-grey mb-4 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
             name="title"
-            placeholder="Title (E.g: CEO)"
+            placeholder="Chức danh (ví dụ: CEO)"
             value={input.title}
             onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
           />
           {getErrorMessage('title') && <p className="-mt-3 mb-3 text-xs text-red-500">{getErrorMessage('title')}</p>}
           <TextInput
             className="border-grey mb-4 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-            placeholder="Company name"
+            placeholder="Tên công ty"
             name="company"
             value={input.company}
             onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
@@ -150,7 +150,7 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
               className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600"
             />
             <label htmlFor="default-checkbox" className="ml-2 text-sm font-normal">
-              I am currently working here
+              Tôi hiện đang làm việc tại đây
             </label>
           </div>
           <div className="flex items-center">
@@ -160,7 +160,7 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
               value={input.description}
               rows={5}
               onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
-              placeholder="Write description..."
+              placeholder="Viết mô tả..."
             />
           </div>
           {getErrorMessage('description') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('description')}</p>}
@@ -168,7 +168,7 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
             {experienceFields.length > 1 && index > 0 && (
               <Button
                 className="md:text-md h-7 rounded bg-red-500 px-6 text-center text-sm font-bold text-white hover:bg-red-400 focus:outline-none md:px-8"
-                label="Delete"
+                label="Xóa"
                 onClick={() => removeExperienceFields(index)}
               />
             )}

@@ -12,7 +12,7 @@ const ManageEarningsTable: FC<IOrderTableProps> = ({ type, orders, orderTypes })
   return (
     <div className="flex flex-col justify-between">
       <div className="border-grey border border-b-0 px-3 py-3">
-        <div className="font-bold uppercase text-xs sm:text-sm md:text-base">Payouts </div>
+        <div className="font-bold uppercase text-xs sm:text-sm md:text-base">Thanh toán </div>
       </div>
       <table className="border border-grey w-full table-auto flex flex-row flex-no-wrap text-sm text-gray-500 overflow-hidden sm:inline-table">
         {orderTypes > 0 ? (
@@ -23,12 +23,12 @@ const ManageEarningsTable: FC<IOrderTableProps> = ({ type, orders, orderTypes })
                   key={uuidv4()}
                   className="bg-sky-500 text-white flex flex-col flex-nowrap sm:table-row md:table-row mb-1 sm:mb-0 lg:bg-transparent lg:text-black "
                 >
-                  <th className="p-3 text-left md:text-center">Date</th>
-                  <th className="p-3 text-left md:text-center">Activity</th>
-                  <th className="p-3 text-left md:text-center">Description</th>
-                  <th className="p-3 text-left md:text-center">From</th>
-                  <th className="p-3 text-left md:text-center">Order</th>
-                  <th className="p-3 text-left md:text-center">Amount</th>
+                  <th className="p-3 text-left md:text-center">Ngày</th>
+                  <th className="p-3 text-left md:text-center">Hoạt động</th>
+                  <th className="p-3 text-left md:text-center">Mô tả</th>
+                  <th className="p-3 text-left md:text-center">Từ</th>
+                  <th className="p-3 text-left md:text-center">Đơn hàng</th>
+                  <th className="p-3 text-left md:text-center">Số tiền</th>
                 </tr>
               ))}
             </thead>
@@ -36,8 +36,8 @@ const ManageEarningsTable: FC<IOrderTableProps> = ({ type, orders, orderTypes })
               {orders.map((order: IOrderDocument) => (
                 <tr key={uuidv4()} className="bg-white border-b border-grey flex flex-col flex-nowrap sm:table-row mb-2 sm:mb-0 ">
                   <td className="p-3 text-left md:text-center">{TimeAgo.dayMonthYear(`${order.events.orderDelivered}`)}</td>
-                  <td className="p-3 text-left md:text-center">Earning</td>
-                  <td className="p-3 text-left md:text-center">order</td>
+                  <td className="p-3 text-left md:text-center">Doanh thu</td>
+                  <td className="p-3 text-left md:text-center">đơn hàng</td>
                   <td className="p-3 text-left md:text-center lowercase">{order.buyerUsername}</td>
                   <td className="p-3 text-left md:text-center">
                     <Link onClick={() => dispatch(updateHeader('home'))} to={`/orders/${order.orderId}/activities`} className="underline">
@@ -52,7 +52,7 @@ const ManageEarningsTable: FC<IOrderTableProps> = ({ type, orders, orderTypes })
         ) : (
           <tbody>
             <tr>
-              <td className="w-full px-4 py-2 text-sm">No {type} orders to show.</td>
+              <td className="w-full px-4 py-2 text-sm">Không có đơn hàng {type === 'active' ? 'đang hoạt động' : type} để hiển thị.</td>
             </tr>
           </tbody>
         )}

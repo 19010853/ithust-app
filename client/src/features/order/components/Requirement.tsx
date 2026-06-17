@@ -24,7 +24,7 @@ const Requirement: FC = (): ReactElement => {
   const { gigId } = useParams<string>();
   const [searchParams] = useSearchParams({});
   const gigRef = useRef<ISellerGig>();
-  const placeholder = 'https://placehold.co/330x220?text=Placeholder';
+  const placeholder = 'https://placehold.co/330x220?text=Anh+tam';
   const offer: IOffer = JSON.parse(`${searchParams.get('offer')}`);
   const order_date = `${searchParams.get('order_date')}`;
   const serviceFee: number = offer.price < 50 ? Number(((5.5 / 100) * offer.price + 2).toFixed(2)) : Number(((5.5 / 100) * offer.price).toFixed(2));
@@ -54,7 +54,7 @@ const Requirement: FC = (): ReactElement => {
   }
 
   if (isSuccess && data.gig?.active === false) {
-    return <PageMessage header="Gig paused" body="This gig is currently paused and cannot receive new orders." />;
+    return <PageMessage header="Gig đã tạm dừng" body="Gig này hiện đang tạm dừng và chưa thể nhận đơn mới." />;
   }
 
   const isPaidOrder = (order?: IOrderDocument): boolean => normalizeOrderStatus(order?.status || '') === 'in progress';
@@ -63,16 +63,16 @@ const Requirement: FC = (): ReactElement => {
     try {
       const response: IResponse = await getOrderByOrderId(orderId).unwrap();
       if (isPaidOrder(response.order)) {
-        showSuccessToast('Payment confirmed.');
+        showSuccessToast('Thanh toán đã được xác nhận.');
         navigate(`/orders/${orderId}/activities`, { state: response.order });
         return;
       }
       if (showPendingMessage) {
-        showErrorToast('Payment has not been confirmed yet. Please wait for SePay webhook processing.');
+        showErrorToast('Thanh toán chưa được xác nhận. Vui lòng chờ webhook SePay xử lý.');
       }
     } catch (error) {
       if (showPendingMessage) {
-        showErrorToast('Unable to check payment status.');
+        showErrorToast('Không thể kiểm tra trạng thái thanh toán.');
       }
     }
   };
@@ -103,7 +103,7 @@ const Requirement: FC = (): ReactElement => {
         price: offer.price
       },
       {
-        service: 'Service Fee',
+        service: 'Phí dịch vụ',
         quantity: 1,
         price: serviceFee
       }
@@ -162,10 +162,10 @@ const Requirement: FC = (): ReactElement => {
       }
     } catch (error) {
       if (isFetchBaseQueryError(error)) {
-        showErrorToast(error?.data?.message || 'Error starting your order.');
+        showErrorToast(error?.data?.message || 'Không thể bắt đầu đơn hàng của bạn.');
         return;
       }
-      showErrorToast('Error starting your order.');
+      showErrorToast('Không thể bắt đầu đơn hàng của bạn.');
     }
   };
 
@@ -174,9 +174,9 @@ const Requirement: FC = (): ReactElement => {
       <div className="flex flex-wrap">
         <div className="order-last w-full p-4 lg:order-first lg:w-2/3">
           <div className="mb-4 flex w-full flex-col flex-wrap bg-[#d4edda] p-4">
-            <span className="text-base font-bold text-black lg:text-xl">Thank you for your purchase</span>
+            <span className="text-base font-bold text-black lg:text-xl">Cảm ơn bạn đã mua dịch vụ</span>
             <div className="flex gap-1">
-              You can{' '}
+              Bạn có thể{' '}
               {isMounted && (
                 <PDFDownloadLink
                   document={
@@ -186,7 +186,7 @@ const Requirement: FC = (): ReactElement => {
                   }
                   fileName={`${orderInvoice.invoiceId}.pdf`}
                 >
-                  <div className="cursor-pointer text-blue-400 underline">download your invoice</div>
+                  <div className="cursor-pointer text-blue-400 underline">tải hóa đơn</div>
                 </PDFDownloadLink>
               )}
             </div>
@@ -195,33 +195,33 @@ const Requirement: FC = (): ReactElement => {
             <div className="border-grey border">
               <div className="mb-3 px-4 pb-2 pt-3">
                 <span className="mb-3 text-base font-medium text-black md:text-lg lg:text-xl">
-                  Scan QR Code to Pay
+                  Quét mã QR để thanh toán
                 </span>
                 <p className="text-sm">
                   {paymentMode === 'live'
-                    ? 'Please open your banking app and scan the QR code below to complete the payment for this order.'
-                    : 'This is SePay Test Mode. Create a simulated incoming transaction in my.sepay.vn with the amount and transfer content below.'}
+                    ? 'Vui lòng mở ứng dụng ngân hàng và quét mã QR bên dưới để hoàn tất thanh toán cho đơn hàng này.'
+                    : 'Đây là chế độ kiểm thử SePay. Hãy tạo giao dịch đến giả lập trên my.sepay.vn với đúng số tiền và nội dung chuyển khoản bên dưới.'}
                 </p>
               </div>
               <div className="flex flex-col items-center px-4 pb-4">
-                {paymentMode === 'live' && <img src={qrCodeUrl} alt="VietQR Code" className="mb-4 max-w-xs" />}
+                {paymentMode === 'live' && <img src={qrCodeUrl} alt="Mã VietQR" className="mb-4 max-w-xs" />}
                 <div className="mb-4 w-full max-w-md rounded border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700">
                   <div className="flex justify-between gap-3">
-                    <span>Amount</span>
+                    <span>Số tiền</span>
                     <strong>
                       {new Intl.NumberFormat('vi-VN').format(paymentAmount)} {paymentCurrency}
                     </strong>
                   </div>
                   <div className="mt-2 flex flex-col gap-1">
-                    <span>Transfer content</span>
+                    <span>Nội dung chuyển khoản</span>
                     <strong className="break-all">{paymentContent}</strong>
                   </div>
                 </div>
                 <div className="w-full max-w-md border-t border-gray-200 pt-3 text-sm text-gray-600">
-                  Waiting for SePay to confirm the payment. This page will continue automatically after the webhook updates the order.
+                  Đang chờ SePay xác nhận thanh toán. Trang này sẽ tự động tiếp tục sau khi webhook cập nhật đơn hàng.
                   {paymentWaitExpired && (
                     <p className="mt-2 text-amber-700">
-                      Still waiting. Check the SePay webhook log and confirm the test transaction uses the exact amount and transfer content above.
+                      Vẫn đang chờ. Hãy kiểm tra log webhook SePay và xác nhận giao dịch kiểm thử dùng đúng số tiền cùng nội dung chuyển khoản ở trên.
                     </p>
                   )}
                 </div>
@@ -231,22 +231,22 @@ const Requirement: FC = (): ReactElement => {
             <div className="border-grey border">
               <div className="mb-3 px-4 pb-2 pt-3">
                 <span className="mb-3 text-base font-medium text-black md:text-lg lg:text-xl">
-                  Any information you would like the seller to know?
+                  Bạn muốn người bán biết thêm thông tin gì?
                 </span>
-                <p className="text-sm">Click the button to start the order.</p>
+                <p className="text-sm">Nhấn nút bên dưới để bắt đầu đơn hàng.</p>
               </div>
               <div className="flex flex-col px-4 pb-4">
                 <TextAreaInput
                   rows={5}
                   name="requirement"
                   value={requirement}
-                  placeholder="Write a brief description..."
+                  placeholder="Viết mô tả ngắn..."
                   className="border-grey mb-1 w-full rounded border p-3.5 text-sm font-normal text-gray-600 focus:outline-none"
                   onChange={(event: ChangeEvent) => setRequirement((event.target as HTMLTextAreaElement).value)}
                 />
                 <Button
                   className="mt-3 rounded bg-sky-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
-                  label="Submit & Pay"
+                  label="Gửi và thanh toán"
                   onClick={startOrder}
                 />
               </div>
@@ -257,30 +257,30 @@ const Requirement: FC = (): ReactElement => {
         <div className="w-full p-4 lg:w-1/3">
           <div className="border-grey mb-8 border">
             <div className="mb-2 flex flex-col border-b md:flex-row">
-              <img className="w-full object-cover" src={gigRef.current?.coverImage ?? placeholder} alt="Gig Cover Image" />
+              <img className="w-full object-cover" src={gigRef.current?.coverImage ?? placeholder} alt="Ảnh bìa gig" />
             </div>
             <ul className="mb-0 list-none">
               <li className="border-grey flex border-b px-4 pb-3 pt-1">
                 <div className="text-sm font-normal">{offer.gigTitle}</div>
               </li>
               <li className="flex justify-between px-4 pb-2 pt-4">
-                <div className="flex gap-2 text-sm font-normal">Status</div>
-                <span className="rounded bg-orange-300 px-[5px] py-[2px] text-xs font-bold uppercase text-white">incomplete</span>
+                <div className="flex gap-2 text-sm font-normal">Trạng thái</div>
+                <span className="rounded bg-orange-300 px-[5px] py-[2px] text-xs font-bold uppercase text-white">Chưa hoàn tất</span>
               </li>
               <li className="flex justify-between px-4 pb-2 pt-2">
-                <div className="flex gap-2 text-sm font-normal">Order</div>
+                <div className="flex gap-2 text-sm font-normal">Đơn hàng</div>
                 <span className="text-sm">#{orderId}</span>
               </li>
               <li className="flex justify-between px-4 pb-2 pt-2">
-                <div className="flex gap-2 text-sm font-normal">Order Date</div>
+                <div className="flex gap-2 text-sm font-normal">Ngày đặt</div>
                 <span className="text-sm">{TimeAgo.dayMonthYear(`${new Date()}`)}</span>
               </li>
               <li className="flex justify-between px-4 pb-2 pt-2">
-                <div className="flex gap-2 text-sm font-normal">Quantity</div>
+                <div className="flex gap-2 text-sm font-normal">Số lượng</div>
                 <span className="text-sm">X 1</span>
               </li>
               <li className="flex justify-between px-4 pb-4 pt-2">
-                <div className="flex gap-2 text-sm font-normal">Price</div>
+                <div className="flex gap-2 text-sm font-normal">Giá</div>
                 <span className="text-sm">${offer.price}</span>
               </li>
             </ul>

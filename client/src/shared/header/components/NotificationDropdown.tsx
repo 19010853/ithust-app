@@ -5,7 +5,7 @@ import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { IOrderNotifcation } from 'src/features/order/interfaces/order.interface';
 import { useGetNotificationsByIdQuery, useMarkUnreadNotificationMutation } from 'src/features/order/services/notification.service';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
-import { showErrorToast } from 'src/shared/utils/utils.service';
+import { notificationMessageDisplayLabel, showErrorToast } from 'src/shared/utils/utils.service';
 import { useAppSelector } from 'src/store/store';
 import { IReduxState } from 'src/store/store.interface';
 import { v4 as uuidv4 } from 'uuid';
@@ -23,7 +23,7 @@ const NotificationDropdown: FC<IHomeHeaderProps> = ({ setIsNotificationDropdownO
     try {
       await markUnReadNotification(notificationId).unwrap();
     } catch (error) {
-      showErrorToast('Error');
+      showErrorToast('Đã xảy ra lỗi.');
     }
   };
 
@@ -36,7 +36,7 @@ const NotificationDropdown: FC<IHomeHeaderProps> = ({ setIsNotificationDropdownO
 
   return (
     <div className="border-grey z-20 max-h-[470px] flex flex-col justify-between rounded shadow-md border border-grey bg-white">
-      <div className="block px-4 py-2 font-medium text-center text-gray-700 border-b border-grey">Notifications</div>
+      <div className="block px-4 py-2 font-medium text-center text-gray-700 border-b border-grey">Thông báo</div>
       <div className="h-96 overflow-y-scroll">
         {notifications.length > 0 &&
           notifications.map((data: IOrderNotifcation) => (
@@ -65,7 +65,7 @@ const NotificationDropdown: FC<IHomeHeaderProps> = ({ setIsNotificationDropdownO
                       <span className="font-bold pr-1">
                         {data.senderUsername === authUser?.username ? data.receiverUsername : data.senderUsername}
                       </span>
-                      {data.message}
+                      {notificationMessageDisplayLabel(data.message)}
                     </div>
                     {!data.isRead ? <FaRegEnvelope className="text-sky-400 mt-1" /> : <FaRegEnvelopeOpen className="text-gray-200 mt-1" />}
                   </div>
@@ -76,7 +76,7 @@ const NotificationDropdown: FC<IHomeHeaderProps> = ({ setIsNotificationDropdownO
               </div>
             </div>
           ))}
-        {notifications.length === 0 && <div className="flex h-full items-center justify-center">No notifications to show</div>}
+        {notifications.length === 0 && <div className="flex h-full items-center justify-center">Không có thông báo để hiển thị</div>}
       </div>
     </div>
   );

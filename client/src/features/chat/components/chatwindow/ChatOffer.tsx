@@ -30,7 +30,7 @@ const ChatOffer: FC<IChatMessageProps> = ({ message, seller, gig }): ReactElemen
         navigate(`/gig/checkout/${message.gigId}?${createSearchParams({ offer: JSON.stringify(offerParams) })}`, { state: gig });
       }
     } catch (error) {
-      showErrorToast('Error updating buyer offer.');
+      showErrorToast('Không thể cập nhật đề nghị cho người mua.');
     }
   };
 
@@ -43,8 +43,7 @@ const ChatOffer: FC<IChatMessageProps> = ({ message, seller, gig }): ReactElemen
         </div>
         <div className="border-grey h-28 max-h-28 overflow-y-scroll border-b px-4 py-3">{messageOffer.description}</div>
         <div className="border-grey flex flex-row gap-x-2 border-b px-4 py-3 text-sm font-bold md:text-base">
-          <FaRegClock className="self-center" /> {messageOffer.deliveryInDays} Day
-          {parseInt(`${messageOffer.deliveryInDays}`) > 1 ? 's' : ''} Delivery
+          <FaRegClock className="self-center" /> Giao trong {messageOffer.deliveryInDays} ngày
         </div>
         <div className="relative top-[5%] mr-3 flex flex-row justify-end gap-4">
           <Button
@@ -54,7 +53,7 @@ const ChatOffer: FC<IChatMessageProps> = ({ message, seller, gig }): ReactElemen
                 : 'bg-red-500 hover:bg-red-400'
             }`}
             disabled={messageOffer.accepted || messageOffer.cancelled}
-            label="Cancel Offer"
+            label="Hủy đề nghị"
             onClick={() => updateBuyerOffer(`${message._id}`, 'cancelled', messageOffer)}
           />
 
@@ -66,7 +65,7 @@ const ChatOffer: FC<IChatMessageProps> = ({ message, seller, gig }): ReactElemen
                   : 'bg-sky-500 hover:bg-sky-400'
               }`}
               disabled={messageOffer.accepted || messageOffer.cancelled}
-              label="Accept Offer"
+              label="Chấp nhận đề nghị"
               onClick={() => updateBuyerOffer(`${message._id}`, 'accepted', messageOffer)}
             />
           )}

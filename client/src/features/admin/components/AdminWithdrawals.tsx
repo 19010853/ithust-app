@@ -7,6 +7,11 @@ import { isFetchBaseQueryError, showErrorToast, showSuccessToast } from 'src/sha
 type WithdrawalStatus = 'PENDING' | 'COMPLETED' | 'REJECTED';
 
 const statusOptions: WithdrawalStatus[] = ['PENDING', 'COMPLETED', 'REJECTED'];
+const withdrawalStatusLabel: Record<WithdrawalStatus, string> = {
+  PENDING: 'Chờ xử lý',
+  COMPLETED: 'Đã hoàn tất',
+  REJECTED: 'Đã từ chối'
+};
 
 const AdminWithdrawals: FC = (): ReactElement => {
   const [statusFilter, setStatusFilter] = useState<string>('PENDING');
@@ -75,14 +80,14 @@ const AdminWithdrawals: FC = (): ReactElement => {
         paymentReference: paymentReference.trim(),
         adminNote: adminNote.trim()
       }).unwrap();
-      showSuccessToast(`Withdrawal marked as ${nextStatus}.`);
+      showSuccessToast(`Đã đánh dấu yêu cầu rút tiền là ${withdrawalStatusLabel[nextStatus].toLowerCase()}.`);
       closeStatusModal();
     } catch (error) {
       if (isFetchBaseQueryError(error)) {
-        showErrorToast(error?.data?.message || 'Unable to update withdrawal.');
+        showErrorToast(error?.data?.message || 'Không thể cập nhật yêu cầu rút tiền.');
         return;
       }
-      showErrorToast('Unable to update withdrawal.');
+      showErrorToast('Không thể cập nhật yêu cầu rút tiền.');
     }
   };
 
@@ -104,18 +109,18 @@ const AdminWithdrawals: FC = (): ReactElement => {
     <div className="container mx-auto mt-8 px-4">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Withdrawal Requests</h1>
-          <p className="text-sm text-gray-600">Review seller payout requests and record manual payment outcomes.</p>
+          <h1 className="text-2xl font-bold text-gray-900">Yêu cầu rút tiền</h1>
+          <p className="text-sm text-gray-600">Xem xét yêu cầu thanh toán của người bán và ghi nhận kết quả chuyển khoản thủ công.</p>
         </div>
         <div className="text-sm text-gray-500">
-          {pagination?.total || 0} request{(pagination?.total || 0) === 1 ? '' : 's'} found
+          Tìm thấy {pagination?.total || 0} yêu cầu
         </div>
       </div>
 
       <div className="mb-4 grid gap-3 bg-white p-4 md:grid-cols-4">
         <input
           className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-          placeholder="Search seller or bank account"
+          placeholder="Tìm người bán hoặc tài khoản ngân hàng"
           value={q}
           onChange={resetPageOnChange(setQ)}
         />
@@ -124,47 +129,47 @@ const AdminWithdrawals: FC = (): ReactElement => {
           value={statusFilter}
           onChange={resetPageOnChange(setStatusFilter)}
         >
-          <option value="">All statuses</option>
+          <option value="">Tất cả trạng thái</option>
           {statusOptions.map((status) => (
             <option key={status} value={status}>
-              {status}
+              {withdrawalStatusLabel[status]}
             </option>
           ))}
         </select>
         <input
           className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-          placeholder="Bank"
+          placeholder="Ngân hàng"
           value={bankName}
           onChange={resetPageOnChange(setBankName)}
         />
         <div className="grid grid-cols-2 gap-2">
           <input
             className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-            placeholder="Min amount"
+            placeholder="Số tiền tối thiểu"
             value={minAmount}
             onChange={resetPageOnChange(setMinAmount)}
           />
           <input
             className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-            placeholder="Max amount"
+            placeholder="Số tiền tối đa"
             value={maxAmount}
             onChange={resetPageOnChange(setMaxAmount)}
           />
         </div>
         <label className="flex flex-col gap-1 text-xs text-gray-500">
-          Requested from
+          Yêu cầu từ ngày
           <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" type="date" value={createdFrom} onChange={resetPageOnChange(setCreatedFrom)} />
         </label>
         <label className="flex flex-col gap-1 text-xs text-gray-500">
-          Requested to
+          Yêu cầu đến ngày
           <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" type="date" value={createdTo} onChange={resetPageOnChange(setCreatedTo)} />
         </label>
         <label className="flex flex-col gap-1 text-xs text-gray-500">
-          Processed from
+          Xử lý từ ngày
           <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" type="date" value={processedFrom} onChange={resetPageOnChange(setProcessedFrom)} />
         </label>
         <label className="flex flex-col gap-1 text-xs text-gray-500">
-          Processed to
+          Xử lý đến ngày
           <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" type="date" value={processedTo} onChange={resetPageOnChange(setProcessedTo)} />
         </label>
       </div>
@@ -173,21 +178,21 @@ const AdminWithdrawals: FC = (): ReactElement => {
         <table className="w-full min-w-[980px] text-left text-sm">
           <thead className="border-b border-grey bg-gray-50 text-xs uppercase text-gray-600">
             <tr>
-              <th className="px-4 py-3">Seller</th>
-              <th className="px-4 py-3">Amount</th>
-              <th className="px-4 py-3">Bank</th>
-              <th className="px-4 py-3">Account</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Requested</th>
-              <th className="px-4 py-3">Processed</th>
-              <th className="px-4 py-3 text-right">Actions</th>
+              <th className="px-4 py-3">Người bán</th>
+              <th className="px-4 py-3">Số tiền</th>
+              <th className="px-4 py-3">Ngân hàng</th>
+              <th className="px-4 py-3">Tài khoản</th>
+              <th className="px-4 py-3">Trạng thái</th>
+              <th className="px-4 py-3">Ngày yêu cầu</th>
+              <th className="px-4 py-3">Ngày xử lý</th>
+              <th className="px-4 py-3 text-right">Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {(isLoading || isFetching) && (
               <tr>
                 <td className="px-4 py-6 text-center text-gray-500" colSpan={8}>
-                  Loading withdrawals...
+                  Đang tải yêu cầu rút tiền...
                 </td>
               </tr>
             )}
@@ -202,7 +207,7 @@ const AdminWithdrawals: FC = (): ReactElement => {
                     <div className="font-medium">{withdrawal.bankInfo?.accountNumber || '-'}</div>
                     <div className="text-xs text-gray-500">{withdrawal.bankInfo?.accountName || '-'}</div>
                   </td>
-                  <td className="px-4 py-3">{withdrawal.status}</td>
+                  <td className="px-4 py-3">{withdrawalStatusLabel[withdrawal.status as WithdrawalStatus] || withdrawal.status}</td>
                   <td className="px-4 py-3">{formatDate(withdrawal.createdAt)}</td>
                   <td className="px-4 py-3">{formatDate(withdrawal.processedDate)}</td>
                   <td className="px-4 py-3">
@@ -210,12 +215,12 @@ const AdminWithdrawals: FC = (): ReactElement => {
                       <div className="flex justify-end gap-2">
                         <Button
                           className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500"
-                          label="Mark completed"
+                          label="Đánh dấu hoàn tất"
                           onClick={() => openStatusModal(withdrawal, 'COMPLETED')}
                         />
                         <Button
                           className="rounded bg-red-600 px-3 py-2 text-xs font-bold text-white hover:bg-red-500"
-                          label="Reject"
+                          label="Từ chối"
                           onClick={() => openStatusModal(withdrawal, 'REJECTED')}
                         />
                       </div>
@@ -228,7 +233,7 @@ const AdminWithdrawals: FC = (): ReactElement => {
             {!isLoading && !isFetching && !withdrawals.length && (
               <tr>
                 <td className="px-4 py-6 text-center text-gray-500" colSpan={8}>
-                  No withdrawals found.
+                  Không tìm thấy yêu cầu rút tiền.
                 </td>
               </tr>
             )}
@@ -237,18 +242,18 @@ const AdminWithdrawals: FC = (): ReactElement => {
       </div>
       <div className="mt-3 flex items-center justify-between text-sm">
         <span>
-          Page {pagination?.page || page} of {pagination?.totalPages || 1}
+          Trang {pagination?.page || page} / {pagination?.totalPages || 1}
         </span>
         <div className="flex gap-2">
           <Button
             className="rounded border border-gray-300 px-3 py-1 font-bold text-gray-700 disabled:opacity-40"
-            label="Prev"
+            label="Trước"
             disabled={page <= 1}
             onClick={() => setPage((value) => Math.max(value - 1, 1))}
           />
           <Button
             className="rounded border border-gray-300 px-3 py-1 font-bold text-gray-700 disabled:opacity-40"
-            label="Next"
+            label="Sau"
             disabled={page >= (pagination?.totalPages || 1)}
             onClick={() => setPage((value) => value + 1)}
           />
@@ -258,33 +263,33 @@ const AdminWithdrawals: FC = (): ReactElement => {
       {selectedWithdrawal && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 px-4">
           <div className="w-full max-w-lg bg-white p-5 shadow-xl">
-            <h2 className="mb-2 text-lg font-bold text-gray-900">Mark withdrawal as {nextStatus}</h2>
+            <h2 className="mb-2 text-lg font-bold text-gray-900">Đánh dấu yêu cầu là {withdrawalStatusLabel[nextStatus].toLowerCase()}</h2>
             <p className="mb-4 text-sm text-gray-600">
-              Withdrawal {selectedWithdrawal._id} for ${selectedWithdrawal.amount}
+              Yêu cầu {selectedWithdrawal._id} với số tiền ${selectedWithdrawal.amount}
             </p>
             <div className="mb-3 flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Payment reference</label>
+              <label className="text-sm font-medium text-gray-700">Mã tham chiếu thanh toán</label>
               <input
                 className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
                 value={paymentReference}
                 onChange={(event) => setPaymentReference(event.target.value)}
-                placeholder="Bank transaction/reference code"
+                placeholder="Mã giao dịch hoặc mã tham chiếu ngân hàng"
               />
             </div>
             <div className="mb-5 flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Admin note</label>
+              <label className="text-sm font-medium text-gray-700">Ghi chú admin</label>
               <textarea
                 className="min-h-[100px] rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
                 value={adminNote}
                 onChange={(event) => setAdminNote(event.target.value)}
-                placeholder="Optional note for audit and seller email"
+                placeholder="Ghi chú tùy chọn cho log kiểm duyệt và email gửi người bán"
               />
             </div>
             <div className="flex justify-end gap-2">
-              <Button className="rounded border border-gray-300 px-4 py-2 text-sm font-bold text-gray-700" label="Cancel" onClick={closeStatusModal} />
+              <Button className="rounded border border-gray-300 px-4 py-2 text-sm font-bold text-gray-700" label="Hủy" onClick={closeStatusModal} />
               <Button
                 className="rounded bg-sky-500 px-4 py-2 text-sm font-bold text-white hover:bg-sky-400 disabled:cursor-not-allowed disabled:bg-gray-400"
-                label={isUpdating ? 'Saving...' : `Confirm ${nextStatus}`}
+                label={isUpdating ? 'Đang lưu...' : `Xác nhận ${withdrawalStatusLabel[nextStatus].toLowerCase()}`}
                 disabled={isUpdating}
                 onClick={onUpdateStatus}
               />

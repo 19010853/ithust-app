@@ -21,20 +21,20 @@ const TableHead: FC = (): ReactElement => {
     <>
       <View style={{ width: '100%', flexDirection: 'row', marginTop: 10 }}>
         <View style={[styles.theader, styles.theader2]}>
-          <Text>Service</Text>
+          <Text>Dịch vụ</Text>
         </View>
         <View style={styles.theader}></View>
         <View style={styles.theader}></View>
         <View style={styles.theader}></View>
         <View style={styles.theader}></View>
         <View style={styles.theader}>
-          <Text>Qty</Text>
+          <Text>SL</Text>
         </View>
         <View style={styles.theader}>
-          <Text>Price($)</Text>
+          <Text>Giá($)</Text>
         </View>
         <View style={styles.theader}>
-          <Text>Total($)</Text>
+          <Text>Tổng($)</Text>
         </View>
       </View>
     </>

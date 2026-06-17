@@ -25,22 +25,22 @@ const DeliveryTimer: FC<IModalProps> = ({ order, authUser }): ReactElement => {
       <div className="mb-6 flex flex-col gap-4 rounded-[4px] bg-white px-4 py-3">
         <div className="text-base font-bold">
           {!order?.delivered
-            ? `Time left ${authUser?.username === order?.sellerUsername ? 'to deliver' : 'for delivery'}`
-            : 'Want to deliver again?'}
+            ? `Thời gian còn lại ${authUser?.username === order?.sellerUsername ? 'để giao hàng' : 'chờ giao hàng'}`
+            : 'Bạn muốn giao lại?'}
         </div>
         {!order?.delivered && (
           <div className="mb-1 flex justify-between text-center">
             <div className="flex flex-col text-sm font-bold md:text-base">
-              {days} <span className="text-xs font-normal md:text-sm">days</span>
+              {days} <span className="text-xs font-normal md:text-sm">ngày</span>
             </div>
             <div className="flex flex-col text-sm font-bold md:text-base">
-              {hours} <span className="text-xs font-normal md:text-sm">hours</span>
+              {hours} <span className="text-xs font-normal md:text-sm">giờ</span>
             </div>
             <div className="flex flex-col text-sm font-bold md:text-base">
-              {minutes} <span className="text-xs font-normal md:text-sm">minutes</span>
+              {minutes} <span className="text-xs font-normal md:text-sm">phút</span>
             </div>
             <div className="flex flex-col text-sm font-bold md:text-base">
-              {seconds} <span className="text-xs font-normal md:text-sm">seconds</span>
+              {seconds} <span className="text-xs font-normal md:text-sm">giây</span>
             </div>
           </div>
         )}
@@ -49,7 +49,7 @@ const DeliveryTimer: FC<IModalProps> = ({ order, authUser }): ReactElement => {
           <div className="flex w-full cursor-pointer flex-col gap-4">
             <Button
               className="w-full rounded bg-green-500 px-4 py-2 text-center text-sm font-bold text-white hover:bg-green-400 focus:outline-none md:text-base"
-              label={`Deliver ${!order?.delivered ? 'Now' : 'Again'}`}
+              label={!order?.delivered ? 'Giao ngay' : 'Giao lại'}
               onClick={() => setDisplayModal({ ...displayModal, deliverWork: !displayModal.deliverWork })}
             />
             {!order?.delivered && (
@@ -57,7 +57,7 @@ const DeliveryTimer: FC<IModalProps> = ({ order, authUser }): ReactElement => {
                 className="mb-2 text-center text-sm underline"
                 onClick={() => setDisplayModal({ ...displayModal, extendDelivery: !displayModal.extendDelivery })}
               >
-                Extend delivery date
+                Gia hạn ngày giao
               </div>
             )}
           </div>

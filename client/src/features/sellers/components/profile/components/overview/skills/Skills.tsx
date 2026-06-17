@@ -15,7 +15,7 @@ const Skills: FC = (): ReactElement => {
   return (
     <div className="border-grey mt-6 border bg-white">
       <div className="mb-1 flex justify-between border-b">
-        <h4 className="flex py-2.5 pl-3.5 text-sm font-bold text-[#161c2d] md:text-base">SKILLS</h4>
+        <h4 className="flex py-2.5 pl-3.5 text-sm font-bold text-[#161c2d] md:text-base">KỸ NĂNG</h4>
         {showEditIcons && !showSkillAddForm && (
           <span
             onClick={() => {
@@ -26,7 +26,7 @@ const Skills: FC = (): ReactElement => {
             }}
             className="flex cursor-pointer items-center pr-3.5 text-sm text-[#00698c] md:text-base"
           >
-            Add New
+            Thêm mới
           </span>
         )}
       </div>

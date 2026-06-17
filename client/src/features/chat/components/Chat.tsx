@@ -50,7 +50,7 @@ const Chat: FC = (): ReactElement => {
             isError={isError}
           />
         ) : (
-          <div className="flex w-full items-center justify-center">Select a user to chat with.</div>
+          <div className="flex w-full items-center justify-center">Chọn một người dùng để trò chuyện.</div>
         )}
       </div>
     </div>

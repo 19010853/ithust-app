@@ -1,7 +1,7 @@
 import { Transition } from '@headlessui/react';
 import { FC, MouseEvent, ReactElement, useState } from 'react';
 import { FaAngleDown, FaAngleRight, FaAngleUp } from 'react-icons/fa';
-import { categories, saveToLocalStorage } from 'src/shared/utils/utils.service';
+import { categories, categoryDisplayLabel, saveToLocalStorage } from 'src/shared/utils/utils.service';
 import { v4 as uuidv4 } from 'uuid';
 
 import { IHeaderModalProps, IHeaderSideBarProps } from '../../interfaces/header.interface';
@@ -42,7 +42,7 @@ const HeaderSideBar: FC<IHeaderSideBarProps> = ({ setShowRegisterModal, setShowL
             }}
             className="bg-sky-500 border-sky-500 cursor-pointer rounded border px-6 py-3 text-base font-semibold text-white transition-all duration-300"
           >
-            Join ITHust
+            Tham gia ITHust
           </div>
           <div
             onClick={(event: MouseEvent) => {
@@ -56,7 +56,7 @@ const HeaderSideBar: FC<IHeaderSideBarProps> = ({ setShowRegisterModal, setShowL
             }}
             className="cursor-pointer text-base font-medium text-gray-400"
           >
-            Become a Seller
+            Trở thành người bán
           </div>
           <div
             onClick={(event: MouseEvent) => {
@@ -69,11 +69,11 @@ const HeaderSideBar: FC<IHeaderSideBarProps> = ({ setShowRegisterModal, setShowL
             }}
             className="cursor-pointer text-base font-medium text-gray-400"
           >
-            Sign In
+            Đăng nhập
           </div>
           <div className="cursor-pointer text-base font-medium flex flex-col w-full text-gray-400">
             <span className="flex justify-between" onClick={toggleDropdown}>
-              Browse Categories{' '}
+              Duyệt danh mục{' '}
               {!isDropdownOpen ? <FaAngleDown className="flex self-center mt-1" /> : <FaAngleUp className="flex self-center mt-1" />}
             </span>
             <div className="my-2">
@@ -89,7 +89,7 @@ const HeaderSideBar: FC<IHeaderSideBarProps> = ({ setShowRegisterModal, setShowL
                 <ul>
                   {categories().map((category: string) => (
                     <li key={uuidv4()} className="py-2 text-right flex justify-between cursor-pointer hover:text-sky-400">
-                      <span className="w-full pr-6">{category}</span> <FaAngleRight className="flex self-center" />
+                      <span className="w-full pr-6">{categoryDisplayLabel(category)}</span> <FaAngleRight className="flex self-center" />
                     </li>
                   ))}
                 </ul>

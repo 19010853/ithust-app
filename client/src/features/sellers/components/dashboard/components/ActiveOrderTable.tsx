@@ -21,13 +21,13 @@ const ActiveOrderTable: FC<IActiveOrderProps> = ({ activeOrders }): ReactElement
                   className="mb-1 flex flex-col flex-nowrap bg-sky-500 text-white sm:mb-0 sm:table-row md:table-row lg:bg-transparent lg:text-black"
                 >
                   <th className="p-3 text-center">
-                    <span className="block lg:hidden">Item</span>
+                    <span className="block lg:hidden">Mục</span>
                   </th>
-                  <th className="p-3 text-center">Price</th>
-                  <th className="p-3 text-center">Due In</th>
-                  <th className="p-3 text-center">Status</th>
+                  <th className="p-3 text-center">Giá</th>
+                  <th className="p-3 text-center">Hạn giao</th>
+                  <th className="p-3 text-center">Trạng thái</th>
                   <th className="p-3 text-center">
-                    <span className="block lg:hidden">View</span>
+                    <span className="block lg:hidden">Xem</span>
                   </th>
                 </tr>
               ))}
@@ -48,7 +48,7 @@ const ActiveOrderTable: FC<IActiveOrderProps> = ({ activeOrders }): ReactElement
                   <td className="p-3 text-left lg:text-center">${order.price}</td>
                   <td className="p-3 text-left lg:text-center">{TimeAgo.dayMonthYear(`${order.offer.newDeliveryDate}`)}</td>
                   <td className="p-3 text-left lg:text-center">
-                    <span className="rounded bg-green-500 px-[5px] py-[4px] text-xs font-bold uppercase text-white">In Progress</span>
+                    <span className="rounded bg-green-500 px-[5px] py-[4px] text-xs font-bold uppercase text-white">Đang thực hiện</span>
                   </td>
                   <td className="px-3 py-1 text-left lg:p-3 lg:text-center">
                     <Link
@@ -56,7 +56,7 @@ const ActiveOrderTable: FC<IActiveOrderProps> = ({ activeOrders }): ReactElement
                       className="text-sky-500 hover:text-sky-500 hover:underline"
                       onClick={() => dispatch(updateHeader('home'))}
                     >
-                      View
+                      Xem
                     </Link>
                   </td>
                 </tr>
@@ -66,7 +66,7 @@ const ActiveOrderTable: FC<IActiveOrderProps> = ({ activeOrders }): ReactElement
         ) : (
           <tbody>
             <tr>
-              <td className="w-full px-4 py-2 text-sm">No active orders to show.</td>
+              <td className="w-full px-4 py-2 text-sm">Không có đơn hàng đang hoạt động để hiển thị.</td>
             </tr>
           </tbody>
         )}

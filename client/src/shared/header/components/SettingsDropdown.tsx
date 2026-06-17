@@ -34,7 +34,7 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
               }}
               className="block w-full cursor-pointer rounded bg-sky-500 px-4s py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none"
             >
-              {type === 'buyer' ? 'Switch to Selling' : 'Switch to Buying'}
+              {type === 'buyer' ? 'Chuyển sang bán hàng' : 'Chuyển sang mua hàng'}
             </Link>
           </li>
         )}
@@ -51,7 +51,7 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
                 dispatch(updateCategoryContainer(true));
               }}
             >
-              Add a new gig
+              Thêm gig mới
             </Link>
           </li>
         )}
@@ -68,7 +68,7 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
                 dispatch(updateCategoryContainer(true));
               }}
             >
-              Dashboard
+              Bảng điều khiển
             </Link>
           </li>
         )}
@@ -85,7 +85,7 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
                 dispatch(updateCategoryContainer(true));
               }}
             >
-              Profile
+              Hồ sơ
             </Link>
           </li>
         )}
@@ -101,7 +101,7 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
               dispatch(updateCategoryContainer(false));
             }}
           >
-            Inbox
+            Hộp thư
           </Link>
         </li>
         <li>
@@ -116,13 +116,13 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
               dispatch(updateCategoryContainer(false));
             }}
           >
-            Settings
+            Cài đặt
           </Link>
         </li>
       </ul>
       <div className="py-1">
         <div onClick={() => onLogout()} className="block px-4 py-2 text-sm hover:text-sky-400">
-          Sign out
+          Đăng xuất
         </div>
       </div>
     </div>

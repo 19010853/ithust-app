@@ -34,7 +34,7 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
 
   const navigateToEditGig = (gigId: string): void => {
     if (sellerIsRestricted) {
-      showErrorToast('Your seller capability is restricted. Editing gigs is disabled.');
+      showErrorToast('Quyền bán hàng của bạn đang bị hạn chế. Bạn không thể chỉnh sửa gig.');
       return;
     }
     setGigCardItemModal({ ...gigCardItemModal, overlay: false });
@@ -45,16 +45,16 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
   const onToggleGig = async (active: boolean): Promise<void> => {
     if (!active) {
       setApprovalModalContent({
-        header: 'Pause this Gig',
-        body: 'This gig will stop receiving new orders. Any orders already in progress must still be completed.',
-        btnText: 'Pause',
+        header: 'Tạm dừng gig này',
+        body: 'Gig này sẽ ngừng nhận đơn hàng mới. Các đơn hàng đang thực hiện vẫn cần được hoàn tất.',
+        btnText: 'Tạm dừng',
         btnColor: 'bg-sky-500 hover:bg-sky-400'
       });
       setGigCardItemModal({ ...gigCardItemModal, pauseApproval: true });
       return;
     }
     if (active && sellerIsRestricted) {
-      showErrorToast('Your seller capability is restricted. Reactivating gigs is disabled.');
+      showErrorToast('Quyền bán hàng của bạn đang bị hạn chế. Bạn không thể kích hoạt lại gig.');
       return;
     }
     await updateGigStatus(active);
@@ -64,9 +64,9 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
     try {
       await updateActiveGig({ gigId: `${gig.id}`, active }).unwrap();
       setGigCardItemModal({ overlay: false, deleteApproval: false, pauseApproval: false });
-      showSuccessToast('Gig status updated successfully.');
+      showSuccessToast('Cập nhật trạng thái gig thành công.');
     } catch (error) {
-      showErrorToast('Error setting gig status.');
+      showErrorToast('Không thể cập nhật trạng thái gig.');
     }
   };
 
@@ -74,9 +74,9 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
     try {
       await deleteGig({ gigId: `${gig.id}`, sellerId: `${gig.sellerId}` }).unwrap();
       setGigCardItemModal({ deleteApproval: false, overlay: false, pauseApproval: false });
-      showSuccessToast('Gig deleted successfully.');
+      showSuccessToast('Đã xóa gig thành công.');
     } catch (error) {
-      showErrorToast('Error deleting gig.');
+      showErrorToast('Không thể xóa gig.');
     }
   };
 
@@ -109,7 +109,7 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
               <li>
                 <div onClick={() => navigateToEditGig(`${gig.id}`)} className="my-1 flex w-full cursor-pointer gap-4 px-4 pt-3">
                   <FaPencilAlt size={13} className="flex self-center" />
-                  <span className="">Edit</span>
+                  <span className="">Chỉnh sửa</span>
                 </div>
               </li>
               <li>
@@ -119,16 +119,16 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
                   ) : (
                     <FaPauseCircle size={13} className="flex self-center" />
                   )}
-                  <span>{!gig.active ? 'Activate' : 'Pause'}</span>
+                  <span>{!gig.active ? 'Kích hoạt' : 'Tạm dừng'}</span>
                 </div>
               </li>
               <li>
                 <div
                   onClick={() => {
                     setApprovalModalContent({
-                      header: 'Delete this Gig',
-                      body: 'Are you sure you want to permanently delete this gig?',
-                      btnText: 'Delete',
+                      header: 'Xóa gig này',
+                      body: 'Bạn có chắc muốn xóa vĩnh viễn gig này?',
+                      btnText: 'Xóa',
                       btnColor: 'bg-red-500'
                     });
                     setGigCardItemModal({ ...gigCardItemModal, deleteApproval: true });
@@ -136,7 +136,7 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
                   className="my-1 flex w-full cursor-pointer gap-4 px-4 pt-3"
                 >
                   <FaTrashAlt size={13} className="flex self-center" />
-                  <span className="">Delete</span>
+                  <span className="">Xóa</span>
                 </div>
               </li>
             </ul>
@@ -149,9 +149,9 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
           >
             <LazyLoadImage
               src={gig.coverImage}
-              alt="Gig cover image"
+              alt="Ảnh bìa gig"
               className="w-full"
-              placeholderSrc="https://placehold.co/330x220?text=Profile+Image"
+              placeholderSrc="https://placehold.co/330x220?text=Anh+dai+dien"
             />
           </Link>
           <div className="px-2">

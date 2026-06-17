@@ -40,10 +40,19 @@ const defaultGigInfo: ICreateGig = {
   subCategories: [],
   tags: [],
   price: 0,
-  coverImage: 'https://placehold.co/330x220?text=Cover+Image',
-  expectedDelivery: 'Expected delivery',
+  coverImage: 'https://placehold.co/330x220?text=%E1%BA%A2nh+b%C3%ACa',
+  expectedDelivery: 'Thời gian giao dự kiến',
   basicTitle: '',
   basicDescription: ''
+};
+
+const restrictionLabel = (status?: string | null): string => {
+  const labels: Record<string, string> = {
+    ACCOUNT_LOCKED: 'tài khoản bị khóa',
+    SELLER_RESTRICTED: 'người bán bị hạn chế',
+    SELLER_LOCKED_HARD: 'người bán bị khóa cứng'
+  };
+  return labels[`${status}`] || `${status || ''}`;
 };
 
 const AddGig: FC = (): ReactElement => {
@@ -96,7 +105,7 @@ const AddGig: FC = (): ReactElement => {
 
   const onCreateGig = async (): Promise<void> => {
     if (sellerIsRestricted) {
-      showErrorToast('Your seller capability is restricted. You cannot create new gigs.');
+      showErrorToast('Quyền bán hàng của bạn đang bị hạn chế. Bạn không thể tạo gig mới.');
       return;
     }
     try {
@@ -134,7 +143,7 @@ const AddGig: FC = (): ReactElement => {
         navigate(`/gig/${lowerCase(`${authUser.username}`)}/${title}/${response?.gig?.sellerId}/${response?.gig?.id}/view`);
       }
     } catch (error) {
-      showErrorToast('Error creating gig');
+      showErrorToast('Không thể tạo gig');
     }
   };
 
@@ -152,24 +161,24 @@ const AddGig: FC = (): ReactElement => {
         />
       )}
       <div className="relative w-screen">
-        <Breadcrumb breadCrumbItems={['Seller', 'Create new gig']} />
+        <Breadcrumb breadCrumbItems={['Người bán', 'Tạo gig mới']} />
         <div className="container relative mx-auto my-5 px-2 pb-12 md:px-0">
           {isLoading && <CircularPageLoader />}
           {authUser && !authUser.emailVerified && (
             <div className="absolute left-0 top-0 z-[80] flex h-full w-full justify-center bg-white/[0.8] text-sm font-bold md:text-base lg:text-xl">
-              <span className="mt-40">Please verify your email.</span>
+              <span className="mt-40">Vui lòng xác minh email của bạn.</span>
             </div>
           )}
           {sellerIsRestricted && (
             <div className="mb-4 rounded border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-              Your seller capability is currently {seller?.sellerStatus || seller?.accountStatus}. Creating new gigs is disabled.
+              Quyền bán hàng của bạn hiện đang ở trạng thái {restrictionLabel(seller?.sellerStatus || seller?.accountStatus)}. Chức năng tạo gig mới đã bị tắt.
             </div>
           )}
 
           <div className="border-grey left-0 top-0 z-10 mt-4 block rounded border bg-white p-6">
             <div className="mb-6 grid md:grid-cols-5">
               <div className="pb-2 text-base font-medium">
-                Gig title<sup className="top-[-0.3em] text-base text-red-500">*</sup>
+                Tiêu đề gig<sup className="top-[-0.3em] text-base text-red-500">*</sup>
               </div>
               <div className="col-span-4 md:w-11/12 lg:w-8/12">
                 <TextInput
@@ -177,7 +186,7 @@ const AddGig: FC = (): ReactElement => {
                   type="text"
                   name="gigTitle"
                   value={gigInfo.title}
-                  placeholder="I will build something I'm good at."
+                  placeholder="Tôi sẽ làm thật tốt một việc cụ thể."
                   maxLength={80}
                   onChange={(event: ChangeEvent) => {
                     const gigTitleValue: string = (event.target as HTMLInputElement).value;
@@ -186,17 +195,17 @@ const AddGig: FC = (): ReactElement => {
                     setAllowedGigItemLength({ ...allowedGigItemLength, gigTitle: `${counter}/80` });
                   }}
                 />
-                <span className="flex justify-end text-xs text-[#95979d]">{allowedGigItemLength.gigTitle} Characters</span>
+                <span className="flex justify-end text-xs text-[#95979d]">{allowedGigItemLength.gigTitle} ký tự</span>
               </div>
             </div>
             <div className="mb-6 grid md:grid-cols-5">
               <div className="pb-2 text-base font-medium">
-                Basic title<sup className="top-[-0.3em] text-base text-red-500">*</sup>
+                Tiêu đề gói cơ bản<sup className="top-[-0.3em] text-base text-red-500">*</sup>
               </div>
               <div className="col-span-4 md:w-11/12 lg:w-8/12">
                 <TextInput
                   className="border-grey mb-1 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-                  placeholder="Write what exactly you'll do in short."
+                  placeholder="Viết ngắn gọn chính xác bạn sẽ làm gì."
                   type="text"
                   name="basicTitle"
                   value={gigInfo.basicTitle}
@@ -208,17 +217,17 @@ const AddGig: FC = (): ReactElement => {
                     setAllowedGigItemLength({ ...allowedGigItemLength, basicTitle: `${counter}/40` });
                   }}
                 />
-                <span className="flex justify-end text-xs text-[#95979d]">{allowedGigItemLength.basicTitle} Characters</span>
+                <span className="flex justify-end text-xs text-[#95979d]">{allowedGigItemLength.basicTitle} ký tự</span>
               </div>
             </div>
             <div className="mb-6 grid md:grid-cols-5">
               <div className="pb-2 text-base font-medium">
-                Brief description<sup className="top-[-0.3em] text-base text-red-500">*</sup>
+                Mô tả ngắn<sup className="top-[-0.3em] text-base text-red-500">*</sup>
               </div>
               <div className="col-span-4 md:w-11/12 lg:w-8/12">
                 <TextAreaInput
                   className="border-grey mb-1 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-                  placeholder="Write a brief description..."
+                  placeholder="Viết mô tả ngắn..."
                   name="basicDescription"
                   value={gigInfo.basicDescription}
                   rows={5}
@@ -230,12 +239,12 @@ const AddGig: FC = (): ReactElement => {
                     setAllowedGigItemLength({ ...allowedGigItemLength, basicDescription: `${counter}/100` });
                   }}
                 />
-                <span className="flex justify-end text-xs text-[#95979d]">{allowedGigItemLength.basicDescription} Characters</span>
+                <span className="flex justify-end text-xs text-[#95979d]">{allowedGigItemLength.basicDescription} ký tự</span>
               </div>
             </div>
             <div className="mb-6 grid md:grid-cols-5">
               <div className="pb-2 text-base font-medium">
-                Full description<sup className="top-[-0.3em] text-base text-red-500">*</sup>
+                Mô tả đầy đủ<sup className="top-[-0.3em] text-base text-red-500">*</sup>
               </div>
               <div className="col-span-4 md:w-11/12 lg:w-8/12">
                 <ReactQuill
@@ -259,12 +268,12 @@ const AddGig: FC = (): ReactElement => {
                     setAllowedGigItemLength({ ...allowedGigItemLength, descriptionCharacters: `${counter}/1200` });
                   }}
                 />
-                <span className="flex justify-end text-xs text-[#95979d]">{allowedGigItemLength.descriptionCharacters} Characters</span>
+                <span className="flex justify-end text-xs text-[#95979d]">{allowedGigItemLength.descriptionCharacters} ký tự</span>
               </div>
             </div>
             <div className="mb-12 grid md:grid-cols-5">
               <div className="pb-2 text-base font-medium">
-                Category<sup className="top-[-0.3em] text-base text-red-500">*</sup>
+                Danh mục<sup className="top-[-0.3em] text-base text-red-500">*</sup>
               </div>
               <div className="relative col-span-4 md:w-11/12 lg:w-8/12">
                 <Dropdown
@@ -280,28 +289,28 @@ const AddGig: FC = (): ReactElement => {
             </div>
 
             <TagsInput
-              title="SubCategory"
-              placeholder="E.g. Website development, Mobile apps"
+              title="Danh mục con"
+              placeholder="VD: Phát triển website, ứng dụng di động"
               gigInfo={gigInfo}
               setGigInfo={setGigInfo}
               tags={subCategory}
               itemInput={subCategoryInput}
               itemName="subCategories"
-              counterText="Subcategories"
+              counterText="danh mục con"
               inputErrorMessage={false}
               setItem={setSubCategory}
               setItemInput={setSubCategoryInput}
             />
 
             <TagsInput
-              title="Tags"
-              placeholder="Enter search terms for your gig"
+              title="Thẻ"
+              placeholder="Nhập từ khóa tìm kiếm cho gig của bạn"
               gigInfo={gigInfo}
               setGigInfo={setGigInfo}
               tags={tags}
               itemInput={tagsInput}
               itemName="tags"
-              counterText="Tags"
+              counterText="thẻ"
               inputErrorMessage={false}
               setItem={setTags}
               setItemInput={setTagsInput}
@@ -309,13 +318,13 @@ const AddGig: FC = (): ReactElement => {
 
             <div className="mb-6 grid md:grid-cols-5">
               <div className="pb-2 text-base font-medium">
-                Price<sup className="top-[-0.3em] text-base text-red-500">*</sup>
+                Giá<sup className="top-[-0.3em] text-base text-red-500">*</sup>
               </div>
               <div className="col-span-4 md:w-11/12 lg:w-8/12">
                 <TextInput
                   type="number"
                   className="border-grey mb-1 w-full rounded border p-3.5 text-sm font-normal text-gray-600 focus:outline-none"
-                  placeholder="Enter minimum price"
+                  placeholder="Nhập giá tối thiểu"
                   name="price"
                   value={`${gigInfo.price}`}
                   min={5}
@@ -329,7 +338,7 @@ const AddGig: FC = (): ReactElement => {
             </div>
             <div className="mb-12 grid md:grid-cols-5">
               <div className="pb-2 text-base font-medium">
-                Expected delivery<sup className="top-[-0.3em] text-base text-red-500">*</sup>
+                Thời gian giao dự kiến<sup className="top-[-0.3em] text-base text-red-500">*</sup>
               </div>
               <div className="relative col-span-4 md:w-11/12 lg:w-8/12">
                 <Dropdown
@@ -345,7 +354,7 @@ const AddGig: FC = (): ReactElement => {
             </div>
             <div className="mb-6 grid md:grid-cols-5">
               <div className="mt-6 pb-2 text-base font-medium lg:mt-0">
-                Cover image<sup className="top-[-0.3em] text-base text-red-500">*</sup>
+                Ảnh bìa<sup className="top-[-0.3em] text-base text-red-500">*</sup>
               </div>
               <div
                 className="relative col-span-4 cursor-pointer md:w-11/12 lg:w-8/12"
@@ -357,7 +366,7 @@ const AddGig: FC = (): ReactElement => {
                 }}
               >
                 {gigInfo.coverImage && (
-                  <img src={gigInfo.coverImage} alt="Cover Image" className="left-0 top-0 h-[220px] w-[320px] bg-white object-cover" />
+                  <img src={gigInfo.coverImage} alt="Ảnh bìa" className="left-0 top-0 h-[220px] w-[320px] bg-white object-cover" />
                 )}
                 {!gigInfo.coverImage && (
                   <div className="left-0 top-0 flex h-[220px] w-[320px] cursor-pointer justify-center bg-[#dee1e7]"></div>
@@ -390,20 +399,20 @@ const AddGig: FC = (): ReactElement => {
                 <Button
                   disabled={isLoading || sellerIsRestricted}
                   className="rounded bg-sky-500 px-8 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-3 md:text-base"
-                  label="Create Gig"
+                  label="Tạo gig"
                   onClick={onCreateGig}
                 />
                 <Button
                   disabled={isLoading}
                   className="rounded bg-red-500 px-8 py-3 text-center text-sm font-bold text-white hover:bg-red-400 focus:outline-none md:py-3 md:text-base"
-                  label="Cancel"
+                  label="Hủy"
                   onClick={() => {
                     const isEqual: boolean = equal(gigInfo, gigInfoRef.current);
                     if (!isEqual) {
                       setApprovalModalContent({
-                        header: 'Cancel Gig Creation',
-                        body: 'Are you sure you want to cancel?',
-                        btnText: 'Yes, Cancel',
+                        header: 'Hủy tạo gig',
+                        body: 'Bạn có chắc muốn hủy không?',
+                        btnText: 'Có, hủy',
                         btnColor: 'bg-red-500 hover:bg-red-400'
                       });
                       setShowGigModal({ ...showGigModal, cancel: true });

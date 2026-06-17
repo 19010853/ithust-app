@@ -42,24 +42,24 @@ const ManageEarnings: FC = (): ReactElement => {
     try {
       const parsedAmount = Number(amount);
       if (!seller?._id) {
-        showErrorToast('Missing seller profile.');
+        showErrorToast('Thiếu hồ sơ người bán.');
         return;
       }
 
       const nextErrors: Record<string, string> = {};
       if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
-        nextErrors.amount = 'Enter a withdrawal amount greater than zero.';
+        nextErrors.amount = 'Nhập số tiền rút lớn hơn 0.';
       } else if (parsedAmount > availableBalance) {
-        nextErrors.amount = 'Withdrawal amount cannot exceed your available balance.';
+        nextErrors.amount = 'Số tiền rút không được vượt quá số dư khả dụng.';
       }
       if (!bankName.trim()) {
-        nextErrors.bankName = 'Bank name is required.';
+        nextErrors.bankName = 'Tên ngân hàng là bắt buộc.';
       }
       if (!/^[0-9]{6,24}$/.test(accountNumber.trim())) {
-        nextErrors.accountNumber = 'Account number must contain 6 to 24 digits.';
+        nextErrors.accountNumber = 'Số tài khoản phải gồm 6 đến 24 chữ số.';
       }
       if (!accountName.trim()) {
-        nextErrors.accountName = 'Account name is required.';
+        nextErrors.accountName = 'Tên chủ tài khoản là bắt buộc.';
       }
       setFormErrors(nextErrors);
       if (Object.keys(nextErrors).length) {
@@ -77,13 +77,13 @@ const ManageEarnings: FC = (): ReactElement => {
       }).unwrap();
       setAmount('');
       setFormErrors({});
-      showSuccessToast('Withdrawal request sent to admin email.');
+      showSuccessToast('Yêu cầu rút tiền đã được gửi đến email quản trị viên.');
     } catch (error) {
       if (isFetchBaseQueryError(error)) {
-        showErrorToast(error?.data?.message || 'Unable to create withdrawal request.');
+        showErrorToast(error?.data?.message || 'Không thể tạo yêu cầu rút tiền.');
         return;
       }
-      showErrorToast('Unable to create withdrawal request.');
+      showErrorToast('Không thể tạo yêu cầu rút tiền.');
     }
   };
 
@@ -93,19 +93,19 @@ const ManageEarnings: FC = (): ReactElement => {
         <div className="mb-4 grid grid-cols-1 sm:grid-cols-3">
           <div className="border border-grey flex items-center justify-center p-8 sm:col-span-1">
             <div className="flex flex-col gap-3">
-              <span className="text-center text-base lg:text-xl">Earnings to date</span>
+              <span className="text-center text-base lg:text-xl">Doanh thu đến nay</span>
               <span className="text-center font-bold text-base md:text-xl lg:text-2xl truncate">{formatMoney(seller?.totalEarnings)}</span>
             </div>
           </div>
           <div className="border border-grey flex items-center justify-center p-8 sm:col-span-1">
             <div className="flex flex-col gap-3">
-              <span className="text-center text-base lg:text-xl">Avg. selling price</span>
+              <span className="text-center text-base lg:text-xl">Giá bán trung bình</span>
               <span className="text-center font-bold text-base md:text-xl lg:text-2xl truncate">{formatMoney(averageSellingPrice)}</span>
             </div>
           </div>
           <div className="border border-grey flex items-center justify-center p-8 sm:col-span-1">
             <div className="flex flex-col gap-3">
-              <span className="text-center text-base lg:text-xl">Orders completed</span>
+              <span className="text-center text-base lg:text-xl">Đơn đã hoàn thành</span>
               <span className="text-center font-bold text-base md:text-xl lg:text-2xl truncate">{seller?.completedJobs}</span>
             </div>
           </div>
@@ -113,16 +113,16 @@ const ManageEarnings: FC = (): ReactElement => {
 
         <div className="mb-6 border border-grey bg-white p-4 sm:p-6">
           <div className="mb-4 flex flex-col gap-2">
-            <h2 className="text-lg font-bold text-gray-900">Withdraw funds</h2>
-            <p className="text-sm text-gray-600">Send a withdrawal request to admin email for batch payout processing.</p>
+            <h2 className="text-lg font-bold text-gray-900">Rút tiền</h2>
+            <p className="text-sm text-gray-600">Gửi yêu cầu rút tiền đến email quản trị viên để xử lý thanh toán theo đợt.</p>
           </div>
           <div className="grid gap-3 md:grid-cols-2">
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Available balance</label>
+              <label className="text-sm font-medium text-gray-700">Số dư khả dụng</label>
               <div className="rounded border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700">{formatMoney(availableBalance)}</div>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Withdrawal amount</label>
+              <label className="text-sm font-medium text-gray-700">Số tiền rút</label>
               <input
                 className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
                 type="number"
@@ -134,12 +134,12 @@ const ManageEarnings: FC = (): ReactElement => {
                   setAmount(event.target.value);
                   setFormErrors((currentErrors) => ({ ...currentErrors, amount: '' }));
                 }}
-                placeholder="Enter amount"
+                placeholder="Nhập số tiền"
               />
               {formErrors.amount && <p className="text-xs text-red-500">{formErrors.amount}</p>}
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Bank name</label>
+              <label className="text-sm font-medium text-gray-700">Tên ngân hàng</label>
               <input
                 className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
                 type="text"
@@ -153,7 +153,7 @@ const ManageEarnings: FC = (): ReactElement => {
               {formErrors.bankName && <p className="text-xs text-red-500">{formErrors.bankName}</p>}
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Account number</label>
+              <label className="text-sm font-medium text-gray-700">Số tài khoản</label>
               <input
                 className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
                 type="text"
@@ -162,12 +162,12 @@ const ManageEarnings: FC = (): ReactElement => {
                   setAccountNumber(event.target.value);
                   setFormErrors((currentErrors) => ({ ...currentErrors, accountNumber: '' }));
                 }}
-                placeholder="Bank account number"
+                placeholder="Số tài khoản ngân hàng"
               />
               {formErrors.accountNumber && <p className="text-xs text-red-500">{formErrors.accountNumber}</p>}
             </div>
             <div className="flex flex-col gap-1 md:col-span-2">
-              <label className="text-sm font-medium text-gray-700">Account name</label>
+              <label className="text-sm font-medium text-gray-700">Tên chủ tài khoản</label>
               <input
                 className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
                 type="text"
@@ -176,7 +176,7 @@ const ManageEarnings: FC = (): ReactElement => {
                   setAccountName(event.target.value);
                   setFormErrors((currentErrors) => ({ ...currentErrors, accountName: '' }));
                 }}
-                placeholder="ACCOUNT NAME"
+                placeholder="TÊN CHỦ TÀI KHOẢN"
               />
               {formErrors.accountName && <p className="text-xs text-red-500">{formErrors.accountName}</p>}
             </div>
@@ -184,7 +184,7 @@ const ManageEarnings: FC = (): ReactElement => {
           <div className="mt-4 flex justify-end">
             <Button
               className="rounded bg-sky-500 px-5 py-2 text-sm font-bold text-white hover:bg-sky-400 disabled:cursor-not-allowed disabled:bg-gray-400"
-              label={isLoading ? 'Submitting...' : 'Request withdrawal'}
+              label={isLoading ? 'Đang gửi...' : 'Yêu cầu rút tiền'}
               disabled={isLoading || availableBalance <= 0}
               onClick={onCreateWithdrawal}
             />

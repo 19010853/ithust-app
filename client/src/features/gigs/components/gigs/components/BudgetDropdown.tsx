@@ -18,7 +18,7 @@ const BudgetDropdown: FC = (): ReactElement => {
           className="flex justify-between gap-5 rounded-lg border border-gray-400 px-5 py-3 font-medium"
           label={
             <>
-              <span>Budget</span>
+              <span>Ngân sách</span>
               {!toggleDropdown ? (
                 <FaChevronDown className="float-right mt-§ h-4 fill-current text-slate-900" />
               ) : (
@@ -35,7 +35,7 @@ const BudgetDropdown: FC = (): ReactElement => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="min" className="mb-2 block text-sm font-normal text-slate-900">
-                      MIN.
+                      TỐI THIỂU
                     </label>
                     <TextInput
                       type="number"
@@ -44,7 +44,7 @@ const BudgetDropdown: FC = (): ReactElement => {
                       name="minPrice"
                       value={selectedBudget.minPrice ?? ''}
                       className="block w-full border border-gray-300 p-2.5 text-sm text-gray-900 dark:placeholder-gray-400 dark:focus:border-black dark:focus:ring-black"
-                      placeholder="Any"
+                      placeholder="Bất kỳ"
                       onChange={(event: ChangeEvent) => {
                         setSelectedBudget({ ...selectedBudget, minPrice: `${(event.target as HTMLInputElement).value}` });
                       }}
@@ -57,7 +57,7 @@ const BudgetDropdown: FC = (): ReactElement => {
                   </div>
                   <div>
                     <label htmlFor="max" className="mb-2 block text-sm font-normal text-slate-900">
-                      MAX.
+                      TỐI ĐA
                     </label>
                     <TextInput
                       type="number"
@@ -65,7 +65,7 @@ const BudgetDropdown: FC = (): ReactElement => {
                       name="maxPrice"
                       value={selectedBudget.maxPrice ?? ''}
                       className="block w-full border border-gray-300 p-2.5 text-sm text-gray-900 dark:placeholder-gray-400 dark:focus:border-black dark:focus:ring-black"
-                      placeholder="Any"
+                      placeholder="Bất kỳ"
                       onChange={(event: ChangeEvent) => {
                         setSelectedBudget({ ...selectedBudget, maxPrice: `${(event.target as HTMLInputElement).value}` });
                       }}
@@ -87,7 +87,7 @@ const BudgetDropdown: FC = (): ReactElement => {
                   setToggleDropdown(false);
                 }}
               >
-                Clear All
+                Xóa tất cả
               </div>
               <div
                 className="rounded bg-sky-500 px-4 py-2 text-sm font-bold text-white hover:bg-sky-400"
@@ -100,7 +100,7 @@ const BudgetDropdown: FC = (): ReactElement => {
                   saveToLocalStorage('filterApplied', JSON.stringify(true));
                 }}
               >
-                Apply
+                Áp dụng
               </div>
             </div>
           </div>

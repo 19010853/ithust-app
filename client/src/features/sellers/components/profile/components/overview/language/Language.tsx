@@ -6,6 +6,16 @@ import { v4 as uuidv4 } from 'uuid';
 
 import LanguageFields from './LanguageFields';
 
+const languageLevelLabel = (level: string): string => {
+  const labels: Record<string, string> = {
+    Basic: 'Cơ bản',
+    Conversational: 'Giao tiếp',
+    Fluent: 'Thành thạo',
+    Native: 'Bản ngữ'
+  };
+  return labels[level] || level;
+};
+
 const Language: FC = (): ReactElement => {
   const [showLanguageAddForm, setShowLanguageAddForm] = useState<boolean>(false);
   const [showLanguageEditForm, setShowLanguageEditForm] = useState<boolean>(false);
@@ -15,7 +25,7 @@ const Language: FC = (): ReactElement => {
   return (
     <div className="border-grey border bg-white">
       <div className="mb-1 flex justify-between border-b">
-        <h4 className="flex py-2.5 pl-3.5 text-sm font-bold text-[#161c2d] md:text-base">LANGUAGE SKILLS</h4>
+        <h4 className="flex py-2.5 pl-3.5 text-sm font-bold text-[#161c2d] md:text-base">NGÔN NGỮ</h4>
         {showEditIcons && (
           <span
             onClick={() => {
@@ -24,7 +34,7 @@ const Language: FC = (): ReactElement => {
             }}
             className="flex cursor-pointer items-center pr-3.5 text-sm text-[#00698c] md:text-base"
           >
-            Add New
+            Thêm mới
           </span>
         )}
       </div>
@@ -42,7 +52,7 @@ const Language: FC = (): ReactElement => {
                   <div className="col-span-3 ml-4 flex pb-3 text-sm md:text-base">
                     <div className="mr-3 font-bold">{lang.language}</div>
                     <div className="mr-3">-</div>
-                    <div>{lang.level}</div>
+                    <div>{languageLevelLabel(lang.level)}</div>
                   </div>
                 )}
                 {showLanguageEditForm && selectedLanguage?._id === lang._id && (

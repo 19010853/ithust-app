@@ -23,22 +23,22 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
   const gridInfo: IGigInfo[] = [
     {
       total: shortenLargeNumbers(sellerProfile?.totalGigs),
-      title: 'Total Gigs',
+      title: 'Tổng số gig',
       bgColor: '#50b5ff'
     },
     {
       total: shortenLargeNumbers(sellerProfile?.completedJobs),
-      title: 'Completed Orders',
+      title: 'Đơn hoàn thành',
       bgColor: '#f7b124'
     },
     {
       total: shortenLargeNumbers(sellerProfile?.ongoingJobs),
-      title: 'Ongoing Orders',
+      title: 'Đơn đang làm',
       bgColor: '#8553ee'
     },
     {
       total: shortenLargeNumbers(sellerProfile?.ratingsCount),
-      title: 'Ratings & Reviews',
+      title: 'Đánh giá',
       bgColor: '#ff8b7b'
     }
   ];
@@ -57,9 +57,9 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
           <div className="flex h-20 w-20 justify-center self-center md:h-24 md:w-24 lg:h-36 lg:w-36">
             <LazyLoadImage
               src={sellerProfile?.profilePicture}
-              alt="Gig Image"
+              alt="Ảnh đại diện"
               className="w-full h-full rounded-full object-cover"
-              placeholderSrc="https://placehold.co/330x220?text=Profile+Image"
+              placeholderSrc="https://placehold.co/330x220?text=Anh+dai+dien"
               effect="blur"
               wrapperClassName="w-full h-full rounded-full object-cover"
             />
@@ -81,7 +81,7 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
                 <div className="flex gap-x-4">
                   <TextInput
                     className="mt-2 flex h-7 w-full items-center rounded border border-gray-300 p-1.5 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none lg:h-9"
-                    placeholder="Fullname"
+                    placeholder="Họ và tên"
                     type="text"
                     name="fullname"
                     value={sellerProfileItem.fullname}
@@ -92,7 +92,7 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
                   <div className="my-2 flex">
                     <Button
                       className="md:text-md rounded bg-sky-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-2"
-                      label="Update"
+                      label="Cập nhật"
                       onClick={() => {
                         if (sellerProfile && setSellerProfile) {
                           setSellerProfile({ ...sellerProfile, fullName: sellerProfileItem.fullname });
@@ -103,7 +103,7 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
                     &nbsp;&nbsp;
                     <Button
                       className="md:text-md rounded bg-red-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-red-500 focus:outline-none md:py-2"
-                      label="Cancel"
+                      label="Hủy"
                       onClick={() => {
                         if (sellerProfile && setSellerProfile) {
                           setSellerProfile({ ...sellerProfile, fullName: `${sellerProfile.fullName}` });
@@ -132,7 +132,7 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
                 <div className="flex gap-x-4">
                   <TextInput
                     className="mt-2 flex h-7 w-full items-center rounded border border-gray-300 p-1.5 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none lg:h-9"
-                    placeholder="Oneliner"
+                    placeholder="Mô tả ngắn"
                     type="text"
                     name="oneliner"
                     value={sellerProfileItem.oneliner}
@@ -144,7 +144,7 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
                   <div className="my-2 flex">
                     <Button
                       className="md:text-md rounded bg-sky-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-2"
-                      label="Update"
+                      label="Cập nhật"
                       onClick={() => {
                         if (sellerProfile && setSellerProfile) {
                           setSellerProfile({ ...sellerProfile, oneliner: sellerProfileItem.oneliner });
@@ -155,7 +155,7 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
                     &nbsp;&nbsp;
                     <Button
                       className="md:text-md rounded bg-red-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-red-500 focus:outline-none md:py-2"
-                      label="Cancel"
+                      label="Hủy"
                       onClick={() => {
                         setShowItemEdit({ ...showItemEdit, oneliner: false });
                         setSellerProfileItem({ ...sellerProfileItem, oneliner: `${sellerProfile?.oneliner}` });

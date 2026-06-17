@@ -43,9 +43,9 @@ const CurrentSellerProfile: FC = (): ReactElement => {
       dispatch(addSeller(response.seller));
       setSellerProfile(response.seller as ISellerDocument);
       setShowEdit(false);
-      showSuccessToast('Seller profile updated successfully.');
+      showSuccessToast('Cập nhật hồ sơ người bán thành công.');
     } catch (error) {
-      showErrorToast('Error updating profile.');
+      showErrorToast('Không thể cập nhật hồ sơ.');
     }
   };
 
@@ -56,7 +56,7 @@ const CurrentSellerProfile: FC = (): ReactElement => {
 
   return (
     <div className="relative w-full pb-6">
-      <Breadcrumb breadCrumbItems={['Seller', `${seller.username}`]} />
+      <Breadcrumb breadCrumbItems={['Người bán', `${seller.username}`]} />
       {isLoading || isDataLoading ? (
         <CircularPageLoader />
       ) : (
@@ -66,13 +66,13 @@ const CurrentSellerProfile: FC = (): ReactElement => {
               <div>
                 <Button
                   className="md:text-md rounded bg-sky-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-2"
-                  label="Update"
+                  label="Cập nhật"
                   onClick={onUpdateSeller}
                 />
                 &nbsp;&nbsp;
                 <Button
                   className="md:text-md rounded bg-red-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-red-500 focus:outline-none md:py-2"
-                  label="Cancel"
+                  label="Hủy"
                   onClick={() => {
                     setShowEdit(false);
                     setSellerProfile(seller);

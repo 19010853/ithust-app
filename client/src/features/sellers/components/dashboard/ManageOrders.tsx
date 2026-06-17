@@ -33,7 +33,7 @@ const ManageOrders: FC = (): ReactElement => {
   return (
     <div className="container mx-auto mt-8 px-6 md:px-12 lg:px-6">
       <div className="flex flex-col flex-wrap">
-        <div className="mb-8 px-4 text-xl font-semibold text-black md:px-0 md:text-2xl lg:text-4xl">Manage Orders</div>
+        <div className="mb-8 px-4 text-xl font-semibold text-black md:px-0 md:text-2xl lg:text-4xl">Quản lý đơn hàng</div>
         <div className="p-0">
           <ul className="flex w-full cursor-pointer list-none flex-col flex-wrap rounded-[2px] sm:flex-none sm:flex-row">
             <li className="inline-block py-3 uppercase" onClick={() => setType(SELLER_GIG_STATUS.ACTIVE)}>
@@ -43,7 +43,7 @@ const ManageOrders: FC = (): ReactElement => {
                   type === SELLER_GIG_STATUS.ACTIVE ? 'pb-[15px] outline outline-1 outline-[#e8e8e8] sm:rounded-t-lg' : ''
                 }`}
               >
-                Active
+                Đang hoạt động
                 {orderTypes(SELLER_GIG_STATUS.IN_PROGRESS, ordersRef) > 0 && (
                   <span className="ml-1 rounded-[5px] bg-sky-500 px-[5px] py-[1px] text-xs font-medium text-white">
                     {shortenLargeNumbers(orderTypes(SELLER_GIG_STATUS.IN_PROGRESS, ordersRef))}
@@ -58,7 +58,7 @@ const ManageOrders: FC = (): ReactElement => {
                   type === SELLER_GIG_STATUS.COMPLETED ? 'pb-[15px] outline outline-1 outline-[#e8e8e8] sm:rounded-t-lg' : ''
                 }`}
               >
-                Completed
+                Hoàn thành
                 {orderTypes(SELLER_GIG_STATUS.COMPLETED, ordersRef) > 0 && (
                   <span className="ml-1 rounded-[5px] bg-sky-500 px-[5px] py-[1px] text-xs font-medium text-white">
                     {shortenLargeNumbers(orderTypes(SELLER_GIG_STATUS.COMPLETED, ordersRef))}
@@ -73,7 +73,7 @@ const ManageOrders: FC = (): ReactElement => {
                   type === SELLER_GIG_STATUS.CANCELLED ? 'pb-[15px] outline outline-1 outline-[#e8e8e8] sm:rounded-t-lg' : ''
                 }`}
               >
-                Cancelled
+                Đã hủy
                 {orderTypes(SELLER_GIG_STATUS.CANCELLED, ordersRef) > 0 && (
                   <span className="ml-1 rounded-[5px] bg-sky-500 px-[5px] py-[1px] text-xs font-medium text-white">
                     {shortenLargeNumbers(orderTypes(SELLER_GIG_STATUS.CANCELLED, ordersRef))}

@@ -31,18 +31,18 @@ const SellerSocialLinksFields: FC<ISocialLinksProps> = ({ socialFields, setSocia
     <>
       <div className="flex w-full flex-col px-6 pb-3 pt-6">
         <div className="flex justify-between">
-          <h2 className="pb-4 text-xl font-bold">Social Links</h2>
+          <h2 className="pb-4 text-xl font-bold">Liên kết mạng xã hội</h2>
           <Button
             onClick={adSocialLinkFields}
             className="md:text-md h-7 rounded bg-sky-500 px-6 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-8"
-            label="Add More"
+            label="Thêm"
           />
         </div>
         {socialFields?.map((input: string, index: number) => (
           <div key={index}>
             <TextInput
               className="border-grey w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-              placeholder="Social media link"
+              placeholder="Liên kết mạng xã hội"
               type="text"
               name="url"
               value={input}
@@ -53,7 +53,7 @@ const SellerSocialLinksFields: FC<ISocialLinksProps> = ({ socialFields, setSocia
                 <Button
                   className="md:text-md h-7 rounded bg-red-500 px-6 text-center text-sm font-bold text-white hover:bg-red-400 focus:outline-none md:px-8"
                   onClick={() => removeSocialLinkFields(index)}
-                  label="Delete"
+                  label="Xóa"
                 />
               )}
             </div>

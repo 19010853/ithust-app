@@ -20,9 +20,9 @@ const GigPackage: FC = (): ReactElement => {
   const continueToCheck = () => {
     if (gigIsPaused) {
       setApprovalModalContent({
-        header: 'Gig Paused',
-        body: 'This gig is currently paused and cannot receive new orders.',
-        btnText: 'OK',
+        header: 'Gig đang tạm dừng',
+        body: 'Gig này hiện đang tạm dừng và không thể nhận đơn mới.',
+        btnText: 'Đã hiểu',
         btnColor: 'bg-sky-500 hover:bg-sky-400'
       });
       setShowModal(true);
@@ -76,16 +76,16 @@ const GigPackage: FC = (): ReactElement => {
                 `}
                 label={
                   <>
-                    <span className="w-full">{gigIsPaused ? 'Paused' : 'Continue'}</span>
+                    <span className="w-full">{gigIsPaused ? 'Đã tạm dừng' : 'Tiếp tục'}</span>
                     <FaArrowRight className="flex self-center" />
                   </>
                 }
                 onClick={() => {
                   if (authUser && !authUser.emailVerified) {
                     setApprovalModalContent({
-                      header: 'Email Verification Notice',
-                      body: 'Please verify your email before you continue.',
-                      btnText: 'OK',
+                      header: 'Thông báo xác minh email',
+                      body: 'Vui lòng xác minh email trước khi tiếp tục.',
+                      btnText: 'Đã hiểu',
                       btnColor: 'bg-sky-500 hover:bg-sky-400'
                     });
                     setShowModal(true);

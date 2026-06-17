@@ -11,6 +11,13 @@ import {
   useUpdateSellerStatusMutation
 } from '../services/admin.service';
 
+const statusLabel: Record<IRestrictionStatusPayload['status'], string> = {
+  ACTIVE: 'Đang hoạt động',
+  ACCOUNT_LOCKED: 'Đã khóa tài khoản',
+  SELLER_RESTRICTED: 'Người bán bị hạn chế',
+  SELLER_LOCKED_HARD: 'Người bán bị khóa cứng'
+};
+
 const getQueryErrorMessage = (error: unknown, fallback: string): string => {
   if (typeof error === 'object' && error !== null && 'data' in error) {
     const data = (error as { data?: unknown }).data;
@@ -53,8 +60,8 @@ const AdminUsers: FC = (): ReactElement => {
   const detail = detailData?.adminUser;
   const preview = previewData?.preview as IRestrictionPreview | undefined;
   const isUsersLoading = isLoading || isFetching;
-  const usersErrorMessage = getQueryErrorMessage(error, 'Unable to load users.');
-  const detailErrorMessage = getQueryErrorMessage(detailError, 'Unable to load user detail.');
+  const usersErrorMessage = getQueryErrorMessage(error, 'Không thể tải danh sách người dùng.');
+  const detailErrorMessage = getQueryErrorMessage(detailError, 'Không thể tải chi tiết người dùng.');
 
   const onSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setQ(event.target.value);
@@ -82,7 +89,7 @@ const AdminUsers: FC = (): ReactElement => {
 
   const onSubmitStatusAction = async (): Promise<void> => {
     if (!selectedUsername || !statusAction || !statusReason.trim()) {
-      showErrorToast('Reason is required.');
+      showErrorToast('Vui lòng nhập lý do.');
       return;
     }
     try {
@@ -92,34 +99,34 @@ const AdminUsers: FC = (): ReactElement => {
       } else {
         await updateSellerStatus({ username: selectedUsername, body }).unwrap();
       }
-      showSuccessToast(`${statusAction.label} completed.`);
+      showSuccessToast(`Đã hoàn tất thao tác "${statusAction.label}".`);
       closeStatusAction();
     } catch (error) {
       if (isFetchBaseQueryError(error)) {
-        showErrorToast(error?.data?.message || 'Unable to update status.');
+        showErrorToast(error?.data?.message || 'Không thể cập nhật trạng thái.');
         return;
       }
-      showErrorToast('Unable to update status.');
+      showErrorToast('Không thể cập nhật trạng thái.');
     }
   };
 
   return (
     <div className="container mx-auto mt-8 px-4">
       <div className="mb-5">
-        <h1 className="text-2xl font-bold text-gray-900">Users</h1>
-        <p className="text-sm text-gray-600">Search buyers and sellers, then inspect account and seller details.</p>
+        <h1 className="text-2xl font-bold text-gray-900">Người dùng</h1>
+        <p className="text-sm text-gray-600">Tìm người mua và người bán, sau đó xem chi tiết tài khoản và hồ sơ bán hàng.</p>
       </div>
 
       <div className="mb-4 grid gap-3 bg-white p-4 md:grid-cols-[1fr_180px_180px]">
         <input
           className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-          placeholder="Search username, email, full name"
+          placeholder="Tìm username, email, họ tên"
           value={q}
           onChange={onSearchChange}
         />
         <input
           className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-          placeholder="Country"
+          placeholder="Quốc gia"
           value={country}
           onChange={(event) => {
             setCountry(event.target.value);
@@ -134,9 +141,9 @@ const AdminUsers: FC = (): ReactElement => {
             setPage(1);
           }}
         >
-          <option value="">All users</option>
-          <option value="true">Sellers only</option>
-          <option value="false">Buyers only</option>
+          <option value="">Tất cả người dùng</option>
+          <option value="true">Chỉ người bán</option>
+          <option value="false">Chỉ người mua</option>
         </select>
       </div>
 
@@ -145,19 +152,19 @@ const AdminUsers: FC = (): ReactElement => {
           <table className="w-full min-w-[760px] text-left text-sm">
             <thead className="border-b border-grey bg-gray-50 text-xs uppercase text-gray-600">
               <tr>
-                <th className="px-4 py-3">User</th>
+                <th className="px-4 py-3">Người dùng</th>
                 <th className="px-4 py-3">Email</th>
-                <th className="px-4 py-3">Country</th>
-                <th className="px-4 py-3">Type</th>
-                <th className="px-4 py-3">Joined</th>
-                <th className="px-4 py-3 text-right">Actions</th>
+                <th className="px-4 py-3">Quốc gia</th>
+                <th className="px-4 py-3">Loại</th>
+                <th className="px-4 py-3">Ngày tham gia</th>
+                <th className="px-4 py-3 text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {isUsersLoading && (
                 <tr>
                   <td className="px-4 py-6 text-center text-gray-500" colSpan={6}>
-                    Loading users...
+                    Đang tải người dùng...
                   </td>
                 </tr>
               )}
@@ -180,12 +187,12 @@ const AdminUsers: FC = (): ReactElement => {
                     </td>
                     <td className="px-4 py-3">{user.email || '-'}</td>
                     <td className="px-4 py-3">{user.country || '-'}</td>
-                    <td className="px-4 py-3">{user.isSeller ? 'Seller' : 'Buyer'}</td>
+                    <td className="px-4 py-3">{user.isSeller ? 'Người bán' : 'Người mua'}</td>
                     <td className="px-4 py-3">{formatDate(user.createdAt)}</td>
                     <td className="px-4 py-3 text-right">
                       <Button
                         className="rounded bg-sky-500 px-3 py-2 text-xs font-bold text-white hover:bg-sky-400"
-                        label="View"
+                        label="Xem"
                         onClick={() => setSelectedUsername(`${user.username}`)}
                       />
                     </td>
@@ -194,7 +201,7 @@ const AdminUsers: FC = (): ReactElement => {
               {!isUsersLoading && !isError && !users.length && (
                 <tr>
                   <td className="px-4 py-6 text-center text-gray-500" colSpan={6}>
-                    No users found.
+                    Không tìm thấy người dùng.
                   </td>
                 </tr>
               )}
@@ -202,18 +209,18 @@ const AdminUsers: FC = (): ReactElement => {
           </table>
           <div className="flex items-center justify-between border-t border-grey px-4 py-3 text-sm">
             <span>
-              Page {pagination?.page || page} of {pagination?.totalPages || 1} ({pagination?.total || 0} users)
+              Trang {pagination?.page || page} / {pagination?.totalPages || 1} ({pagination?.total || 0} người dùng)
             </span>
             <div className="flex gap-2">
               <Button
                 className="rounded border border-gray-300 px-3 py-1 font-bold text-gray-700 disabled:opacity-40"
-                label="Prev"
+                label="Trước"
                 disabled={page <= 1}
                 onClick={() => setPage((value) => Math.max(value - 1, 1))}
               />
               <Button
                 className="rounded border border-gray-300 px-3 py-1 font-bold text-gray-700 disabled:opacity-40"
-                label="Next"
+                label="Sau"
                 disabled={page >= (pagination?.totalPages || 1)}
                 onClick={() => setPage((value) => value + 1)}
               />
@@ -222,9 +229,9 @@ const AdminUsers: FC = (): ReactElement => {
         </div>
 
         <aside className="border border-grey bg-white p-4">
-          <h2 className="mb-3 text-lg font-bold text-gray-900">User detail</h2>
-          {!selectedUsername && <div className="text-sm text-gray-500">Select a user to inspect details.</div>}
-          {selectedUsername && isDetailFetching && <div className="text-sm text-gray-500">Loading detail...</div>}
+          <h2 className="mb-3 text-lg font-bold text-gray-900">Chi tiết người dùng</h2>
+          {!selectedUsername && <div className="text-sm text-gray-500">Chọn một người dùng để xem chi tiết.</div>}
+          {selectedUsername && isDetailFetching && <div className="text-sm text-gray-500">Đang tải chi tiết...</div>}
           {selectedUsername && !isDetailFetching && isDetailError && <div className="text-sm text-red-600">{detailErrorMessage}</div>}
           {detail && !isDetailFetching && !isDetailError && (
             <div className="space-y-4 text-sm">
@@ -235,49 +242,49 @@ const AdminUsers: FC = (): ReactElement => {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="bg-gray-50 p-3">
-                  <div className="text-xs uppercase text-gray-500">Buyer</div>
-                  <div className="font-bold">{detail.buyer ? 'Yes' : 'No'}</div>
+                  <div className="text-xs uppercase text-gray-500">Người mua</div>
+                  <div className="font-bold">{detail.buyer ? 'Có' : 'Không'}</div>
                 </div>
                 <div className="bg-gray-50 p-3">
-                  <div className="text-xs uppercase text-gray-500">Seller</div>
-                  <div className="font-bold">{detail.seller ? 'Yes' : 'No'}</div>
+                  <div className="text-xs uppercase text-gray-500">Người bán</div>
+                  <div className="font-bold">{detail.seller ? 'Có' : 'Không'}</div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="bg-gray-50 p-3">
-                  <div className="text-xs uppercase text-gray-500">Account status</div>
-                  <div className="font-bold">{detail.buyer?.accountStatus || detail.seller?.accountStatus || 'ACTIVE'}</div>
+                  <div className="text-xs uppercase text-gray-500">Trạng thái tài khoản</div>
+                  <div className="font-bold">{statusLabel[(detail.buyer?.accountStatus || detail.seller?.accountStatus || 'ACTIVE') as IRestrictionStatusPayload['status']]}</div>
                 </div>
                 <div className="bg-gray-50 p-3">
-                  <div className="text-xs uppercase text-gray-500">Seller status</div>
-                  <div className="font-bold">{detail.seller?.sellerStatus || 'ACTIVE'}</div>
+                  <div className="text-xs uppercase text-gray-500">Trạng thái người bán</div>
+                  <div className="font-bold">{statusLabel[(detail.seller?.sellerStatus || 'ACTIVE') as IRestrictionStatusPayload['status']]}</div>
                 </div>
               </div>
               <div className="border-t border-grey pt-3">
-                <div className="mb-2 font-bold text-gray-900">Restriction actions</div>
+                <div className="mb-2 font-bold text-gray-900">Thao tác hạn chế</div>
                 <div className="flex flex-wrap gap-2">
                   {(detail.buyer?.accountStatus || detail.seller?.accountStatus) === 'ACCOUNT_LOCKED' ? (
-                    <Button className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500" label="Unlock account" onClick={() => openStatusAction('account', 'ACTIVE', 'Unlock account')} />
+                    <Button className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500" label="Mở khóa tài khoản" onClick={() => openStatusAction('account', 'ACTIVE', 'Mở khóa tài khoản')} />
                   ) : (
-                    <Button className="rounded bg-red-600 px-3 py-2 text-xs font-bold text-white hover:bg-red-500" label="Lock account" onClick={() => openStatusAction('account', 'ACCOUNT_LOCKED', 'Lock account')} />
+                    <Button className="rounded bg-red-600 px-3 py-2 text-xs font-bold text-white hover:bg-red-500" label="Khóa tài khoản" onClick={() => openStatusAction('account', 'ACCOUNT_LOCKED', 'Khóa tài khoản')} />
                   )}
                   {detail.seller && (
                     <>
-                      <Button className="rounded bg-amber-600 px-3 py-2 text-xs font-bold text-white hover:bg-amber-500" label="Restrict seller" onClick={() => openStatusAction('seller', 'SELLER_RESTRICTED', 'Restrict seller')} />
-                      <Button className="rounded bg-red-700 px-3 py-2 text-xs font-bold text-white hover:bg-red-600" label="Hard lock seller" onClick={() => openStatusAction('seller', 'SELLER_LOCKED_HARD', 'Hard lock seller')} />
-                      <Button className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500" label="Restore seller" onClick={() => openStatusAction('seller', 'ACTIVE', 'Restore seller')} />
+                      <Button className="rounded bg-amber-600 px-3 py-2 text-xs font-bold text-white hover:bg-amber-500" label="Hạn chế người bán" onClick={() => openStatusAction('seller', 'SELLER_RESTRICTED', 'Hạn chế người bán')} />
+                      <Button className="rounded bg-red-700 px-3 py-2 text-xs font-bold text-white hover:bg-red-600" label="Khóa cứng người bán" onClick={() => openStatusAction('seller', 'SELLER_LOCKED_HARD', 'Khóa cứng người bán')} />
+                      <Button className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500" label="Khôi phục người bán" onClick={() => openStatusAction('seller', 'ACTIVE', 'Khôi phục người bán')} />
                     </>
                   )}
                 </div>
               </div>
               {detail.seller && (
                 <>
-                  <div className="border-t border-grey pt-3 font-bold text-gray-900">Seller finance</div>
+                  <div className="border-t border-grey pt-3 font-bold text-gray-900">Tài chính người bán</div>
                   <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-gray-50 p-3">Total: {money(detail.summary.totalEarnings)}</div>
-                    <div className="bg-gray-50 p-3">Available: {money(detail.summary.availableBalance)}</div>
-                    <div className="bg-gray-50 p-3">Pending: {money(detail.summary.pendingWithdrawals)}</div>
-                    <div className="bg-gray-50 p-3">Jobs: {detail.summary.completedJobs || 0} done</div>
+                    <div className="bg-gray-50 p-3">Tổng: {money(detail.summary.totalEarnings)}</div>
+                    <div className="bg-gray-50 p-3">Khả dụng: {money(detail.summary.availableBalance)}</div>
+                    <div className="bg-gray-50 p-3">Đang chờ: {money(detail.summary.pendingWithdrawals)}</div>
+                    <div className="bg-gray-50 p-3">Việc: {detail.summary.completedJobs || 0} đã xong</div>
                   </div>
                 </>
               )}
@@ -289,34 +296,36 @@ const AdminUsers: FC = (): ReactElement => {
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 px-4">
           <div className="w-full max-w-lg bg-white p-5 shadow-xl">
             <h2 className="mb-2 text-lg font-bold text-gray-900">{statusAction.label}</h2>
-            {isPreviewFetching && <div className="mb-4 text-sm text-gray-500">Loading preview...</div>}
+            {isPreviewFetching && <div className="mb-4 text-sm text-gray-500">Đang tải bản xem trước...</div>}
             {preview && (
               <div className="mb-4 grid grid-cols-2 gap-2 text-sm">
-                <div className="bg-gray-50 p-3">Buyer orders: {preview.activeBuyerOrders}</div>
-                <div className="bg-gray-50 p-3">Seller orders: {preview.activeSellerOrders}</div>
-                <div className="bg-gray-50 p-3">Pending withdrawals: {preview.pendingWithdrawals}</div>
-                <div className="bg-gray-50 p-3">Active gigs: {preview.activeGigs}</div>
-                <div className="bg-gray-50 p-3">Available: {money(preview.availableBalance)}</div>
-                <div className="bg-gray-50 p-3">Current: {statusAction.scope === 'account' ? preview.accountStatus : preview.sellerStatus}</div>
+                <div className="bg-gray-50 p-3">Đơn mua đang hoạt động: {preview.activeBuyerOrders}</div>
+                <div className="bg-gray-50 p-3">Đơn bán đang hoạt động: {preview.activeSellerOrders}</div>
+                <div className="bg-gray-50 p-3">Yêu cầu rút tiền chờ xử lý: {preview.pendingWithdrawals}</div>
+                <div className="bg-gray-50 p-3">Gig đang hoạt động: {preview.activeGigs}</div>
+                <div className="bg-gray-50 p-3">Số dư khả dụng: {money(preview.availableBalance)}</div>
+                <div className="bg-gray-50 p-3">
+                  Hiện tại: {statusLabel[(statusAction.scope === 'account' ? preview.accountStatus : preview.sellerStatus) as IRestrictionStatusPayload['status']]}
+                </div>
               </div>
             )}
             {preview && statusAction.status === 'ACCOUNT_LOCKED' && (preview.activeBuyerOrders > 0 || preview.activeSellerOrders > 0) && (
               <div className="mb-4 rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
-                Active orders exist. Seller restriction is recommended when the goal is to stop new marketplace activity without breaking active orders.
+                Người dùng vẫn còn đơn đang hoạt động. Nên hạn chế quyền người bán nếu mục tiêu là chặn hoạt động mới mà không ảnh hưởng đơn hiện tại.
               </div>
             )}
-            <label className="mb-1 block text-sm font-bold text-gray-700">Reason</label>
+            <label className="mb-1 block text-sm font-bold text-gray-700">Lý do</label>
             <textarea
               className="mb-4 min-h-[100px] w-full rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
               value={statusReason}
               onChange={(event) => setStatusReason(event.target.value)}
-              placeholder="Reason required for audit and user notification"
+              placeholder="Bắt buộc nhập lý do để ghi log kiểm duyệt và thông báo cho người dùng"
             />
             <div className="flex justify-end gap-2">
-              <Button className="rounded border border-gray-300 px-4 py-2 text-sm font-bold text-gray-700" label="Cancel" onClick={closeStatusAction} />
+              <Button className="rounded border border-gray-300 px-4 py-2 text-sm font-bold text-gray-700" label="Hủy" onClick={closeStatusAction} />
               <Button
                 className="rounded bg-sky-500 px-4 py-2 text-sm font-bold text-white hover:bg-sky-400 disabled:cursor-not-allowed disabled:bg-gray-400"
-                label={isUpdatingAccount || isUpdatingSeller ? 'Saving...' : 'Confirm'}
+                label={isUpdatingAccount || isUpdatingSeller ? 'Đang lưu...' : 'Xác nhận'}
                 disabled={isUpdatingAccount || isUpdatingSeller}
                 onClick={onSubmitStatusAction}
               />

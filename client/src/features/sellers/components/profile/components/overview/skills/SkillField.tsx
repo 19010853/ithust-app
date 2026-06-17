@@ -34,7 +34,7 @@ const SkillField: FC<ISkillEditProps> = ({ type, selectedSkill, setShowSkillAddF
       <div className="mb-6 px-3">
         <TextInput
           className="border-grey w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-          placeholder="Skill E.g: Front End Developer"
+          placeholder="Kỹ năng, ví dụ: Lập trình viên Front End"
           type="text"
           name="skill"
           value={skill}
@@ -47,13 +47,13 @@ const SkillField: FC<ISkillEditProps> = ({ type, selectedSkill, setShowSkillAddF
           className={`md:text-md rounded bg-sky-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-2
           ${!skill && type === 'add' ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}
           `}
-          label={`${type === 'add' ? 'Add' : 'Update'}`}
+          label={type === 'add' ? 'Thêm' : 'Cập nhật'}
           onClick={onHandleUpdate}
         />
         &nbsp;&nbsp;
         <Button
           className="md:text-md rounded bg-gray-300 px-6 py-1 text-center text-sm font-bold hover:bg-gray-200 focus:outline-none md:py-2"
-          label="Cancel"
+          label="Hủy"
           onClick={() => {
             if (type === 'add' && setShowSkillAddForm) {
               setShowSkillAddForm(false);

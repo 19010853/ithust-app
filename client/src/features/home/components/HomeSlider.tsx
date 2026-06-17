@@ -4,6 +4,28 @@ import { sliderImages, sliderImagesText } from 'src/shared/utils/static-data';
 
 import { ISliderState } from '../interfaces/home.interface';
 
+const sliderText = (header: string, subHeader: string): ISliderImagesText => {
+  const texts: Record<string, ISliderImagesText> = {
+    'Creating Futures, Delivering Now': {
+      header: 'Kiến tạo tương lai, giao giá trị ngay hôm nay',
+      subHeader: 'Tầm nhìn của bạn, đổi mới của chúng tôi'
+    },
+    'Leading the Way to Excellence': {
+      header: 'Dẫn lối đến sự xuất sắc',
+      subHeader: 'Hành trình của bạn, chuyên môn của chúng tôi'
+    },
+    'Turning Ideas into Impactful Content': {
+      header: 'Biến ý tưởng thành nội dung có sức ảnh hưởng',
+      subHeader: 'Đổi mới. Sáng tạo. Vươn cao.'
+    },
+    'Turning Magic into Results': {
+      header: 'Biến điều kỳ diệu thành kết quả',
+      subHeader: 'Tạo nên thành công qua từng nhiệm vụ'
+    }
+  };
+  return texts[header] || { header, subHeader };
+};
+
 const HomeSlider: FC = (): ReactElement => {
   const [slideState, setSlideState] = useState<ISliderState>({
     slideShow: sliderImages[0],
@@ -44,8 +66,12 @@ const HomeSlider: FC = (): ReactElement => {
       <div className="relative h-96 w-full overflow-hidden bg-red-50">
         <img alt="slider" className="absolute h-96 w-full object-cover transition" src={slideShow} />
         <div className="absolute px-6 py-4">
-          <h2 className="text-3xl font-bold text-white">{currentSliderImageText.header}</h2>
-          <h4 className="pt-1 text-white font-bold">{currentSliderImageText.subHeader}</h4>
+          <h2 className="text-3xl font-bold text-white">
+            {sliderText(currentSliderImageText.header, currentSliderImageText.subHeader).header}
+          </h2>
+          <h4 className="pt-1 text-white font-bold">
+            {sliderText(currentSliderImageText.header, currentSliderImageText.subHeader).subHeader}
+          </h4>
         </div>
         <div className="absolute bottom-0 flex gap-3 px-6 py-4">
           {sliderImages.map((_, index: number) => (

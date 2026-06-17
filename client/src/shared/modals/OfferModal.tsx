@@ -23,7 +23,7 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
   const [offer, setOffer] = useState<ISellerOffer>({
     description: '',
     price: '',
-    delivery: 'Expected delivery',
+    delivery: 'Thời gian giao dự kiến',
     deliveryDate: ''
   });
   const [saveChatMessage] = useSaveChatMessageMutation();
@@ -33,7 +33,7 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
       const messageBody: IMessageDocument = {
         conversationId: `${singleMessage?.conversationId}`,
         hasConversationId: true,
-        body: 'Here\'s your custom offer',
+        body: 'Đây là đề nghị tùy chỉnh của bạn',
         gigId: singleMessage?.gigId,
         sellerId: singleMessage?.sellerId,
         buyerId: singleMessage?.buyerId,
@@ -59,7 +59,7 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
         cancelBtnHandler();
       }
     } catch (error) {
-      showErrorToast('Error sending gig offer.');
+      showErrorToast('Không thể gửi đề nghị gig.');
     }
   };
 
@@ -87,11 +87,11 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
             </div>
             <div>
               <label htmlFor="description" className="text-sm font-bold leading-tight tracking-normal">
-                Description<sup className="top-[-0.1em] text-base text-red-500">*</sup>
+                Mô tả<sup className="top-[-0.1em] text-base text-red-500">*</sup>
               </label>
               <TextAreaInput
                 className="border-grey mb-1 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-                placeholder="Write a description..."
+                placeholder="Viết mô tả..."
                 name="description"
                 value={offer.description}
                 rows={5}
@@ -100,7 +100,7 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
             </div>
             <div>
               <label htmlFor="price" className="text-sm font-bold leading-tight tracking-normal">
-                Price<sup className="top-[-0.1em] text-base text-red-500">*</sup>
+                Giá<sup className="top-[-0.1em] text-base text-red-500">*</sup>
               </label>
               <div className="relative mb-5 mt-2">
                 <TextInput
@@ -109,7 +109,7 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
                   type="number"
                   value={offer.price}
                   className="flex h-10 w-full items-center rounded border border-gray-300 pl-3 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-                  placeholder="Enter custom price"
+                  placeholder="Nhập giá tùy chỉnh"
                   onChange={(event: ChangeEvent) => {
                     const value = (event.target as HTMLInputElement).value;
                     setOffer({ ...offer, price: parseInt(value) > 0 ? value : '' });
@@ -119,7 +119,7 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
             </div>
             <div className="mb-6">
               <label htmlFor="country" className="text-sm font-bold leading-tight tracking-normal">
-                Delivery<sup className="top-[-0.1em] text-base text-red-500">*</sup>
+                Thời gian giao<sup className="top-[-0.1em] text-base text-red-500">*</sup>
               </label>
               <div id="country" className="relative mb-5 mt-2">
                 <Dropdown
@@ -144,7 +144,7 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
               <Button
                 className="rounded bg-sky-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
                 disabled={!offer.description || !offer.price || !offer.delivery}
-                label="Send Offer"
+                label="Gửi đề nghị"
                 onClick={sendGigOffer}
               />
             </div>

@@ -37,13 +37,13 @@ const MessageDropdown: FC<IHomeHeaderProps> = ({ setIsMessageDropdownOpen }): Re
         await markMessagesAsRead(`${message._id}`);
       }
     } catch (error) {
-      showErrorToast('Error occured');
+      showErrorToast('Đã xảy ra lỗi.');
     }
   };
 
   return (
     <div className="border-grey border-grey z-20 flex max-h-[470px] flex-col justify-between rounded border bg-white shadow-md">
-      <div className="border-grey block border-b px-4 py-2 text-center font-medium text-gray-700">Inbox</div>
+      <div className="border-grey block border-b px-4 py-2 text-center font-medium text-gray-700">Hộp thư</div>
       <div className="h-96 overflow-y-scroll">
         {conversations.length > 0 ? (
           <>
@@ -73,7 +73,7 @@ const MessageDropdown: FC<IHomeHeaderProps> = ({ setIsMessageDropdownOpen }): Re
                         {!data.isRead ? <FaRegEnvelope className="text-sky-400" /> : <FaRegEnvelopeOpen className="text-gray-200" />}
                       </div>
                       <span className="line-clamp-1 pt-1 font-normal leading-4">
-                        {data.receiverUsername === authUser?.username ? '' : 'Me: '}
+                        {data.receiverUsername === authUser?.username ? '' : 'Tôi: '}
                         {data.body}
                       </span>
                     </div>
@@ -86,7 +86,7 @@ const MessageDropdown: FC<IHomeHeaderProps> = ({ setIsMessageDropdownOpen }): Re
             ))}
           </>
         ) : (
-          <div className="flex h-full items-center justify-center">No messages to show</div>
+          <div className="flex h-full items-center justify-center">Không có tin nhắn để hiển thị</div>
         )}
       </div>
       <div
@@ -99,7 +99,7 @@ const MessageDropdown: FC<IHomeHeaderProps> = ({ setIsMessageDropdownOpen }): Re
         className="flex h-10 cursor-pointer justify-center bg-white px-4 text-sm font-medium text-sky-500"
       >
         <FaEye className="mr-2 h-4 w-4 self-center" />
-        <span className="self-center">View all</span>
+        <span className="self-center">Xem tất cả</span>
       </div>
     </div>
   );

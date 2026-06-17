@@ -39,7 +39,7 @@ const GigSeller: FC = (): ReactElement => {
       {showModal && <ApprovalModal approvalModalContent={approvalModalContent} hideCancel={true} onClick={() => setShowModal(false)} />}
       <div className="border-grey mb-8 border">
         <div className="flex border-b px-4 py-2">
-          <h4 className="font-bold">About The Seller</h4>
+          <h4 className="font-bold">Giới thiệu người bán</h4>
         </div>
         <div className="mb-0 px-4 pt-2">
           <div className="flex flex-col gap-y-3 md:flex-row md:gap-x-2">
@@ -69,21 +69,21 @@ const GigSeller: FC = (): ReactElement => {
           <hr className="border-grey my-3" />
           <div className="grid grid-cols-1 gap-y-4 lg:grid-cols-2">
             <div className="flex flex-col">
-              <span className="">From</span>
+              <span className="">Đến từ</span>
               <span className="font-bold">{seller.country}</span>
             </div>
             <div className="flex flex-col">
-              <span className="">Member since</span>
+              <span className="">Thành viên từ</span>
               <span className="font-bold">{TimeAgo.formatDateToMonthAndYear(`${seller.createdAt}`)}</span>
             </div>
             <div className="flex flex-col">
-              <span className="">Avg. resp time</span>
+              <span className="">Thời gian phản hồi TB</span>
               <span className="font-bold">
-                {seller.responseTime} hour{`${seller.responseTime > 1 ? 's' : ''}`}{' '}
+                {seller.responseTime} giờ{' '}
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="">Languages</span>
+              <span className="">Ngôn ngữ</span>
               <div className="flex flex-wrap">
                 {seller?.languages &&
                   seller?.languages.map((language: ILanguage, index: number) => (
@@ -103,16 +103,16 @@ const GigSeller: FC = (): ReactElement => {
               `}
               label={
                 <>
-                  <span className="w-full">Contact Me</span>
+                  <span className="w-full">Liên hệ tôi</span>
                   <FaArrowRight className="flex self-center" />
                 </>
               }
               onClick={() => {
                 if (authUser && !authUser.emailVerified) {
                   setApprovalModalContent({
-                    header: 'Email Verification Notice',
-                    body: 'Please verify your email before you continue.',
-                    btnText: 'OK',
+                    header: 'Thông báo xác minh email',
+                    body: 'Vui lòng xác minh email trước khi tiếp tục.',
+                    btnText: 'Đã hiểu',
                     btnColor: 'bg-sky-500 hover:bg-sky-400'
                   });
                   setShowModal(true);

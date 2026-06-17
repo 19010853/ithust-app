@@ -76,7 +76,7 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
       <div className="relative top-[20%] mx-auto w-11/12 max-w-md rounded-lg bg-white md:w-2/3">
         <div className="relative px-5 py-5">
           <div className="mb-5 flex justify-between text-2xl font-bold text-gray-600">
-            <h1 className="flex w-full justify-center">Sign In to ITHust</h1>
+            <h1 className="flex w-full justify-center">Đăng nhập ITHust</h1>
             <Button
               testId="closeModal"
               className="cursor-pointer rounded text-gray-400 hover:text-gray-600"
@@ -96,7 +96,7 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
               type="email"
               value={userInfo.email}
               className="mb-5 mt-2 flex h-10 w-full items-center rounded border border-gray-300 pl-3 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-              placeholder="Enter email"
+              placeholder="Nhập email"
               onChange={(event: ChangeEvent) => {
                 setUserInfo({ ...userInfo, email: (event.target as HTMLInputElement).value });
               }}
@@ -104,7 +104,7 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
           </div>
           <div>
             <label htmlFor="password" className="text-sm font-bold leading-tight tracking-normal text-gray-800">
-              Password
+              Mật khẩu
             </label>
             <div className="relative mb-2 mt-2">
               <div className="absolute right-0 flex h-full cursor-pointer items-center pr-3 text-gray-600">
@@ -120,7 +120,7 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
                 type={passwordType}
                 value={userInfo.password}
                 className="flex h-10 w-full items-center rounded border border-gray-300 pl-3 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-                placeholder="Enter password"
+                placeholder="Nhập mật khẩu"
                 onChange={(event: ChangeEvent) => {
                   setUserInfo({ ...userInfo, password: (event.target as HTMLInputElement).value });
                 }}
@@ -136,7 +136,7 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
               }}
               className="mb-6 ml-2 cursor-pointer text-sm text-blue-600 hover:underline dark:text-blue-500"
             >
-              Forgot Password?
+              Quên mật khẩu?
             </div>
           </div>
           <div className="flex w-full items-center justify-center">
@@ -146,7 +146,7 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
               className={`text-md block w-full cursor-pointer rounded bg-sky-500 px-8 py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none ${
                 !userInfo.email || !userInfo.password ? 'cursor-not-allowed' : 'cursor-pointer'
               }`}
-              label={`${isLoading ? 'LOGIN IN PROGRESS...' : 'LOGIN'}`}
+              label={`${isLoading ? 'ĐANG ĐĂNG NHẬP...' : 'ĐĂNG NHẬP'}`}
               onClick={onLoginUser}
             />
           </div>
@@ -155,7 +155,7 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
         <div className="px-5 py-4">
           <div className="ml-2 flex w-full justify-center text-sm font-medium">
             <div className="flex justify-center">
-              Not yet a memeber?{' '}
+              Chưa có tài khoản?{' '}
               <p
                 onClick={() => {
                   if (onToggle) {
@@ -164,7 +164,7 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
                 }}
                 className="ml-2 flex cursor-pointer text-blue-600 hover:underline"
               >
-                Join Now
+                Tham gia ngay
               </p>
             </div>
           </div>

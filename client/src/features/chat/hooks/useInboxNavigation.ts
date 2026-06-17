@@ -46,7 +46,7 @@ const useInboxNavigation = (): IInboxNavigation => {
 
         navigate(`/inbox/${lowerCase(chatUsername)}/${conversationId}`, { state: { draftConversation } });
       } catch (error) {
-        showErrorToast('Unable to open inbox.');
+        showErrorToast('Không thể mở hộp thư.');
       }
     },
     [getConversation, navigate]

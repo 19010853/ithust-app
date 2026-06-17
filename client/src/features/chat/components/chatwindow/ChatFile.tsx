@@ -13,7 +13,7 @@ const ChatFile: FC<IChatMessageProps> = ({ message }): ReactElement => {
       const blobUrl: string = URL.createObjectURL(new Blob([response.data]));
       downloadFile(blobUrl, fileName);
     } catch (error) {
-      showErrorToast('Error downloading file.');
+      showErrorToast('Không thể tải tệp xuống.');
     }
   };
 

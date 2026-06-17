@@ -77,7 +77,7 @@ const Dropdown: FC<IDropdownProps> = ({
             name="search"
             value={inputText}
             className="h-10 w-full items-center rounded pl-3 text-sm font-normal text-gray-600 focus:outline-none lg:text-base"
-            placeholder={placeholder || 'Search...'}
+            placeholder={placeholder || 'Tìm kiếm...'}
             onChange={(event: ChangeEvent) => {
               const inputValue: string = (event.target as HTMLInputElement).value;
               setInputText(inputValue);

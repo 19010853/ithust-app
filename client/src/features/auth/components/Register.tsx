@@ -28,7 +28,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
   const [alertMessage, setAlertMessage] = useState<string>('');
   const [country, setCountry] = useState<string>('');
   const [passwordType, setPasswordType] = useState<string>('password');
-  const [profileImage, setProfileImage] = useState<string>('https://placehold.co/330x220?text=Profile+Image');
+  const [profileImage, setProfileImage] = useState<string>('https://placehold.co/330x220?text=%E1%BA%A2nh+%C4%91%E1%BA%A1i+di%E1%BB%87n');
   const [showImageSelect, setShowImageSelect] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<ISignUpPayload>({
     username: '',
@@ -96,7 +96,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
                 label={<FaChevronLeft className="icon icon-tabler icon-tabler-x" />}
               />
             )}
-            <h1 className="flex w-full justify-center">Join ITHust</h1>
+            <h1 className="flex w-full justify-center">Tham gia ITHust</h1>
             <Button
               className="cursor-pointer rounded text-gray-400 hover:text-gray-600"
               role="button"
@@ -128,7 +128,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
           <div className="relative px-5 py-5">
             <div>
               <label htmlFor="username" className="text-sm font-bold leading-tight tracking-normal text-gray-800">
-                Username
+                Tên người dùng
               </label>
               <TextInput
                 id="username"
@@ -136,7 +136,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
                 type="text"
                 value={userInfo.username}
                 className="mb-5 mt-2 flex h-10 w-full items-center rounded border border-gray-300 pl-3 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-                placeholder="Enter username"
+                placeholder="Nhập tên người dùng"
                 onChange={(event: ChangeEvent) => {
                   setUserInfo({ ...userInfo, username: (event.target as HTMLInputElement).value });
                 }}
@@ -152,7 +152,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
                 type="email"
                 value={userInfo.email}
                 className="mb-5 mt-2 flex h-10 w-full items-center rounded border border-gray-300 pl-3 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-                placeholder="Enter email"
+                placeholder="Nhập email"
                 onChange={(event: ChangeEvent) => {
                   setUserInfo({ ...userInfo, email: (event.target as HTMLInputElement).value });
                 }}
@@ -160,7 +160,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
             </div>
             <div>
               <label htmlFor="password" className="text-sm font-bold leading-tight tracking-normal text-gray-800">
-                Password
+                Mật khẩu
               </label>
               <div className="relative mb-5 mt-2">
                 <div className="absolute right-0 flex h-full cursor-pointer items-center pr-3 text-gray-600">
@@ -176,7 +176,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
                   type={passwordType}
                   value={userInfo.password}
                   className="flex h-10 w-full items-center rounded border border-gray-300 pl-3 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-                  placeholder="Enter password"
+                  placeholder="Nhập mật khẩu"
                   onChange={(event: ChangeEvent) => {
                     setUserInfo({ ...userInfo, password: (event.target as HTMLInputElement).value });
                   }}
@@ -185,18 +185,18 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
             </div>
             <Button
               className="text-md block w-full cursor-pointer rounded bg-sky-500 px-8 py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none"
-              label="Continue"
+              label="Tiếp tục"
               onClick={() => {
                 if (!userInfo.username) {
-                  setAlertMessage('Username is a required field');
+                  setAlertMessage('Vui lòng nhập tên người dùng');
                   return;
                 }
                 if (!userInfo.email) {
-                  setAlertMessage('Email is a required field');
+                  setAlertMessage('Vui lòng nhập email');
                   return;
                 }
                 if (!userInfo.password) {
-                  setAlertMessage('Password is a required field');
+                  setAlertMessage('Vui lòng nhập mật khẩu');
                   return;
                 }
                 setAlertMessage('');
@@ -210,12 +210,12 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
           <div className="relative px-5 py-5">
             <div className="h-24">
               <label htmlFor="country" className="text-sm font-bold leading-tight tracking-normal text-gray-800">
-                Country
+                Quốc gia
               </label>
               <div id="country" className="relative mb-5 mt-2">
                 <Dropdown
                   text={country}
-                  placeholder="Select a country"
+                  placeholder="Chọn quốc gia"
                   maxHeight="200"
                   mainClassNames="absolute bg-white z-50"
                   showSearchInput={true}
@@ -230,7 +230,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
             </div>
             <div className="relative">
               <label htmlFor="profilePicture" className="text-sm font-bold leading-tight tracking-normal text-gray-800">
-                Profile Picture
+                Ảnh đại diện
               </label>
               <div
                 onMouseEnter={() => setShowImageSelect(true)}
@@ -241,7 +241,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
                   <img
                     id="profilePicture"
                     src={profileImage}
-                    alt="Profile Picture"
+                    alt="Ảnh đại diện"
                     className="left-0 top-0 h-20 w-20 rounded-full bg-white object-cover"
                   />
                 )}
@@ -274,7 +274,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
               disabled={!userInfo.country || !userInfo.profilePicture}
               className={`text-md block w-full cursor-pointer rounded bg-sky-500 px-8 py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none ${!userInfo.country || !userInfo.profilePicture ? 'cursor-not-allowed' : 'cursor-pointer'
                 }`}
-              label={`${isLoading ? 'SIGNUP IN PROGRESS...' : 'SIGNUP'}`}
+              label={`${isLoading ? 'ĐANG ĐĂNG KÝ...' : 'ĐĂNG KÝ'}`}
               onClick={onRegisterUser}
             />
           </div>
@@ -284,7 +284,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
         <div className="px-5 py-4">
           <div className="ml-2 flex w-full justify-center text-sm font-medium">
             <div className="flex justify-center">
-              Already a memeber?{' '}
+              Đã có tài khoản?{' '}
               <p
                 onClick={() => {
                   if (onToggle) {
@@ -293,7 +293,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
                 }}
                 className="ml-2 flex cursor-pointer text-blue-600 hover:underline"
               >
-                Sign In
+                Đăng nhập
               </p>
             </div>
           </div>

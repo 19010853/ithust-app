@@ -37,33 +37,33 @@ const AddSeller: FC = (): ReactElement => {
     {
       title: '',
       company: '',
-      startDate: 'Start Year',
-      endDate: 'End Year',
+      startDate: 'Năm bắt đầu',
+      endDate: 'Năm kết thúc',
       currentlyWorkingHere: false,
       description: ''
     }
   ]);
   const [educationFields, setEducationFields] = useState<IEducation[]>([
     {
-      country: 'Country',
+      country: 'Quốc gia',
       university: '',
-      title: 'Title',
+      title: 'Bằng cấp',
       major: '',
-      year: 'Year'
+      year: 'Năm'
     }
   ]);
   const [skillsFields, setSkillsFields] = useState<string[]>(['']);
   const [languageFields, setLanguageFields] = useState<ILanguage[]>([
     {
       language: '',
-      level: 'Level'
+      level: 'Trình độ'
     }
   ]);
   const [certificateFields, setCertificateFields] = useState<ICertificate[]>([
     {
       name: '',
       from: '',
-      year: 'Year'
+      year: 'Năm'
     }
   ]);
   const [socialFields, setSocialFields] = useState<string[]>(['']);
@@ -114,7 +114,7 @@ const AddSeller: FC = (): ReactElement => {
         navigate(`/seller_profile/${lowerCase(`${authUser.username}`)}/${response.seller?._id}/edit`);
       }
     } catch (error) {
-      showErrorToast('Error creating seller profile.');
+      showErrorToast('Không thể tạo hồ sơ người bán.');
     }
   };
 
@@ -127,18 +127,18 @@ const AddSeller: FC = (): ReactElement => {
 
   return (
     <div className="relative w-full">
-      <Breadcrumb breadCrumbItems={['Seller', 'Create Profile']} />
+      <Breadcrumb breadCrumbItems={['Người bán', 'Tạo hồ sơ']} />
       <div className="container mx-auto my-5 overflow-hidden px-2 pb-12 md:px-0">
         {isLoading && <CircularPageLoader />}
         {authUser && !authUser.emailVerified && (
           <div className="absolute left-0 top-0 z-50 flex h-full w-full justify-center bg-white/[0.8] text-sm font-bold md:text-base lg:text-xl">
-            <span className="mt-20">Please verify your email.</span>
+            <span className="mt-20">Vui lòng xác minh email của bạn.</span>
           </div>
         )}
 
         <div className="left-0 top-0 z-10 mt-4 block h-full bg-white">
           {errors.length > 0 ? (
-            <div className="text-red-400">{`You have ${errors.length} error${errors.length > 1 ? 's' : ''}`}</div>
+            <div className="text-red-400">{`Bạn có ${errors.length} lỗi cần xử lý`}</div>
           ) : (
             <></>
           )}
@@ -161,7 +161,7 @@ const AddSeller: FC = (): ReactElement => {
             <Button
               onClick={onCreateSeller}
               className="rounded bg-sky-500 px-8 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-3 md:text-base"
-              label="Create Profile"
+              label="Tạo hồ sơ"
             />
           </div>
         </div>

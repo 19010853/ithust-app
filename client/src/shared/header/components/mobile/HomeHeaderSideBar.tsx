@@ -2,7 +2,7 @@ import { Transition } from '@headlessui/react';
 import { FC, MouseEvent, ReactElement, useState } from 'react';
 import { FaAngleDown, FaAngleRight, FaAngleUp } from 'react-icons/fa';
 import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
-import { applicationLogout, categories, lowerCase, replaceSpacesWithDash } from 'src/shared/utils/utils.service';
+import { applicationLogout, categories, categoryDisplayLabel, lowerCase, replaceSpacesWithDash } from 'src/shared/utils/utils.service';
 import { socket } from 'src/sockets/socket.service';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
 import { IReduxState } from 'src/store/store.interface';
@@ -27,6 +27,15 @@ const HomeHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): ReactEl
     { id: 3, name: 'Profile', url: `/seller_profile/${lowerCase(`${seller?.username}`)}/${seller?._id}/edit`, show: isSeller },
     { id: 4, name: 'Settings', url: `/${lowerCase(`${seller?.username}`)}/edit`, show: true }
   ];
+  const settingLabel = (name: string): string => {
+    const labels: Record<string, string> = {
+      'Add a new gig': 'Thêm gig mới',
+      Dashboard: 'Bảng điều khiển',
+      Profile: 'Hồ sơ',
+      Settings: 'Cài đặt'
+    };
+    return labels[name] || name;
+  };
 
   const toggleDropdown = (event: MouseEvent): void => {
     event.stopPropagation();
@@ -54,7 +63,7 @@ const HomeHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): ReactEl
       <div className={'absolute left-0 top-0 z-20 flex h-screen w-[250px] flex-col items-start justify-start gap-4 bg-white p-6'}>
         <div className="z-2 sticky top-0 flex w-full flex-col items-start justify-start gap-6 bg-white">
           <div className="flex cursor-pointer gap-4 py-3 text-base font-semibold transition-all duration-300">
-            <img src={`${authUser?.profilePicture}`} alt="profile" className="h-10 w-10 rounded-full object-cover" />
+            <img src={`${authUser?.profilePicture}`} alt="Ảnh đại diện" className="h-10 w-10 rounded-full object-cover" />
             <span className="text-blacks flex self-center">{authUser?.username}</span>
           </div>
           <div
@@ -67,7 +76,7 @@ const HomeHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): ReactEl
             }}
             className="cursor-pointer text-base font-medium text-gray-400"
           >
-            <Link to="/">Home</Link>
+            <Link to="/">Trang chủ</Link>
           </div>
           <div
             onClick={(event: MouseEvent) => {
@@ -78,7 +87,7 @@ const HomeHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): ReactEl
             }}
             className="cursor-pointer text-base font-medium text-gray-400"
           >
-            <Link to="/inbox">Inbox</Link>
+            <Link to="/inbox">Hộp thư</Link>
           </div>
           <div
             onClick={(event: MouseEvent) => {
@@ -89,7 +98,7 @@ const HomeHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): ReactEl
             }}
             className="cursor-pointer text-base font-medium text-gray-400"
           >
-            <Link to={`/users/${lowerCase(`${buyer?.username}`)}/${buyer?._id}/orders`}>Orders</Link>
+            <Link to={`/users/${lowerCase(`${buyer?.username}`)}/${buyer?._id}/orders`}>Đơn hàng</Link>
           </div>
           {!isSeller && (
             <div
@@ -103,7 +112,7 @@ const HomeHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): ReactEl
               }}
               className="cursor-pointer text-base font-medium text-gray-400"
             >
-              <Link to="/seller_onboarding">Become a Seller</Link>
+              <Link to="/seller_onboarding">Trở thành người bán</Link>
             </div>
           )}
           {isSeller && (
@@ -119,13 +128,13 @@ const HomeHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): ReactEl
               className="cursor-pointer text-base font-medium text-gray-400"
             >
               <Link to={`/${lowerCase(`${authUser?.username}`)}/${seller?._id}/seller_dashboard`}>
-                <span>Switch to Selling</span>
+                <span>Chuyển sang bán hàng</span>
               </Link>
             </div>
           )}
           <div className="flex w-full cursor-pointer flex-col text-base font-medium text-gray-400">
             <span className="flex justify-between" onClick={toggleCategoriesDropdown}>
-              Browse Categories{' '}
+              Duyệt danh mục{' '}
               {!toggleCategories ? <FaAngleDown className="mt-1 flex self-center" /> : <FaAngleUp className="mt-1 flex self-center" />}
             </span>
             <div className="">
@@ -158,7 +167,7 @@ const HomeHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): ReactEl
                             socket.emit('getLoggedInUsers', '');
                           }}
                         >
-                          {category}
+                          {categoryDisplayLabel(category)}
                         </Link>
                       </span>{' '}
                       <FaAngleRight className="flex self-center" />
@@ -170,7 +179,7 @@ const HomeHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): ReactEl
           </div>
           <div className="flex w-full cursor-pointer flex-col text-base font-medium text-gray-400">
             <span className="flex justify-between" onClick={toggleDropdown}>
-              Your Settings{' '}
+              Cài đặt của bạn{' '}
               {!isDropdownOpen ? <FaAngleDown className="mt-1 flex self-center" /> : <FaAngleUp className="mt-1 flex self-center" />}
             </span>
             <div className="">
@@ -195,7 +204,7 @@ const HomeHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): ReactEl
                               dispatch(updateCategoryContainer(setting.name !== 'Settings'));
                             }}
                           >
-                            <span className="w-full pr-6">{setting.name}</span> <FaAngleRight className="flex self-center" />
+                            <span className="w-full pr-6">{settingLabel(setting.name)}</span> <FaAngleRight className="flex self-center" />
                           </Link>
                         </li>
                       )}
@@ -215,7 +224,7 @@ const HomeHeaderSideBar: FC<IHeaderSideBarProps> = ({ setOpenSidebar }): ReactEl
             }}
             className="cursor-pointer text-base font-medium text-gray-400"
           >
-            Logout
+            Đăng xuất
           </div>
         </div>
       </div>

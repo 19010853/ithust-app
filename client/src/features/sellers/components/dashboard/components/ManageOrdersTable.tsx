@@ -11,6 +11,26 @@ import { normalizeOrderStatus, showErrorToast, showSuccessToast } from 'src/shar
 import { useAppDispatch } from 'src/store/store';
 import { v4 as uuidv4 } from 'uuid';
 
+const orderTypeLabel = (type: string): string => {
+  const labels: Record<string, string> = {
+    active: 'đang hoạt động',
+    completed: 'hoàn thành',
+    cancelled: 'đã hủy'
+  };
+  return labels[type] || type;
+};
+
+const orderStatusLabel = (status: string): string => {
+  const labels: Record<string, string> = {
+    'in progress': 'Đang thực hiện',
+    delivered: 'Đã giao',
+    completed: 'Hoàn thành',
+    cancelled: 'Đã hủy',
+    pending: 'Đang chờ'
+  };
+  return labels[normalizeOrderStatus(status)] || status;
+};
+
 const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): ReactElement => {
   const dispatch = useAppDispatch();
   const [approvalModalContent, setApprovalModalContent] = useState<IApprovalModalContent>();
@@ -30,9 +50,9 @@ const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): 
         orderId: `${selectedOrder.current?.orderId}`,
         body: orderData
       });
-      showSuccessToast('Order cancelled successfully.');
+      showSuccessToast('Đơn hàng đã được hủy thành công.');
     } catch (error) {
-      showErrorToast('Error cancelling order. Try again.');
+      showErrorToast('Không thể hủy đơn hàng. Vui lòng thử lại.');
     }
   };
 
@@ -43,7 +63,7 @@ const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): 
       )}
       <div className="flex flex-col">
         <div className="border-grey border border-b-0 px-3 py-3">
-          <div className="text-xs font-bold uppercase sm:text-sm md:text-base">{type} orders </div>
+          <div className="text-xs font-bold uppercase sm:text-sm md:text-base">Đơn hàng {orderTypeLabel(type)} </div>
         </div>
         <table className="border-grey flex-no-wrap flex w-full table-auto flex-row overflow-hidden border text-sm text-gray-500 sm:inline-table">
           {orderTypes > 0 ? (
@@ -55,13 +75,13 @@ const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): 
                     className="mb-1 flex flex-col flex-nowrap bg-sky-500 text-white sm:mb-0 sm:table-row md:table-row lg:bg-transparent lg:text-black"
                   >
                     <th className="p-3 text-center w-auto"></th>
-                    <th className="p-3 text-left w-auto">Buyer</th>
+                    <th className="p-3 text-left w-auto">Người mua</th>
                     <th className="p-3 text-left">Gig</th>
-                    <th className="p-3 text-center">{type === 'cancelled' ? 'Cancelled On' : 'Due On'}</th>
-                    {type === 'completed' && <th className="p-3 text-center">Delivered At</th>}
-                    <th className="p-3 text-center">Total</th>
-                    <th className="p-3 text-center">Status</th>
-                    {type === 'active' && <th className="p-3 text-center">Cancel</th>}
+                    <th className="p-3 text-center">{type === 'cancelled' ? 'Ngày hủy' : 'Hạn giao'}</th>
+                    {type === 'completed' && <th className="p-3 text-center">Đã giao lúc</th>}
+                    <th className="p-3 text-center">Tổng</th>
+                    <th className="p-3 text-center">Trạng thái</th>
+                    {type === 'active' && <th className="p-3 text-center">Hủy</th>}
                   </tr>
                 ))}
               </thead>
@@ -101,19 +121,19 @@ const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): 
                           order.status
                         ).replace(/ /g, '')}`}
                       >
-                        {order.status}
+                        {orderStatusLabel(order.status)}
                       </span>
                     </td>
                     {type === 'active' && (
                       <td className="px-3 py-1 lg:p-3 text-left lg:text-center">
                         <Button
                           className="rounded bg-red-500 px-6 py-3 text-center text-sm font-bold text-white focus:outline-none md:px-4 md:py-2 md:text-base"
-                          label="Cancel Order"
+                          label="Hủy đơn hàng"
                           onClick={() => {
                             setApprovalModalContent({
-                              header: 'Order Cancellation',
-                              body: 'Are you sure you want to cancel this order?',
-                              btnText: 'Yes, Cancel',
+                              header: 'Hủy đơn hàng',
+                              body: 'Bạn có chắc muốn hủy đơn hàng này?',
+                              btnText: 'Có, hủy',
                               btnColor: 'bg-red-500 hover:bg-red-400'
                             });
                             setShowCancelModal(true);
@@ -129,7 +149,7 @@ const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): 
           ) : (
             <tbody>
               <tr>
-                <td className="w-full px-4 py-2 text-sm">No {type} orders to show.</td>
+                <td className="w-full px-4 py-2 text-sm">Không có đơn hàng {orderTypeLabel(type)} để hiển thị.</td>
               </tr>
             </tbody>
           )}

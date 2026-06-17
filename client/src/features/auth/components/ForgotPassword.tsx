@@ -32,7 +32,7 @@ const ForgotPasswordModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactEle
       <div className="relative top-[20%] mx-auto w-11/12 max-w-md rounded-lg bg-white md:w-2/3">
         <div className="relative px-5 py-5">
           <div className="mb-5 flex justify-between text-2xl font-bold text-gray-600">
-            <h1 className="flex w-full justify-center">Forgot Password</h1>
+            <h1 className="flex w-full justify-center">Quên mật khẩu</h1>
             <Button
               testId="closeModal"
               className="cursor-pointer rounded text-gray-400 hover:text-gray-600"
@@ -43,7 +43,7 @@ const ForgotPasswordModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactEle
           </div>
           {alertMessage && <Alert type={status} message={alertMessage} />}
           <div className="mb-5 w-full text-center text-base font-normal text-gray-600">
-            Please enter your email address and we'll send you a link to reset your password.
+            Vui lòng nhập địa chỉ email, chúng tôi sẽ gửi liên kết đặt lại mật khẩu cho bạn.
           </div>
           <div>
             <TextInput
@@ -51,7 +51,7 @@ const ForgotPasswordModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactEle
               type="email"
               value={email}
               className="mb-5 mt-2 flex h-10 w-full items-center rounded border border-gray-300 pl-3 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-              placeholder="Enter email"
+              placeholder="Nhập email"
               onChange={(event: ChangeEvent) => {
                 setEmail((event.target as HTMLInputElement).value);
               }}
@@ -63,7 +63,7 @@ const ForgotPasswordModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactEle
               className={`text-md block w-full cursor-pointer rounded bg-sky-500 px-8 py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none ${
                 !email ? 'cursor-not-allowed' : 'cursor-pointer'
               }`}
-              label={`${isLoading ? 'FORGOT PASSWORD IN PROGRESS...' : 'FORGOT PASSWORD'}`}
+              label={`${isLoading ? 'ĐANG GỬI LIÊN KẾT...' : 'GỬI LIÊN KẾT'}`}
               onClick={onHandleSubmit}
             />
           </div>
@@ -80,7 +80,7 @@ const ForgotPasswordModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactEle
                 }}
                 className="ml-2 flex cursor-pointer text-blue-600 hover:underline"
               >
-                Back to Sign In
+                Quay lại đăng nhập
               </p>
             </div>
           </div>

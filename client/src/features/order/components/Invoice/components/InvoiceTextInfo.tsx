@@ -13,8 +13,8 @@ const InvoiceTextInfo: FC = (): ReactElement => {
       <View style={styles.titleContainer}>
         <View style={styles.spaceBetween}>
           <View>
-            <Text style={styles.info}>Purchased on ITHust.com through ITHust Limited </Text>
-            <Text style={styles.info}>have an ivoice or billing question? Contact us</Text>
+            <Text style={styles.info}>Được mua trên ITHust.com thông qua ITHust Limited </Text>
+            <Text style={styles.info}>Bạn có câu hỏi về hóa đơn hoặc thanh toán? Hãy liên hệ với chúng tôi</Text>
           </View>
         </View>
       </View>

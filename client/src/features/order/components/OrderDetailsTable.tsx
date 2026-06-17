@@ -25,7 +25,7 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
           price: Number(order.price ?? 0)
         },
         {
-          service: 'Service Fee',
+          service: 'Phí dịch vụ',
           quantity: 1,
           price: Number(order.serviceFee ?? 0)
         }
@@ -44,7 +44,7 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
           </div>
           <div className="w-full cursor-pointer">
             <div className="mt-2 flex items-center justify-between font-medium text-gray-500">
-              <span>Your order details</span>
+              <span>Chi tiết đơn hàng của bạn</span>
               <div onClick={() => setShowOrderDetailsPanel((item: boolean) => !item)}>
                 {!showOrderDetailsPanel ? <FaChevronDown size={15} /> : <FaChevronUp size={15} />}
               </div>
@@ -54,14 +54,14 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
                 <div className="flex justify-between">
                   <div className="flex gap-2 text-sm md:text-base">
                     <div className="flex gap-2">
-                      Buyer:
+                      Người mua:
                       <Link to="" className="font-bold text-blue-400 hover:underline">
                         {order.buyerUsername}
                       </Link>
                     </div>
                     <div className="flex gap-1">|</div>
                     <div className="flex gap-2">
-                      Date ordered <p className="font-bold italic">{TimeAgo.dayMonthYear(`${order?.dateOrdered}`)}</p>
+                      Ngày đặt <p className="font-bold italic">{TimeAgo.dayMonthYear(`${order?.dateOrdered}`)}</p>
                     </div>
                   </div>
                   {order.buyerUsername === authUser.username && (
@@ -73,7 +73,7 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
                       }
                       fileName={`${orderInvoice.current.invoiceId}.pdf`}
                     >
-                      <div className="cursor-pointer text-blue-400 underline">Download invoice</div>
+                      <div className="cursor-pointer text-blue-400 underline">Tải hóa đơn</div>
                     </PDFDownloadLink>
                   )}
                 </div>
@@ -83,16 +83,16 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
                       <thead className="bg-[#f3f3f3] text-xs uppercase text-gray-700">
                         <tr>
                           <th scope="col" className="px-4 py-3" style={{ width: '60%' }}>
-                            Item
+                            Mục
                           </th>
                           <th scope="col" className="px-4 py-3">
-                            Qty
+                            SL
                           </th>
                           <th scope="col" className="px-4 py-3">
-                            Duration
+                            Thời lượng
                           </th>
                           <th scope="col" className="px-4 py-3">
-                            Price
+                            Giá
                           </th>
                         </tr>
                         <tr>
@@ -109,13 +109,13 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
                           </td>
                           <td className="px-4 py-4">{order.quantity}</td>
                           <td className="px-4 py-4">
-                            {offer?.deliveryInDays ?? 0} day{(offer?.deliveryInDays ?? 0) > 1 ? 's' : ''}
+                            {offer?.deliveryInDays ?? 0} ngày
                           </td>
                           <td className="px-4 py-4">${order.price}</td>
                         </tr>
                         <tr className="bg-white">
                           <th scope="row" className="whitespace-wrap px-4 py-4 font-normal">
-                            {offer?.description || 'No description available'}
+                            {offer?.description || 'Chưa có mô tả'}
                           </th>
                           <td className="px-4 py-4"></td>
                           <td className="px-4 py-4"></td>
@@ -125,7 +125,7 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
                       <tfoot className="bg-[#f3f3f3]">
                         <tr>
                           <th scope="row" className="px-4 py-3 text-base">
-                            Service Fee
+                            Phí dịch vụ
                           </th>
                           <td className="px-4 py-3"></td>
                           <td className="px-4 py-3"></td>
@@ -133,7 +133,7 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
                         </tr>
                         <tr>
                           <th scope="row" className="px-4 py-3 text-base">
-                            Total
+                            Tổng cộng
                           </th>
                           <td className="px-4 py-3"></td>
                           <td className="px-4 py-3"></td>

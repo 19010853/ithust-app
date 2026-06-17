@@ -49,9 +49,9 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
         };
         await approveOrder({ orderId: `${order?.orderId}`, body: orderMessage });
         setOrderDeliveredModal({ ...orderDeliveredModal, deliveryApproval: false });
-        showSuccessToast('Gig approval successful.');
+        showSuccessToast('Duyệt bàn giao gig thành công.');
       } catch (error) {
-        showErrorToast('Error approving gig delivery.');
+        showErrorToast('Không thể duyệt bàn giao gig.');
       }
     };
 
@@ -61,7 +61,7 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
         const blobUrl = URL.createObjectURL(new Blob([response.data]));
         downloadFile(blobUrl, fileName);
       } catch (error) {
-        showErrorToast('Error downloading file.');
+        showErrorToast('Không thể tải tệp.');
       }
     };
 
@@ -87,8 +87,9 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
                   <div className="mt-2 flex items-center justify-between font-medium text-gray-500">
                     <div className="flex gap-2">
                       <span>
-                        {order.buyerUsername === authUser?.username ? order.sellerUsername : 'You'} delivered{' '}
-                        {order.buyerUsername === authUser?.username ? 'your' : 'the'} order
+                        {order.buyerUsername === authUser?.username
+                          ? `${order.sellerUsername} đã bàn giao đơn hàng của bạn`
+                          : 'Bạn đã bàn giao đơn hàng'}
                       </span>
                       <p className="flex self-center text-sm font-normal italic">
                         {TimeAgo.dayWithTime(`${order?.events.orderDelivered}`)}
@@ -103,7 +104,7 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
                       <div className="relative overflow-x-auto">
                         <div className="border-grey w-full rounded  border text-left text-sm text-gray-500">
                           <div className="border-grey border-b bg-[#fafafb] py-3 font-medium uppercase">
-                            <span className="px-5">Deliver{order?.deliveredWork.length > 1 ? 'ies' : 'y'}</span>
+                            <span className="px-5">Nội dung bàn giao</span>
                           </div>
                           {order.deliveredWork.map((work: IDeliveredWork) => (
                             <div
@@ -111,16 +112,16 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
                               className="border-grey flex w-full cursor-pointer flex-col items-center space-x-4 border-b px-5 pt-2 last:border-none md:flex-row"
                             >
                               <div className="flex w-full justify-center md:w-12 md:self-start">
-                                <img className="h-10 w-10 rounded-full object-cover" src={order.sellerImage} alt="Seller Image" />
+                                <img className="h-10 w-10 rounded-full object-cover" src={order.sellerImage} alt="Ảnh người bán" />
                               </div>
                               <div className="w-full text-sm dark:text-white">
                                 <div className="flex justify-between text-sm font-bold text-[#777d74] md:text-base">
-                                  <span>{authUser?.username === order.buyerUsername ? `${order.sellerUsername}'s message` : 'Me'}</span>
+                                  <span>{authUser?.username === order.buyerUsername ? `Tin nhắn của ${order.sellerUsername}` : 'Tôi'}</span>
                                 </div>
                                 <div className="flex flex-col justify-between text-[#777d74]">
                                   <span className="text-sm md:text-[15px]">{work.message}</span>
                                   <div className="mt-3 flex flex-col">
-                                    <div className="mb-5 text-sm font-bold uppercase">Attachments</div>
+                                    <div className="mb-5 text-sm font-bold uppercase">Tệp đính kèm</div>
                                     <div
                                       onClick={() => downloadOrderFile(work.file, work.fileName)}
                                       className="border-grey relative mb-5 flex max-w-[250px] cursor-pointer items-center justify-between rounded-md border py-3 text-xs font-bold"
@@ -156,10 +157,10 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
                 </div>
                 <div className="border-grey w-full cursor-pointer border-b pb-6">
                   <div className="mt-2 flex items-center gap-2 font-medium text-gray-500">
-                    <span>{order.approved && `${authUser?.username === order.buyerUsername ? 'Your' : 'The'} order was completed`}</span>
-                    {!order.approved && authUser?.username === order.buyerUsername && <span>Are you ready to approve the delivery?</span>}
+                    <span>{order.approved && `${authUser?.username === order.buyerUsername ? 'Đơn hàng của bạn' : 'Đơn hàng'} đã hoàn tất`}</span>
+                    {!order.approved && authUser?.username === order.buyerUsername && <span>Bạn đã sẵn sàng duyệt phần bàn giao?</span>}
                     {!order.approved && authUser?.username !== order.buyerUsername && (
-                      <span className="italic">Waiting for order to be approved.</span>
+                      <span className="italic">Đang chờ đơn hàng được duyệt.</span>
                     )}
                     {order.approved && <p className="text-sm font-normal italic">{TimeAgo.dayWithTime(`${order?.approvedAt}`)}</p>}
                   </div>
@@ -171,7 +172,7 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
                             <div className="w-full text-sm dark:text-white">
                               <div className="flex flex-col justify-between text-[#777d74]">
                                 <span className="text-sm md:text-[15px]">
-                                  If you have any issue to discuss with the seller before approving, you can go to
+                                  Nếu bạn cần trao đổi với người bán trước khi duyệt, bạn có thể đi đến
                                   <button
                                     type="button"
                                     onClick={() => {
@@ -184,23 +185,23 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
                                     }}
                                     className="px-1 text-blue-500 hover:underline"
                                   >
-                                    Go to Inbox
+                                    hộp thư
                                   </button>
-                                  to contact the seller.
+                                  để liên hệ với người bán.
                                 </span>
                                 <div className="mt-3 flex pb-6">
                                   <Button
                                     className="rounded bg-green-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-green-400 focus:outline-none md:px-4 md:py-2 md:text-base"
                                     onClick={() => {
                                       setApprovalModalContent({
-                                        header: 'Approve Final Delivery',
-                                        body: 'Got everything you need? Great! Once you approve the delivery, your work will be marked as complete.',
-                                        btnText: 'Approve Final Delivery',
+                                        header: 'Duyệt bàn giao cuối cùng',
+                                        body: 'Bạn đã nhận đủ mọi thứ cần thiết? Tuyệt vời! Khi bạn duyệt bàn giao, đơn hàng sẽ được đánh dấu hoàn tất.',
+                                        btnText: 'Duyệt bàn giao cuối cùng',
                                         btnColor: 'bg-sky-500 hover:bg-sky-400'
                                       });
                                       setOrderDeliveredModal({ ...orderDeliveredModal, deliveryApproval: true });
                                     }}
-                                    label="Yes, Approve delivery"
+                                    label="Có, duyệt bàn giao"
                                   />
                                 </div>
                               </div>

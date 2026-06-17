@@ -44,13 +44,13 @@ const ReviewModal: FC<IModalProps> = ({ order, type, onClose }): ReactElement =>
       };
       await addReview({ body: reviewDocument });
       setStatus(LOADING_STATUS.SUCCESS);
-      showSuccessToast('Review added successfully.');
+      showSuccessToast('Đã thêm đánh giá thành công.');
       if (onClose) {
         onClose();
       }
     } catch (error) {
       setStatus(LOADING_STATUS.ERROR);
-      showErrorToast('Error adding review.');
+      showErrorToast('Không thể thêm đánh giá.');
     }
   };
 
@@ -63,13 +63,13 @@ const ReviewModal: FC<IModalProps> = ({ order, type, onClose }): ReactElement =>
           <div className="fixed bottom-0 left-0 right-0 top-0 z-[50] flex w-full items-center justify-center opacity-80">
             <div className="absolute bottom-auto left-auto right-auto top-auto flex min-h-[290px] min-w-[500px] flex-col items-center justify-center bg-white p-4 text-[#404145]">
               <FaCircleNotch className="animate-spin" size={40} color="#50b5ff" />
-              <span>Adding...</span>
+              <span>Đang thêm...</span>
             </div>
           </div>
         )}
         <div className="relative bottom-auto left-auto right-auto top-auto max-h-[90vh] min-w-[500px] bg-white p-4 text-[#404145]">
           <div className="border-grey mb-[10px] w-full border-b text-left">
-            <h4 className="pb-2 text-[17px] font-bold">{type === 'buyer-review' ? 'Review Seller' : 'Review Buyer'}</h4>
+            <h4 className="pb-2 text-[17px] font-bold">{type === 'buyer-review' ? 'Đánh giá người bán' : 'Đánh giá người mua'}</h4>
           </div>
 
           <div className="mb-4s relative mt-4 h-10">
@@ -79,7 +79,7 @@ const ReviewModal: FC<IModalProps> = ({ order, type, onClose }): ReactElement =>
             <TextAreaInput
               className="border-grey mb-1 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
               name="review"
-              placeholder="What was it like working with the seller?"
+              placeholder={type === 'buyer-review' ? 'Trải nghiệm làm việc với người bán như thế nào?' : 'Trải nghiệm làm việc với người mua như thế nào?'}
               value={review}
               rows={4}
               onChange={(event: ChangeEvent) => {
@@ -91,7 +91,7 @@ const ReviewModal: FC<IModalProps> = ({ order, type, onClose }): ReactElement =>
             <Button
               className="rounded bg-gray-200 px-6 py-3 text-center text-sm font-bold text-black focus:outline-none md:px-4 md:py-2 md:text-base"
               onClick={onClose}
-              label="Cancel"
+              label="Hủy"
             />
             <Button
               className={`rounded px-6 py-3 text-center text-sm font-bold text-white focus:outline-none md:px-4 md:py-2 md:text-base ${
@@ -99,7 +99,7 @@ const ReviewModal: FC<IModalProps> = ({ order, type, onClose }): ReactElement =>
               }`}
               disabled={!review || reviewRating === 0}
               onClick={onAddReview}
-              label="Send"
+              label="Gửi"
             />
           </div>
         </div>

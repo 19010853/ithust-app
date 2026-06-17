@@ -35,7 +35,7 @@ const SellerProfile: FC = (): ReactElement => {
 
   return (
     <div className="relative w-full pb-6">
-      <Breadcrumb breadCrumbItems={['Seller', `${sellerData && sellerData.seller ? sellerData.seller.username : ''}`]} />
+      <Breadcrumb breadCrumbItems={['Người bán', `${sellerData && sellerData.seller ? sellerData.seller.username : ''}`]} />
       {isLoading ? (
         <CircularPageLoader />
       ) : (

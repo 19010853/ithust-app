@@ -36,7 +36,7 @@ const TableTotal: FC = (): ReactElement => {
             <Text></Text>
           </View>
           <View style={styles.tbody}>
-            <Text>Total</Text>
+            <Text>Tổng cộng</Text>
           </View>
           <View style={styles.tbody}>
             <Text>

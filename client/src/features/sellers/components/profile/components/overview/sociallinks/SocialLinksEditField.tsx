@@ -47,7 +47,7 @@ const SocialLinksEditField: FC<ISocialEditLinksProps> = ({
       <div className="mb-6 px-3">
         <TextInput
           className="border-grey w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-          placeholder="Social media link"
+          placeholder="Liên kết mạng xã hội"
           type="text"
           name="socialLink"
           value={socialLink}
@@ -63,13 +63,13 @@ const SocialLinksEditField: FC<ISocialEditLinksProps> = ({
           hover:bg-sky-400 focus:outline-none md:py-2 ${
             !socialLink && type === 'add' ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'
           }`}
-          label={`${type === 'add' ? 'Add' : 'Update'}`}
+          label={type === 'add' ? 'Thêm' : 'Cập nhật'}
           onClick={onHandleUpdate}
         />
         &nbsp;&nbsp;
         <Button
           className="md:text-md rounded bg-gray-300 px-6 py-1 text-center text-sm font-bold hover:bg-gray-200 focus:outline-none md:py-2"
-          label="Cancel"
+          label="Hủy"
           onClick={onCancelUpdate}
         />
       </div>

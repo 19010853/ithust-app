@@ -3,27 +3,27 @@ import { object, ObjectSchema, string } from 'yup';
 import { IResetPassword, ISignInPayload, ISignUpPayload } from '../interfaces/auth.interface';
 
 const loginUserSchema: ObjectSchema<ISignInPayload> = object({
-  email: string().email({ email: 'Invalid email' }).required({ email: 'Email is a required field' }),
-  password: string().required({ password: 'Password is a required field' }).min(4, { password: 'Password is a required field' }),
+  email: string().email({ email: 'Email không hợp lệ' }).required({ email: 'Vui lòng nhập email' }),
+  password: string().required({ password: 'Vui lòng nhập mật khẩu' }).min(4, { password: 'Mật khẩu phải có ít nhất 4 ký tự' }),
   browserName: string().optional().nullable().notRequired(),
   deviceType: string().optional().nullable().notRequired()
 });
 
 const registerUserSchema: ObjectSchema<ISignUpPayload> = object({
-  username: string().required({ username: 'Username is a required field' }).min(4, { username: 'Username is a required field' }),
-  password: string().required({ password: 'Password is a required field' }).min(4, { password: 'Password is a required field' }),
-  email: string().email({ email: 'Invalid email' }).required({ email: 'Email is a required field' }),
-  country: string().notOneOf(['Select Country'], { country: 'Select a country' }).required({ country: 'Country is a required field' }),
-  profilePicture: string().required({ profilePicture: 'Profile picture is a required field' }),
+  username: string().required({ username: 'Vui lòng nhập tên người dùng' }).min(4, { username: 'Tên người dùng phải có ít nhất 4 ký tự' }),
+  password: string().required({ password: 'Vui lòng nhập mật khẩu' }).min(4, { password: 'Mật khẩu phải có ít nhất 4 ký tự' }),
+  email: string().email({ email: 'Email không hợp lệ' }).required({ email: 'Vui lòng nhập email' }),
+  country: string().notOneOf(['Chọn quốc gia'], { country: 'Vui lòng chọn quốc gia' }).required({ country: 'Vui lòng chọn quốc gia' }),
+  profilePicture: string().required({ profilePicture: 'Vui lòng tải ảnh đại diện' }),
   browserName: string().optional().nullable().notRequired(),
   deviceType: string().optional().nullable().notRequired()
 });
 
 const resetPasswordSchema: ObjectSchema<IResetPassword> = object({
-  password: string().required({ password: 'Password is a required field' }).min(4, { password: 'Password is a required field' }),
+  password: string().required({ password: 'Vui lòng nhập mật khẩu' }).min(4, { password: 'Mật khẩu phải có ít nhất 4 ký tự' }),
   confirmPassword: string()
-    .required({ confirmPassword: 'Confirm password is a required field' })
-    .min(4, { password: 'Password is a required field' })
+    .required({ confirmPassword: 'Vui lòng xác nhận mật khẩu' })
+    .min(4, { password: 'Mật khẩu phải có ít nhất 4 ký tự' })
 });
 
 export { loginUserSchema, registerUserSchema, resetPasswordSchema };

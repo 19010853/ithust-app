@@ -23,11 +23,11 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
 
   const addEducationFields = (): void => {
     const newfield: IEducation = {
-      country: 'Country',
+      country: 'Quốc gia',
       university: '',
-      title: 'Title',
+      title: 'Bằng cấp',
       major: '',
-      year: 'Year'
+      year: 'Năm'
     };
     if (setEducationFields && educationFields) {
       setEducationFields([...educationFields, newfield]);
@@ -45,10 +45,10 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
   return (
     <div className="border-grey flex w-full flex-col border-b px-6 pb-3 pt-6">
       <div className="flex justify-between">
-        <h2 className="pb-4 text-xl font-bold">Education</h2>
+        <h2 className="pb-4 text-xl font-bold">Học vấn</h2>
         <Button
           className="md:text-md h-7 rounded bg-sky-500 px-6 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-8"
-          label="Add More"
+          label="Thêm"
           onClick={() => addEducationFields()}
         />
       </div>
@@ -58,7 +58,7 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
           <div className="relative">
             <TextInput
               className="border-grey mb-4 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-              placeholder="University/College Name"
+              placeholder="Tên trường đại học/cao đẳng"
               type="text"
               name="university"
               value={input.university}
@@ -103,7 +103,7 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
             <div className="col-span-2">
               <TextInput
                 className="border-grey w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-                placeholder="Major e.g: Computer Engineering"
+                placeholder="Chuyên ngành, ví dụ: Kỹ thuật máy tính"
                 type="text"
                 name="major"
                 value={input.major}
@@ -132,7 +132,7 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
                 <Button
                   className="md:text-md h-7 rounded bg-red-500 px-6 text-center text-sm font-bold text-white hover:bg-red-400 focus:outline-none md:px-8"
                   onClick={() => removeEducationFields(index)}
-                  label="Delete"
+                  label="Xóa"
                 />
               )}
             </div>

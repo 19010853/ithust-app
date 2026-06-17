@@ -70,7 +70,7 @@ const GigInfoDisplay: FC = (): ReactElement => {
                     {!isLoading && isSuccess && (
                       <img
                         src={gig.current.coverImage}
-                        alt="Gig Image"
+                        alt="Ảnh gig"
                         className="object-contains h-full w-full transition-all duration-500 hover:scale-105"
                       />
                     )}
@@ -80,18 +80,18 @@ const GigInfoDisplay: FC = (): ReactElement => {
                       </div>
                     )}
                   </div>
-                  <div className="mt-10 pb-6 text-lg font-semibold">About This Gig</div>
+                  <div className="mt-10 pb-6 text-lg font-semibold">Giới thiệu gig này</div>
                   <div className="pb-6">
                     <HtmlParser input={gig.current.description ?? ''} />
                   </div>
                   <hr className="border-grey my-3" />
                   <div className="grid grid-cols-1 gap-y-4 lg:grid-cols-2">
                     <div className="flex flex-col">
-                      <span className="text-[#95979d]">Main Categories</span>
+                      <span className="text-[#95979d]">Danh mục chính</span>
                       <span className="font-normal">{gig.current.categories}</span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[#95979d]">Sub Categories</span>
+                      <span className="text-[#95979d]">Danh mục con</span>
                       <div className="flex flex-col">
                         {gig.current.subCategories &&
                           gig.current.subCategories.map((category: string, index: number) => (
@@ -137,7 +137,7 @@ const GigInfoDisplay: FC = (): ReactElement => {
                               onClick={() => setShowRegisterModal(true)}
                               label={
                                 <>
-                                  <span className="w-full">Continue</span> <FaArrowRight className="flex self-center" />
+                                  <span className="w-full">Tiếp tục</span> <FaArrowRight className="flex self-center" />
                                 </>
                               }
                             />

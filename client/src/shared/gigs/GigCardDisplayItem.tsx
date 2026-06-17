@@ -43,20 +43,20 @@ const GigCardDisplayItem: FC<IGigCardItems> = ({ gig, linkTarget, showEditIcon }
         <Link to={`/gig/${lowerCase(`${gig.username}`)}/${title}/${gig.sellerId}/${gig.id}/view`} onClick={() => saveGigTitle(gig)}>
           <LazyLoadImage
             src={gig.coverImage}
-            alt="Gig cover image"
+            alt="Ảnh bìa gig"
             className="w-full rounded-lg"
             wrapperClassName="bg-center"
-            placeholderSrc="https://placehold.co/330x220?text=Profile+Image"
+            placeholderSrc="https://placehold.co/330x220?text=Anh+dai+dien"
             effect="opacity"
           />
         </Link>
         <div className="flex items-center gap-2 relative">
           <LazyLoadImage
             src={gig.profilePicture}
-            alt="Profile image"
+            alt="Ảnh đại diện"
             className="h-7 w-8 rounded-full object-cover"
             wrapperClassName="bg-center"
-            placeholderSrc="https://placehold.co/330x220?text=Profile+Image"
+            placeholderSrc="https://placehold.co/330x220?text=Anh+dai+dien"
             effect="opacity"
           />
           {sellerUsername.current === gig.username && (
@@ -89,7 +89,7 @@ const GigCardDisplayItem: FC<IGigCardItems> = ({ gig, linkTarget, showEditIcon }
           <strong className="text-sm font-bold">({rating(parseInt(`${gig.ratingSum}`) / parseInt(`${gig.ratingsCount}`))})</strong>
         </div>
         <div>
-          <strong className="text-sm font-bold md:text-base">From ${gig.price}</strong>
+          <strong className="text-sm font-bold md:text-base">Từ ${gig.price}</strong>
         </div>
       </div>
     </div>

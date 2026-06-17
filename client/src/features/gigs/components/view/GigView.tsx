@@ -48,7 +48,7 @@ const GigView: FC = (): ReactElement => {
           <h2 className="mb-4 px-4 text-xl font-bold text-[#404145] lg:text-3xl">{gig.current.title}</h2>
           {gig.current.active === false && (
             <div className="mx-4 mb-4 rounded border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-              This gig is currently paused and cannot receive new orders. Existing orders are not affected.
+              Gig này hiện đang tạm dừng và không thể nhận đơn mới. Các đơn hiện có không bị ảnh hưởng.
             </div>
           )}
           <div className="mb-4 flex flex-row gap-x-2 px-4">
@@ -89,7 +89,7 @@ const GigView: FC = (): ReactElement => {
           </GigContext.Provider>
           {moreGigs.current.length > 0 ? (
             <div className="m-auto px-6 xl:container md:px-12 lg:px-6">
-              <TopGigsView gigs={moreGigs.current} title="Recommended for you" subTitle="" width="w-60" type="home" />
+              <TopGigsView gigs={moreGigs.current} title="Đề xuất cho bạn" subTitle="" width="w-60" type="home" />
             </div>
           ) : (
             <></>

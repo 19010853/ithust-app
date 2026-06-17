@@ -2,6 +2,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import countries, { LocalizedCountryNames } from 'i18n-iso-countries';
 import enLocale from 'i18n-iso-countries/langs/en.json';
+import viLocale from 'i18n-iso-countries/langs/vi.json';
 import { filter } from 'lodash';
 import millify from 'millify';
 import { NavigateFunction } from 'react-router-dom';
@@ -15,6 +16,7 @@ import { IOrderDocument } from 'src/features/order/interfaces/order.interface';
 import { api } from 'src/store/api';
 
 countries.registerLocale(enLocale);
+countries.registerLocale(viLocale);
 
 export const lowerCase = (str: string): string => {
   return str.toLowerCase();
@@ -62,28 +64,44 @@ export const categories = (): string[] => {
   ];
 };
 
+export const categoryDisplayLabel = (category: string): string => {
+  const labels: Record<string, string> = {
+    'Graphic & Design': 'Đồ họa & Thiết kế',
+    'Graphics & Design': 'Đồ họa & Thiết kế',
+    'Digital Marketing': 'Marketing số',
+    'Writing & Translation': 'Viết lách & Dịch thuật',
+    'Video & Animation': 'Video & Hoạt hình',
+    'Music & Audio': 'Âm nhạc & Âm thanh',
+    'Programming & Tech': 'Lập trình & Công nghệ',
+    Photography: 'Nhiếp ảnh',
+    Data: 'Dữ liệu',
+    Business: 'Kinh doanh'
+  };
+  return labels[category] || category;
+};
+
 export const expectedGigDelivery = (): string[] => {
   return [
-    '1 Day Delivery',
-    '2 Days Delivery',
-    '3 Days Delivery',
-    '4 Days Delivery',
-    '5 Days Delivery',
-    '6 Days Delivery',
-    '7 Days Delivery',
-    '10 Days Delivery',
-    '14 Days Delivery',
-    '21 Days Delivery',
-    '30 Days Delivery',
-    '45 Days Delivery',
-    '60 Days Delivery',
-    '75 Days Delivery',
-    '90 Days Delivery'
+    '1 ngày',
+    '2 ngày',
+    '3 ngày',
+    '4 ngày',
+    '5 ngày',
+    '6 ngày',
+    '7 ngày',
+    '10 ngày',
+    '14 ngày',
+    '21 ngày',
+    '30 ngày',
+    '45 ngày',
+    '60 ngày',
+    '75 ngày',
+    '90 ngày'
   ];
 };
 
 export const countriesList = (): string[] => {
-  const countriesObj: LocalizedCountryNames<{ select: 'official' }> = countries.getNames('en', { select: 'official' });
+  const countriesObj: LocalizedCountryNames<{ select: 'official' }> = countries.getNames('vi', { select: 'official' });
   return Object.values(countriesObj);
 };
 
@@ -140,12 +158,41 @@ export const sellerOrderList = (status: string, orders: IOrderDocument[]): IOrde
   return orderList;
 };
 
+export const orderStatusDisplayLabel = (status?: string): string => {
+  const labels: Record<string, string> = {
+    pending: 'Đang chờ',
+    'in progress': 'Đang thực hiện',
+    delivered: 'Đã giao',
+    completed: 'Hoàn thành',
+    cancelled: 'Đã hủy'
+  };
+  return labels[normalizeOrderStatus(`${status || ''}`)] || `${status || ''}`;
+};
+
+export const notificationMessageDisplayLabel = (message?: string): string => {
+  const value = `${message || ''}`;
+  const exactLabels: Record<string, string> = {
+    'placed an order for your gig.': 'đã đặt một đơn hàng cho gig của bạn.',
+    'cancelled your order delivery.': 'đã hủy bàn giao đơn hàng của bạn.',
+    'approved your order delivery.': 'đã duyệt bàn giao đơn hàng của bạn.',
+    'delivered your order.': 'đã bàn giao đơn hàng của bạn.',
+    'requested for an order delivery date extension.': 'đã yêu cầu gia hạn ngày giao đơn hàng.',
+    'approved your order delivery date extension request.': 'đã phê duyệt yêu cầu gia hạn ngày giao đơn hàng của bạn.',
+    'rejected your order delivery date extension request.': 'đã từ chối yêu cầu gia hạn ngày giao đơn hàng của bạn.'
+  };
+  const reviewMatch = value.match(/^left you a (\d+) star review$/);
+  if (reviewMatch) {
+    return `đã đánh giá bạn ${reviewMatch[1]} sao`;
+  }
+  return exactLabels[value] || value;
+};
+
 export const degreeList = (): string[] => {
-  return ['Associate', 'B.A.', 'B.Sc.', 'M.A.', 'M.B.A.', 'M.Sc.', 'J.D.', 'M.D.', 'Ph.D.', 'LLB', 'Certificate', 'Other'];
+  return ['Cao đẳng', 'Cử nhân nghệ thuật', 'Cử nhân khoa học', 'Thạc sĩ nghệ thuật', 'Thạc sĩ quản trị kinh doanh', 'Thạc sĩ khoa học', 'Tiến sĩ luật', 'Bác sĩ y khoa', 'Tiến sĩ', 'Cử nhân luật', 'Chứng chỉ', 'Khác'];
 };
 
 export const languageLevel = (): string[] => {
-  return ['Basic', 'Conversational', 'Fluent', 'Native'];
+  return ['Cơ bản', 'Giao tiếp', 'Thành thạo', 'Bản ngữ'];
 };
 
 export const yearsList = (maxOffset: number): string[] => {

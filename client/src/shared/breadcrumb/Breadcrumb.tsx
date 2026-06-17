@@ -15,7 +15,7 @@ const Breadcrumb: FC<IBreadCrumbProps> = ({ breadCrumbItems }): ReactElement => 
             className="inline-flex items-center text-sm font-bold text-white uppercase hover:text-blue-600 dark:text-white dark:hover:text-white"
           >
             <FaHome className="mr-2 h-4 w-4" />
-            Home
+            Trang chủ
           </Link>
         </li>
 

@@ -11,9 +11,9 @@ const GigLeftOverview: FC = (): ReactElement => {
       {!isLoading && isSuccess && (
         <LazyLoadImage
           src={gig.coverImage}
-          alt="Gig Image"
+          alt="Ảnh gig"
           className="w-full h-full object-cover transition-all duration-500 hover:scale-105"
-          placeholderSrc="https://placehold.co/330x220?text=Profile+Image"
+          placeholderSrc="https://placehold.co/330x220?text=%E1%BA%A2nh+gig"
           effect="blur"
         />
       )}

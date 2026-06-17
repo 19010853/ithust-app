@@ -6,28 +6,28 @@ type ErrorStatusCode = '400' | '401' | '403' | '404' | '500' | '503';
 
 const errorContent: Record<ErrorStatusCode, { body: string; title: string }> = {
   '400': {
-    title: 'Request sai',
-    body: 'Yeu cau khong hop le hoac thieu du lieu can thiet.'
+    title: 'Yêu cầu không hợp lệ',
+    body: 'Yêu cầu không hợp lệ hoặc thiếu dữ liệu cần thiết.'
   },
   '401': {
-    title: 'Chua dang nhap',
-    body: 'Ban can dang nhap de tiep tuc su dung tinh nang nay.'
+    title: 'Chưa đăng nhập',
+    body: 'Bạn cần đăng nhập để tiếp tục sử dụng tính năng này.'
   },
   '403': {
-    title: 'Khong co quyen',
-    body: 'Tai khoan cua ban khong co quyen truy cap khu vuc nay.'
+    title: 'Không có quyền',
+    body: 'Tài khoản của bạn không có quyền truy cập khu vực này.'
   },
   '404': {
-    title: 'Khong tim thay',
-    body: 'Trang hoac tai nguyen ban dang tim kiem khong ton tai.'
+    title: 'Không tìm thấy',
+    body: 'Trang hoặc tài nguyên bạn đang tìm kiếm không tồn tại.'
   },
   '500': {
-    title: 'Loi he thong',
-    body: 'He thong dang gap su co. Vui long thu lai sau.'
+    title: 'Lỗi hệ thống',
+    body: 'Hệ thống đang gặp sự cố. Vui lòng thử lại sau.'
   },
   '503': {
-    title: 'Bao tri / qua tai',
-    body: 'Dich vu dang bao tri hoac tam thoi qua tai. Vui long quay lai sau.'
+    title: 'Bảo trì hoặc quá tải',
+    body: 'Dịch vụ đang bảo trì hoặc tạm thời quá tải. Vui lòng quay lại sau.'
   }
 };
 
@@ -50,7 +50,7 @@ const Error: FC = (): ReactElement => {
         onClick={() => (code === '401' ? navigate('/') : navigate(-1))}
         disabled={false}
         className="mt-5 rounded bg-sky-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
-        label={code === '401' ? 'Go to Login' : 'Go Back'}
+        label={code === '401' ? 'Đi đến đăng nhập' : 'Quay lại'}
       />
     </div>
   );

@@ -16,7 +16,7 @@ const OrderReturn: FC = (): ReactElement => {
   }, []);
 
   if (!gigId || !offer) {
-    return <div>Loading...</div>;
+    return <div>Đang tải...</div>;
   }
 
   if (status === '1') {
@@ -34,10 +34,10 @@ const OrderReturn: FC = (): ReactElement => {
   return (
     <div className="container mx-auto h-screen flex justify-center items-center">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-red-500 mb-4">Payment Failed or Canceled</h2>
-        <p>Please try again.</p>
+        <h2 className="text-2xl font-bold text-red-500 mb-4">Thanh toán thất bại hoặc đã bị hủy</h2>
+        <p>Vui lòng thử lại.</p>
         <a href={`/gig/checkout/${gigId}?offer=${JSON.stringify(offer)}`} className="mt-4 text-blue-500 underline">
-          Return to Checkout
+          Quay lại thanh toán
         </a>
       </div>
     </div>

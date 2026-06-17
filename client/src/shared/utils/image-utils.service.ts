@@ -12,11 +12,11 @@ export const checkImageSize = (file: File, type: string): string => {
   let fileError = '';
   const isValid = validateImage(file, type);
   if (!isValid) {
-    fileError = `File ${file.name} not accepted`;
+    fileError = `Tệp ${file.name} không được chấp nhận`;
   }
   if (file.size > 50000000) {
     // 50 MB
-    fileError = 'File is too large.';
+    fileError = 'Tệp quá lớn.';
   }
   return fileError;
 };
@@ -24,7 +24,7 @@ export const checkImageSize = (file: File, type: string): string => {
 export const checkImage = (file: File, type: string): boolean => {
   let isValid = true;
   if (!validateImage(file, type)) {
-    window.alert(`File ${file.name} not accepted`);
+    window.alert(`Tệp ${file.name} không được chấp nhận`);
     isValid = false;
     return false;
   }
@@ -40,11 +40,11 @@ export const checkFile = (file: File): boolean => {
   let hasError = false;
   if (file.size > 1000000000) {
     // 1 GB
-    window.alert('File is too large. Max. size is 1 GB.');
+    window.alert('Tệp quá lớn. Dung lượng tối đa là 1 GB.');
     hasError = true;
   }
   if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif|pdf|webp|zip|m4v|avi|mpg|mp4|webm)$/)) {
-    window.alert('Only files of type jpg, jpeg, png, gif, webp, pdf, zip, m4v, avi, mpg, mp4 or webm are allowed');
+    window.alert('Chỉ cho phép các tệp jpg, jpeg, png, gif, webp, pdf, zip, m4v, avi, mpg, mp4 hoặc webm');
     hasError = true;
   }
   return hasError;

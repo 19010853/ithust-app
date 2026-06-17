@@ -25,10 +25,10 @@ const AdminHeader: FC = (): ReactElement => {
           </Link>
           <nav className="flex items-center gap-5 text-sm font-bold text-gray-900">
             <Link to="/admin/withdrawals" className="hover:text-sky-500">
-              Withdrawals
+              Rút tiền
             </Link>
             <Link to="/admin/users" className="hover:text-sky-500">
-              Users
+              Người dùng
             </Link>
           </nav>
         </div>
@@ -39,11 +39,11 @@ const AdminHeader: FC = (): ReactElement => {
             label={
               <>
                 <img
-                  src={authUser.profilePicture || 'https://placehold.co/150x150?text=Admin'}
-                  alt="admin profile"
+                  src={authUser.profilePicture || 'https://placehold.co/150x150?text=Quan+tri'}
+                  alt="Ảnh quản trị viên"
                   className="h-9 w-9 rounded-full object-cover"
                 />
-                <span className="text-sm font-semibold text-gray-900">{authUser.username || 'Admin'}</span>
+                <span className="text-sm font-semibold text-gray-900">{authUser.username || 'Quản trị viên'}</span>
               </>
             }
           />
@@ -56,13 +56,13 @@ const AdminHeader: FC = (): ReactElement => {
                     className="block px-4 py-2 hover:text-sky-500"
                     onClick={() => setShowMenu(false)}
                   >
-                    Settings
+                    Cài đặt
                   </Link>
                 </li>
               </ul>
               <div className="py-1">
                 <button className="block w-full px-4 py-2 text-left text-sm hover:text-sky-500" onClick={onLogout}>
-                  Sign out
+                  Đăng xuất
                 </button>
               </div>
             </div>

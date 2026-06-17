@@ -19,13 +19,13 @@ const ExperienceFields: FC<IExperienceEditProps> = ({
   const [experienceItem, setExperienceItem] = useState<IExperience>({
     title: selectedExperience?.title ?? '',
     company: selectedExperience?.company ?? '',
-    startDate: selectedExperience?.startDate ?? 'Start Year',
-    endDate: selectedExperience?.endDate ?? 'End Year',
+    startDate: selectedExperience?.startDate ?? 'Năm bắt đầu',
+    endDate: selectedExperience?.endDate === 'Present' ? 'Hiện tại' : selectedExperience?.endDate ?? 'Năm kết thúc',
     description: selectedExperience?.description ?? '',
     currentlyWorkingHere: selectedExperience?.currentlyWorkingHere ?? false
   });
-  const [startDate, setStartDate] = useState<string>(selectedExperience?.startDate ?? 'Start Year');
-  const [endDate, setEndDate] = useState<string>(selectedExperience?.endDate ?? 'End Year');
+  const [startDate, setStartDate] = useState<string>(selectedExperience?.startDate ?? 'Năm bắt đầu');
+  const [endDate, setEndDate] = useState<string>(selectedExperience?.endDate === 'Present' ? 'Hiện tại' : selectedExperience?.endDate ?? 'Năm kết thúc');
 
   const onHandleUpdate = () => {
     if (type === 'add') {
@@ -51,7 +51,7 @@ const ExperienceFields: FC<IExperienceEditProps> = ({
         title: experienceItem.title,
         company: experienceItem.company,
         startDate: `${startDate}`,
-        endDate: experienceItem.currentlyWorkingHere ? 'Present' : `${endDate}`,
+        endDate: experienceItem.currentlyWorkingHere ? 'Hiện tại' : `${endDate}`,
         description: experienceItem.description,
         currentlyWorkingHere: experienceItem.currentlyWorkingHere
       };
@@ -70,7 +70,7 @@ const ExperienceFields: FC<IExperienceEditProps> = ({
         <div className="mb-6 px-3 md:mb-16">
           <TextInput
             className="border-grey mb-4 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-            placeholder="Title (E.g: CEO)"
+            placeholder="Chức danh (ví dụ: CEO)"
             type="text"
             name="title"
             value={experienceItem.title}
@@ -78,7 +78,7 @@ const ExperienceFields: FC<IExperienceEditProps> = ({
           />
           <TextInput
             className="border-grey mb-4 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-            placeholder="Company name"
+            placeholder="Tên công ty"
             type="text"
             name="company"
             value={experienceItem.company}
@@ -113,18 +113,18 @@ const ExperienceFields: FC<IExperienceEditProps> = ({
               value={`${experienceItem.currentlyWorkingHere}`}
               checked={experienceItem.currentlyWorkingHere}
               onChange={(event: ChangeEvent) => {
-                setEndDate((event.target as HTMLInputElement).checked ? 'Present' : 'End Year');
+                setEndDate((event.target as HTMLInputElement).checked ? 'Hiện tại' : 'Năm kết thúc');
                 setExperienceItem({ ...experienceItem, currentlyWorkingHere: (event.target as HTMLInputElement).checked });
               }}
             />
             <label htmlFor="default-checkbox" className="ml-2 text-sm font-normal">
-              I am currently working here
+              Tôi hiện đang làm việc tại đây
             </label>
           </div>
           <div className="mb-5 flex items-center">
             <TextAreaInput
               className="border-grey focus:border-grey block w-full rounded border p-2.5 text-sm text-gray-900 focus:ring-blue-500"
-              placeholder="Write description..."
+              placeholder="Viết mô tả..."
               name="description"
               value={experienceItem.description}
               rows={5}
@@ -137,16 +137,16 @@ const ExperienceFields: FC<IExperienceEditProps> = ({
         <div className="z-20 mx-3 my-4 mt-10 flex cursor-pointer justify-start md:z-0 md:mt-0">
           <Button
             disabled={
-              (startDate === 'Start Year' ||
-                endDate === 'End Year' ||
+              (startDate === 'Năm bắt đầu' ||
+                endDate === 'Năm kết thúc' ||
                 !experienceItem.title ||
                 !experienceItem.company ||
                 !experienceItem.description) &&
               type === 'add'
             }
             className={`md:text-md rounded bg-sky-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-2 ${
-              (startDate === 'Start Year' ||
-                endDate === 'End Year' ||
+              (startDate === 'Năm bắt đầu' ||
+                endDate === 'Năm kết thúc' ||
                 !experienceItem.title ||
                 !experienceItem.company ||
                 !experienceItem.description) &&
@@ -155,7 +155,7 @@ const ExperienceFields: FC<IExperienceEditProps> = ({
                 : 'cursor-pointer'
             }`}
             onClick={onHandleUpdate}
-            label={`${type === 'edit' ? 'Update' : 'Add'}`}
+            label={type === 'edit' ? 'Cập nhật' : 'Thêm'}
           />
           &nbsp;&nbsp;
           <Button
@@ -167,7 +167,7 @@ const ExperienceFields: FC<IExperienceEditProps> = ({
               }
             }}
             className="md:text-md rounded bg-gray-300 px-6 py-1 text-center text-sm font-bold hover:bg-gray-200 focus:outline-none md:py-2"
-            label="Cancel"
+            label="Hủy"
           />
         </div>
       </div>

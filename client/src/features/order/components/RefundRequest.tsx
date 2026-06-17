@@ -36,9 +36,9 @@ const RefundRequest: FC<{ order: IOrderDocument }> = ({ order }): ReactElement |
     try {
       await createRefundRequest({ orderId: order.orderId, body: refund }).unwrap();
       setOpen(false);
-      showSuccessToast('Refund request sent for review.');
+      showSuccessToast('Yêu cầu hoàn tiền đã được gửi để xem xét.');
     } catch (error) {
-      showErrorToast('Unable to create refund request.');
+      showErrorToast('Không thể tạo yêu cầu hoàn tiền.');
     }
   };
 
@@ -46,12 +46,12 @@ const RefundRequest: FC<{ order: IOrderDocument }> = ({ order }): ReactElement |
     <div className="mt-4 border-grey border bg-white p-4">
       <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
         <div>
-          <h3 className="text-base font-bold text-black">Payment held by platform</h3>
-          <p className="text-sm text-gray-600">Request a manual refund review when the seller cannot deliver or the order needs support.</p>
+          <h3 className="text-base font-bold text-black">Thanh toán đang được nền tảng giữ</h3>
+          <p className="text-sm text-gray-600">Yêu cầu xem xét hoàn tiền thủ công khi người bán không thể bàn giao hoặc đơn hàng cần hỗ trợ.</p>
         </div>
         <Button
           className="rounded bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-red-400"
-          label={open ? 'Close refund form' : 'Request refund'}
+          label={open ? 'Đóng biểu mẫu hoàn tiền' : 'Yêu cầu hoàn tiền'}
           onClick={() => setOpen(!open)}
         />
       </div>
@@ -61,30 +61,30 @@ const RefundRequest: FC<{ order: IOrderDocument }> = ({ order }): ReactElement |
             name="reason"
             rows={4}
             value={refund.reason}
-            placeholder="Reason for refund request"
+            placeholder="Lý do yêu cầu hoàn tiền"
             className={inputClass}
             onChange={(event: ChangeEvent) => setRefund({ ...refund, reason: (event.target as HTMLTextAreaElement).value })}
           />
           <div className="grid gap-3 md:grid-cols-3">
-            <TextInput name="bankName" value={refund.bankInfo.bankName} placeholder="Bank name" className={inputClass} onChange={updateBankInfo} />
+            <TextInput name="bankName" value={refund.bankInfo.bankName} placeholder="Tên ngân hàng" className={inputClass} onChange={updateBankInfo} />
             <TextInput
               name="accountNumber"
               value={refund.bankInfo.accountNumber}
-              placeholder="Account number"
+              placeholder="Số tài khoản"
               className={inputClass}
               onChange={updateBankInfo}
             />
             <TextInput
               name="accountName"
               value={refund.bankInfo.accountName}
-              placeholder="Account name"
+              placeholder="Tên chủ tài khoản"
               className={inputClass}
               onChange={updateBankInfo}
             />
           </div>
           <Button
             className="w-fit rounded bg-sky-500 px-4 py-2 text-sm font-bold text-white hover:bg-sky-400 disabled:opacity-60"
-            label={isLoading ? 'Submitting...' : 'Submit refund request'}
+            label={isLoading ? 'Đang gửi...' : 'Gửi yêu cầu hoàn tiền'}
             disabled={
               isLoading ||
               refund.reason.trim().length < 10 ||

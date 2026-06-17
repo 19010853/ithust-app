@@ -8,6 +8,16 @@ import { ISellerDocument, SellerContextType } from '../../interfaces/seller.inte
 import ProfileHeader from '../profile/components/ProfileHeader';
 import DashboardMain from './components/DashboardMain';
 
+const sellerStatusLabel = (status: string): string => {
+  const labels: Record<string, string> = {
+    ACTIVE: 'đang hoạt động',
+    SELLER_RESTRICTED: 'bị hạn chế',
+    SELLER_LOCKED_HARD: 'bị khóa',
+    ACCOUNT_LOCKED: 'tài khoản bị khóa'
+  };
+  return labels[status] || status;
+};
+
 const SellerDashboard: FC = (): ReactElement => {
   const { seller } = useOutletContext<SellerContextType>();
   const dispatch = useAppDispatch();
@@ -20,7 +30,7 @@ const SellerDashboard: FC = (): ReactElement => {
         <ProfileHeader showHeaderInfo={false} showEditIcons={false} sellerProfile={seller as ISellerDocument} />
         {sellerIsRestricted && (
           <div className="rounded border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            Your seller capability is currently {sellerStatus}. You can continue eligible active order work, but new marketplace activity is disabled.
+            Quyền người bán của bạn hiện {sellerStatusLabel(sellerStatus)}. Bạn vẫn có thể tiếp tục các đơn hàng đang hoạt động đủ điều kiện, nhưng hoạt động mới trên marketplace đã bị tắt.
           </div>
         )}
         {!sellerIsRestricted && (
@@ -28,7 +38,7 @@ const SellerDashboard: FC = (): ReactElement => {
             <Button
               onClick={() => dispatch(updateHeader('home'))}
               className="bg-green-transparent w-full rounded-md text-center text-xs font-bold text-green-500 hover:text-green-600 focus:outline-none md:bg-green-500 md:px-3 md:py-2 md:text-sm md:text-white hover:md:bg-green-600 hover:md:text-white"
-              label={<Link to={`/manage_gigs/new/${seller?._id}`}>Create a new gig</Link>}
+              label={<Link to={`/manage_gigs/new/${seller?._id}`}>Tạo gig mới</Link>}
             />
           </div>
         )}

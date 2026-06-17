@@ -15,7 +15,7 @@ const Education: FC = (): ReactElement => {
   return (
     <div className="border-grey mt-6 border bg-white">
       <div className="mb-1 flex justify-between border-b">
-        <h4 className="flex py-2.5 pl-3.5 text-sm font-bold text-[#161c2d] md:text-base">EDUCATION</h4>
+        <h4 className="flex py-2.5 pl-3.5 text-sm font-bold text-[#161c2d] md:text-base">HỌC VẤN</h4>
         {showEditIcons && !showEducationAddForm && (
           <span
             className="flex cursor-pointer items-center pr-3.5 text-sm text-[#00698c] md:text-base"
@@ -24,7 +24,7 @@ const Education: FC = (): ReactElement => {
               setShowEducationEditForm(false);
             }}
           >
-            Add New
+            Thêm mới
           </span>
         )}
       </div>
@@ -44,7 +44,7 @@ const Education: FC = (): ReactElement => {
                       {education.major} {education.title}
                     </div>
                     <div className="mr-3 font-normal">
-                      {education.university}, {education.country}, Graduated {education.year}
+                      {education.university}, {education.country}, tốt nghiệp {education.year}
                     </div>
                   </div>
                 )}

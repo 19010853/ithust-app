@@ -11,7 +11,7 @@ const SellerCertificateFields: FC<ICertificateProps> = ({ certificatesFields, se
     const newfield: ICertificate = {
       name: '',
       from: '',
-      year: 'Year'
+      year: 'Năm'
     };
     if (certificatesFields && setCertificatesFields) {
       setCertificatesFields([...certificatesFields, newfield]);
@@ -39,11 +39,11 @@ const SellerCertificateFields: FC<ICertificateProps> = ({ certificatesFields, se
     <>
       <div className="border-grey flex min-h-[250px] w-full flex-col border-b px-6 pb-3 pt-6">
         <div className="flex justify-between">
-          <h2 className="pb-4 text-xl font-bold">Awards/Certificates</h2>
+          <h2 className="pb-4 text-xl font-bold">Giải thưởng/Chứng chỉ</h2>
           <Button
             className="md:text-md h-7 rounded bg-sky-500 px-6 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-8"
             onClick={adCertificateFields}
-            label="Add More"
+            label="Thêm"
           />
         </div>
         {certificatesFields?.map((input: ICertificate, index: number) => (
@@ -51,7 +51,7 @@ const SellerCertificateFields: FC<ICertificateProps> = ({ certificatesFields, se
             <div className="flex flex-col">
               <TextInput
                 className="border-grey mb-4 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-                placeholder="Certificate or Award"
+                placeholder="Chứng chỉ hoặc giải thưởng"
                 type="text"
                 name="name"
                 value={input.name}
@@ -59,7 +59,7 @@ const SellerCertificateFields: FC<ICertificateProps> = ({ certificatesFields, se
               />
               <TextInput
                 className="border-grey mb-4 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-                placeholder="Certificate From (e.g: Google)"
+                placeholder="Đơn vị cấp (ví dụ: Google)"
                 type="text"
                 name="from"
                 value={input.from}
@@ -85,7 +85,7 @@ const SellerCertificateFields: FC<ICertificateProps> = ({ certificatesFields, se
                   <Button
                     className="md:text-md h-7 rounded bg-red-500 px-6 text-center text-sm font-bold text-white hover:bg-red-400 focus:outline-none md:px-8"
                     onClick={() => removeCertificateFields(index)}
-                    label="Delete"
+                    label="Xóa"
                   />
                 </div>
               )}

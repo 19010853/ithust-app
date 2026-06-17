@@ -71,7 +71,7 @@ const Header: FC<IHeader> = ({ navClass }): ReactElement => {
                         }}
                         className="hover:text-primary dark:hover:text-primaryLight block transition md:px-4"
                       >
-                        <span>Become a Seller</span>
+                        <span>Trở thành người bán</span>
                       </div>
                     </li>
                   </ul>
@@ -85,14 +85,14 @@ const Header: FC<IHeader> = ({ navClass }): ReactElement => {
                             hover:before:scale-105 focus:before:bg-sky-600/10 active:duration-75 active:before:scale-95
                             dark:focus:before:bg-sky-400/10 sm:px-6"
                   >
-                    <span className="relative text-sm font-semibold text-gray-600 dark:text-gray-300">Sign In</span>
+                    <span className="relative text-sm font-semibold text-gray-600 dark:text-gray-300">Đăng nhập</span>
                   </div>
                   <div
                     onClick={() => setShowModal((item: IHeaderModalProps) => ({ ...item, register: true }))}
                     className="relative ml-auto flex h-9 items-center justify-center rounded-full bg-sky-500
                             text-white font-bold sm:px-6 hover:bg-sky-400"
                   >
-                    <span className="relative text-sm font-semibold text-white">Sign Up</span>
+                    <span className="relative text-sm font-semibold text-white">Đăng ký</span>
                   </div>
                 </div>
               </div>

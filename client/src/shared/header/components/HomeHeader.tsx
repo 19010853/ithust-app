@@ -12,7 +12,7 @@ import Banner from 'src/shared/banner/Banner';
 import Button from 'src/shared/button/Button';
 import useDetectOutsideClick from 'src/shared/hooks/useDetectOutsideClick';
 import { IResponse } from 'src/shared/shared.interface';
-import { categories, replaceSpacesWithDash, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
+import { categories, categoryDisplayLabel, replaceSpacesWithDash, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 import { socket, socketService } from 'src/sockets/socket.service';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
 import { IReduxState } from 'src/store/store.interface';
@@ -56,9 +56,9 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
     try {
       const result: IResponse = await resendEmail({ userId: authUser.id as number, email: `${authUser.email}` }).unwrap();
       dispatch(addAuthUser({ authInfo: result.user }));
-      showSuccessToast('Email sent successfully.');
+      showSuccessToast('Email đã được gửi thành công.');
     } catch (error) {
-      showErrorToast('Error sending email.');
+      showErrorToast('Không thể gửi email.');
     }
   };
 
@@ -152,8 +152,8 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
             <Banner
               bgColor="bg-warning"
               showLink={true}
-              linkText="Resend email"
-              text="Please verify your email before you proceed."
+              linkText="Gửi lại email"
+              text="Vui lòng xác minh email trước khi tiếp tục."
               onClick={onResendEmail}
             />
           )}
@@ -250,7 +250,7 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                         className="px-3"
                         label={
                           <>
-                            <span>Orders</span>
+                            <span>Đơn hàng</span>
                           </>
                         }
                       />
@@ -275,7 +275,7 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                           to="/seller_onboarding"
                           className="relative ml-auto flex h-9 items-center justify-center rounded-full bg-sky-500 text-white font-bold sm:px-6 hover:bg-sky-400"
                         >
-                          <span>Become a Seller</span>
+                          <span>Trở thành người bán</span>
                         </Link>
                       </li>
                     )}
@@ -286,8 +286,8 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                         label={
                           <>
                             <img
-                              src={authUser?.profilePicture || seller?.profilePicture || buyer?.profilePicture || 'https://placehold.co/150x150?text=Profile'}
-                              alt="profile"
+                              src={authUser?.profilePicture || seller?.profilePicture || buyer?.profilePicture || 'https://placehold.co/150x150?text=Anh+dai+dien'}
+                              alt="Ảnh đại diện"
                               className="h-7 w-7 rounded-full object-cover"
                             />
                             {authUsername === authUser.username && (
@@ -336,7 +336,7 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                 >
                   {categories().map((category: string) => (
                     <span key={uuidv4()} className="mx-4 cursor-pointer first:ml-0 hover:text-sky-400 lg:mx-0">
-                      <Link to={`/categories/${replaceSpacesWithDash(category)}`}>{category}</Link>
+                      <Link to={`/categories/${replaceSpacesWithDash(category)}`}>{categoryDisplayLabel(category)}</Link>
                     </span>
                   ))}
                 </div>

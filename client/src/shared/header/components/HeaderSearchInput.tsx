@@ -26,7 +26,7 @@ const HeaderSearchInput: FC = (): ReactElement => {
           type="text"
           name="search"
           value={searchTerm}
-          placeholder="What service are you looking for today?"
+          placeholder="Hôm nay bạn đang tìm dịch vụ gì?"
           className="w-full truncate px-4 py-[7.5px]"
           onChange={(event: ChangeEvent) => {
             setSearchTerm((event.target as HTMLInputElement).value);

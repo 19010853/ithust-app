@@ -10,7 +10,7 @@ const GigRelatedTags: FC = (): ReactElement => {
   return (
     <div className="border-grey mb-8 border">
       <div className="flex border-b px-4 py-2">
-        <h4 className="font-bold">Related tags</h4>
+        <h4 className="font-bold">Thẻ liên quan</h4>
       </div>
       <div className="flex min-h-full flex-wrap gap-x-2 gap-y-5 px-2 py-4">
         {gig?.tags.map((tag: string) => (

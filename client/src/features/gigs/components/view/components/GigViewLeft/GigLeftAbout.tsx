@@ -8,7 +8,7 @@ const GigLeftAbout: FC = (): ReactElement => {
 
   return (
     <>
-      <div className="font-semibold text-lg mt-10 pb-6">About This Gig</div>
+      <div className="font-semibold text-lg mt-10 pb-6">Giới thiệu gig này</div>
       <div className="pb-6">
         {/* <HtmlParser input={gig.description} /> */}
         {gig.description}
@@ -16,11 +16,11 @@ const GigLeftAbout: FC = (): ReactElement => {
       <hr className="border-grey my-3" />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-4">
         <div className="flex flex-col">
-          <span className="text-[#95979d]">Main Categories</span>
+          <span className="text-[#95979d]">Danh mục chính</span>
           <span className="font-normal">{gig.categories}</span>
         </div>
         <div className="flex flex-col">
-          <span className="text-[#95979d]">Sub Categories</span>
+          <span className="text-[#95979d]">Danh mục con</span>
           <div className="flex flex-col">
             {gig?.subCategories.map((category: string, index: number) => (
               <span className="font-normal" key={uuidv4()}>

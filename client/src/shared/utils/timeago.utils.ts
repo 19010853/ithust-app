@@ -1,4 +1,5 @@
 import { differenceInCalendarDays, format, getISOWeek, isSameDay, subDays } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 export class TimeAgo {
   static transform(value: string | number | Date): string {
@@ -16,13 +17,13 @@ export class TimeAgo {
     const date = typeof value === 'string' ? new Date(value) : value;
     const yesterday = subDays(new Date(), 1);
     if (isSameDay(date, new Date())) {
-      return 'Today';
+      return 'Hôm nay';
     } else if (isSameDay(date, yesterday)) {
-      return 'Yesterday';
+      return 'Hôm qua';
     } else if (getISOWeek(new Date()) === getISOWeek(date) || getISOWeek(new Date()) - getISOWeek(date) === 1) {
-      return format(date, 'EEEE');
+      return format(date, 'EEEE', { locale: vi });
     } else {
-      return format(date, 'd MMMM, yyyy');
+      return format(date, 'd MMMM, yyyy', { locale: vi });
     }
   }
 
@@ -31,17 +32,17 @@ export class TimeAgo {
       return '';
     }
     const date: Date = new Date(value);
-    return format(date, 'MMMM, yyyy');
+    return format(date, 'MMMM, yyyy', { locale: vi });
   }
 
   static dayMonthYear(value: string): string {
     const date: Date = new Date(value);
-    return format(date, 'd MMMM, yyyy');
+    return format(date, 'd MMMM, yyyy', { locale: vi });
   }
 
   static dayWithTime(value: string): string {
     const date: Date = new Date(value);
-    return `${format(date, 'd MMM')} at ${format(date, 'HH:mm')}`;
+    return `${format(date, 'd MMM', { locale: vi })} lúc ${format(date, 'HH:mm')}`;
   }
 
   static timeFormat(value: string): string {
@@ -62,16 +63,19 @@ export class TimeAgo {
   }
 
   static dateInDays(date: string): string {
+    if (!date) {
+      return 'Chưa có';
+    }
     let result = '';
     const difference: number = differenceInCalendarDays(new Date(), new Date(date));
     const months: number = Math.floor(difference / 30);
     if (months <= 0) {
       const weeks: number = Math.floor(difference / 7);
-      result = weeks >= 1 ? `${weeks} week${weeks >= 2 ? 's' : ''}` : `${difference} day${difference >= 2 ? 's' : ''}`;
+      result = weeks >= 1 ? `${weeks} tuần` : `${difference} ngày`;
     } else if (months === 1) {
-      result = `${months} month`;
+      result = `${months} tháng`;
     } else {
-      result = `${months} months`;
+      result = `${months} tháng`;
     }
     return result;
   }
@@ -93,42 +97,42 @@ export class TimeAgo {
       } else if (elapsed < msPerMonth) {
         return this.monthsAgo(date, elapsed, msPerDay);
       } else {
-        return format(date, 'MMM d');
+        return format(date, 'd MMM', { locale: vi });
       }
     } else {
-      return format(date, 'MMM d, yyyy');
+      return format(date, 'd MMM, yyyy', { locale: vi });
     }
   }
 
   static secondsAgo(elapsed: number): string {
     if (Math.round(elapsed / 1000) <= 1) {
-      return 'a second ago';
+      return 'vừa xong';
     } else {
-      return `${Math.round(elapsed / 1000)} seconds ago`;
+      return `${Math.round(elapsed / 1000)} giây trước`;
     }
   }
 
   static minutesAgo(elapsed: number, msPerMinute: number): string {
     if (Math.round(elapsed / msPerMinute) <= 1) {
-      return 'a minute ago';
+      return '1 phút trước';
     } else {
-      return `${Math.round(elapsed / msPerMinute)} minutes ago`;
+      return `${Math.round(elapsed / msPerMinute)} phút trước`;
     }
   }
 
   static hoursAgo(elapsed: number, msPerHour: number): string {
     if (Math.round(elapsed / msPerHour) <= 1) {
-      return 'an hour ago';
+      return '1 giờ trước';
     } else {
-      return `${Math.round(elapsed / msPerHour)} hours ago`;
+      return `${Math.round(elapsed / msPerHour)} giờ trước`;
     }
   }
 
   static monthsAgo(date: number | Date, elapsed: number, msPerDay: number): string {
     if (Math.round(elapsed / msPerDay) <= 7) {
-      return format(date, 'eeee');
+      return format(date, 'eeee', { locale: vi });
     } else {
-      return format(date, 'MMM d');
+      return format(date, 'd MMM', { locale: vi });
     }
   }
 }
