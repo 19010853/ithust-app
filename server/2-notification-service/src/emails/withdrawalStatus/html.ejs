@@ -1,54 +1,57 @@
+<%
+  const withdrawalStatusLabel = status === 'REJECTED' ? 'bị từ chối' : status === 'COMPLETED' ? 'đã hoàn tất' : status;
+%>
 <div style="font-family: Arial, sans-serif; background: #f7f7f7; padding: 24px; color: #1f2937;">
   <div style="max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid #e5e7eb;">
-    <h2 style="margin: 0 0 12px; font-size: 22px;">Withdrawal <%= status %></h2>
+    <h2 style="margin: 0 0 12px; font-size: 22px;">Yêu cầu rút tiền <%= withdrawalStatusLabel %></h2>
     <p style="margin: 0 0 16px; line-height: 1.6;">
-      Hi <strong><%= sellerFullName || sellerUsername %></strong>, your withdrawal request has been marked as <strong><%= status %></strong>.
+      Chào <strong><%= sellerFullName || sellerUsername %></strong>, yêu cầu rút tiền của bạn đã được đánh dấu là <strong><%= withdrawalStatusLabel %></strong>.
     </p>
     <table style="width: 100%; border-collapse: collapse; margin: 16px 0 20px;">
       <tr>
-        <td style="padding: 8px 0; font-weight: 700; width: 180px;">Amount</td>
+        <td style="padding: 8px 0; font-weight: 700; width: 180px;">Số tiền</td>
         <td style="padding: 8px 0;"><%= amount %></td>
       </tr>
       <tr>
-        <td style="padding: 8px 0; font-weight: 700;">Bank</td>
+        <td style="padding: 8px 0; font-weight: 700;">Ngân hàng</td>
         <td style="padding: 8px 0;"><%= bankName %></td>
       </tr>
       <tr>
-        <td style="padding: 8px 0; font-weight: 700;">Account number</td>
+        <td style="padding: 8px 0; font-weight: 700;">Số tài khoản</td>
         <td style="padding: 8px 0;"><%= accountNumber %></td>
       </tr>
       <tr>
-        <td style="padding: 8px 0; font-weight: 700;">Account name</td>
+        <td style="padding: 8px 0; font-weight: 700;">Tên tài khoản</td>
         <td style="padding: 8px 0;"><%= accountName %></td>
       </tr>
       <tr>
-        <td style="padding: 8px 0; font-weight: 700;">Withdrawal ID</td>
+        <td style="padding: 8px 0; font-weight: 700;">Mã yêu cầu rút tiền</td>
         <td style="padding: 8px 0;"><%= withdrawalId %></td>
       </tr>
       <tr>
-        <td style="padding: 8px 0; font-weight: 700;">Processed at</td>
+        <td style="padding: 8px 0; font-weight: 700;">Thời điểm xử lý</td>
         <td style="padding: 8px 0;"><%= processedDate %></td>
       </tr>
       <% if (paymentReference) { %>
         <tr>
-          <td style="padding: 8px 0; font-weight: 700;">Payment reference</td>
+          <td style="padding: 8px 0; font-weight: 700;">Mã tham chiếu thanh toán</td>
           <td style="padding: 8px 0;"><%= paymentReference %></td>
         </tr>
       <% } %>
       <% if (adminNote) { %>
         <tr>
-          <td style="padding: 8px 0; font-weight: 700;">Admin note</td>
+          <td style="padding: 8px 0; font-weight: 700;">Ghi chú của quản trị viên</td>
           <td style="padding: 8px 0;"><%= adminNote %></td>
         </tr>
       <% } %>
     </table>
     <% if (status === 'REJECTED') { %>
       <p style="margin: 0; line-height: 1.6;">
-        The requested amount has been returned to your available balance.
+        Số tiền đã yêu cầu đã được hoàn lại vào số dư khả dụng của bạn.
       </p>
     <% } else { %>
       <p style="margin: 0; line-height: 1.6;">
-        The payout has been recorded as completed by the platform admin.
+        Khoản chi trả đã được quản trị viên nền tảng ghi nhận là hoàn tất.
       </p>
     <% } %>
   </div>

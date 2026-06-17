@@ -1,1 +1,1 @@
-Withdrawal <%= status %> for request <%= withdrawalId %>
+Cập nhật yêu cầu rút tiền <%= withdrawalId %>: <%= status === 'REJECTED' ? 'bị từ chối' : status === 'COMPLETED' ? 'đã hoàn tất' : status %>

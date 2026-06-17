@@ -1,3 +1,13 @@
+<%
+  const headerLabel = header === 'Request Accepted' ? 'Yêu cầu đã được chấp nhận' : header === 'Request Rejected' ? 'Yêu cầu đã bị từ chối' : header;
+  const typeLabel = type === 'accepted' ? 'chấp nhận' : type === 'rejected' ? 'từ chối' : type;
+  const messageLabel =
+    message === 'You can continue working on the order.'
+      ? 'Bạn có thể tiếp tục thực hiện đơn hàng.'
+      : message === 'You can contact the buyer for more information.'
+        ? 'Bạn có thể liên hệ người mua để biết thêm thông tin.'
+        : message;
+%>
 <div class="im">
   <u></u>
 
@@ -28,7 +38,7 @@
                         <tr>
                           <td align="center"
                             style="font-size: 18px; color: #0e0e0f; font-weight: 700; font-family: Helvetica Neue; line-height: 28px; vertical-align: top; text-align: center; padding: 35px 40px 0px 40px;">
-                            <strong><%= header %></strong>
+                            <strong><%= headerLabel %></strong>
                           </td>
                         </tr>
 
@@ -48,13 +58,13 @@
                         <tr>
                           <td class="m_7098034190793001046content"
                             style="font: 16px/22px 'Helvetica Neue', Arial, 'sans-serif'; text-align: left; color: #555555; padding: 10px 40px 0 40px;">
-                            <p>Hi <%= sellerUsername %>,</p>
-                            <p>The order extension request sent to <span style="font-weight: bold;"><%= buyerUsername %></span> was <%= type %>.</p>
-                            <p><%= message %></p>
+                            <p>Chào <%= sellerUsername %>,</p>
+                            <p>Yêu cầu gia hạn đơn hàng gửi tới <span style="font-weight: bold;"><%= buyerUsername %></span> đã được <%= typeLabel %>.</p>
+                            <p><%= messageLabel %></p>
 
                             <p>
-                              Thanks,<br />
-                              The ITHust Team
+                              Cảm ơn,<br />
+                              Đội ngũ ITHust
                             </p>
                           </td>
                         </tr>
@@ -78,7 +88,7 @@
                                     border-radius: 3px;
                                     text-transform: none;"
                                     href="<%= orderUrl %>">
-                                      View Order
+                                      Xem đơn hàng
                                     </a>
                                   </td>
                                 </tr>
