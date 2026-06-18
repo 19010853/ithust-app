@@ -1,5 +1,5 @@
 import { config } from '@gig/config';
-import { winstonLogger } from '@19010853/ithust-shared';
+import { publishDirectMessage as publishSharedDirectMessage, winstonLogger } from '@19010853/ithust-shared';
 import { Channel } from 'amqplib';
 import { Logger } from 'winston';
 import { createConnection } from '@gig/queues/connection';
@@ -13,16 +13,16 @@ const publishDirectMessage = async (
   message: string,
   logMessage: string
 ): Promise<void> => {
-  try {
-    if (!channel) {
-      channel = (await createConnection()) as Channel;
-    }
-    await channel.assertExchange(exchangeName, 'direct');
-    channel.publish(exchangeName, routingKey, Buffer.from(message));
-    log.info(logMessage);
-  } catch (error) {
-    log.log('error', 'GigService publishDirectMessage() method error:', error);
-  }
+  await publishSharedDirectMessage({
+    channel,
+    createConnection,
+    exchangeName,
+    routingKey,
+    message,
+    logMessage,
+    logger: log,
+    errorMessage: 'GigService publishDirectMessage() method error:'
+  });
 };
 
 export { publishDirectMessage };

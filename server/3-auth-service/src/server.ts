@@ -1,11 +1,15 @@
-import { CustomError, IAuthPayload, IErrorResponse, winstonLogger } from '@19010853/ithust-shared';
+import {
+  attachCurrentUser,
+  createServiceErrorHandler,
+  normalizeGatewayTokenHeader,
+  winstonLogger
+} from '@19010853/ithust-shared';
 import { Logger } from 'winston';
 import { config } from '@auth/config';
-import { Application, json, NextFunction, Request, Response, urlencoded } from 'express';
+import { Application, json, urlencoded } from 'express';
 import hpp from 'hpp';
 import helmet from 'helmet';
 import cors from 'cors';
-import { verify } from 'jsonwebtoken';
 import compression from 'compression';
 import { checkConnection, createIndex } from '@auth/elasticsearch';
 import http from 'http';
@@ -41,18 +45,8 @@ function securityMiddleware(app: Application): void {
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
     })
   );
-  // gatewaytoken into gatewayToken error
-  app.use((req: Request, _res: Response, next: NextFunction) => {
-    if (req.headers.gatewaytoken) {
-      req.headers.gatewayToken = req.headers.gatewaytoken as string;
-    }
-    if (req.headers.authorization) {
-      const token = req.headers.authorization.split(' ')[1];
-      const payload: IAuthPayload = verify(token, config.JWT_TOKEN!) as IAuthPayload;
-      req.currentUser = payload;
-    }
-    next();
-  });
+  app.use(normalizeGatewayTokenHeader);
+  app.use(attachCurrentUser(config.JWT_TOKEN!));
 }
 
 function standardMiddleware(app: Application): void {
@@ -75,13 +69,7 @@ function startElasticSearch(): void {
 }
 
 function authErrorHandler(app: Application): void {
-  app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {
-    log.log('error', `AuthService ${error.comingFrom}:`, error);
-    if (error instanceof CustomError) {
-      res.status(error.statusCode).json(error.serializedErrors());
-    }
-    next();
-  });
+  app.use(createServiceErrorHandler('AuthService', log));
 }
 
 function startServer(app: Application): void {

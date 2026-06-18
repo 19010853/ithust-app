@@ -1,27 +1,19 @@
 import { Client } from '@elastic/elasticsearch';
-import { ClusterHealthResponse } from '@elastic/elasticsearch/lib/api/types';
 import { config } from '@users/config';
-import { winstonLogger } from '@19010853/ithust-shared';
+import { checkElasticSearchConnection, createElasticSearchClient, winstonLogger } from '@19010853/ithust-shared';
 import { Logger } from 'winston';
 
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'usersElasticSearchServer', 'debug');
 
-const elasticSearchClient = new Client({
-  node: `${config.ELASTIC_SEARCH_URL}`
-});
+const elasticSearchClient: Client = createElasticSearchClient(`${config.ELASTIC_SEARCH_URL}`) as Client;
 
 const checkConnection = async (): Promise<void> => {
-  let isConnected = false;
-  while (!isConnected) {
-    try {
-      const health: ClusterHealthResponse = await elasticSearchClient.cluster.health({});
-      log.info(`UsersService Elasticsearch health status - ${health.status}`);
-      isConnected = true;
-    } catch (error) {
-      log.error('Connection to Elasticsearch failed. Retrying...');
-      log.log('error', 'UsersService checkConnection() method:', error);
-    }
-  }
+  await checkElasticSearchConnection({
+    client: elasticSearchClient,
+    logger: log,
+    serviceName: 'UsersService',
+    errorMessage: 'UsersService checkConnection() method:'
+  });
 };
 
 export { checkConnection };

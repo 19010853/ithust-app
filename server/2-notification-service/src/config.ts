@@ -1,6 +1,6 @@
-import dotenv from 'dotenv';
+import { loadEnv } from '@19010853/ithust-shared';
 
-dotenv.config({});
+loadEnv();
 
 class Config {
   public NODE_ENV: string | undefined;

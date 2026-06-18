@@ -1,21 +1,7 @@
-import dotenv from 'dotenv';
-import cloudinary from 'cloudinary';
+import { configureCloudinary, loadEnv, startElasticApm, stripInlineComment } from '@19010853/ithust-shared';
 
-dotenv.config({});
-
-if (process.env.ENABLE_APM === '1') {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  require('elastic-apm-node').start({
-    serviceName: 'ithust-order',
-    serverUrl: process.env.ELASTIC_APM_SERVER_URL,
-    secretToken: process.env.ELASTIC_APM_SECRET_TOKEN,
-    environment: process.env.NODE_ENV,
-    active: true,
-    captureBody: 'all',
-    errorOnAbortedRequests: true,
-    captureErrorLogStackTraces: 'always'
-  });
-}
+loadEnv();
+startElasticApm({ serviceName: 'ithust-order' });
 
 class Config {
   public DATABASE_URL: string | undefined;
@@ -47,16 +33,16 @@ class Config {
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
     
     // Safely parse SePay variables in case they still contain trailing comments in memory
-    this.PLATFORM_BANK_ID = (process.env.PLATFORM_BANK_ID || '').split('#')[0].trim();
-    this.PLATFORM_BANK_ACCOUNT = (process.env.PLATFORM_BANK_ACCOUNT || '').split('#')[0].trim();
-    this.SEPAY_MODE = (process.env.SEPAY_MODE || 'test').split('#')[0].trim().toLowerCase();
+    this.PLATFORM_BANK_ID = stripInlineComment(process.env.PLATFORM_BANK_ID);
+    this.PLATFORM_BANK_ACCOUNT = stripInlineComment(process.env.PLATFORM_BANK_ACCOUNT);
+    this.SEPAY_MODE = stripInlineComment(process.env.SEPAY_MODE || 'test').toLowerCase();
   }
 
   public cloudinaryConfig(): void {
-    cloudinary.v2.config({
-      cloud_name: this.CLOUD_NAME,
-      api_key: this.CLOUD_API_KEY,
-      api_secret: this.CLOUD_API_SECRET
+    configureCloudinary({
+      cloudName: this.CLOUD_NAME,
+      apiKey: this.CLOUD_API_KEY,
+      apiSecret: this.CLOUD_API_SECRET
     });
   }
 

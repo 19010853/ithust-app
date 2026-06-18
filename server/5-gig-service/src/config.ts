@@ -1,21 +1,7 @@
-import dotenv from 'dotenv';
-import cloudinary from 'cloudinary';
+import { configureCloudinary, loadEnv, startElasticApm } from '@19010853/ithust-shared';
 
-dotenv.config({});
-
-if (process.env.ENABLE_APM === '1') {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  require('elastic-apm-node').start({
-    serviceName: 'ithust-gig',
-    serverUrl: process.env.ELASTIC_APM_SERVER_URL,
-    secretToken: process.env.ELASTIC_APM_SECRET_TOKEN,
-    environment: process.env.NODE_ENV,
-    active: true,
-    captureBody: 'all',
-    errorOnAbortedRequests: true,
-    captureErrorLogStackTraces: 'always'
-  });
-}
+loadEnv();
+startElasticApm({ serviceName: 'ithust-gig' });
 
 class Config {
   public DATABASE_URL: string | undefined;
@@ -45,10 +31,10 @@ class Config {
   }
 
   public cloudinaryConfig(): void {
-    cloudinary.v2.config({
-      cloud_name: this.CLOUD_NAME,
-      api_key: this.CLOUD_API_KEY,
-      api_secret: this.CLOUD_API_SECRET
+    configureCloudinary({
+      cloudName: this.CLOUD_NAME,
+      apiKey: this.CLOUD_API_KEY,
+      apiSecret: this.CLOUD_API_SECRET
     });
   }
 }

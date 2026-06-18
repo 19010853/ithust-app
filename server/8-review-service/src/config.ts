@@ -1,20 +1,7 @@
-import dotenv from 'dotenv';
+import { loadEnv, startElasticApm } from '@19010853/ithust-shared';
 
-dotenv.config({});
-
-if (process.env.ENABLE_APM === '1') {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  require('elastic-apm-node').start({
-    serviceName: 'ithust-review',
-    serverUrl: process.env.ELASTIC_APM_SERVER_URL,
-    secretToken: process.env.ELASTIC_APM_SECRET_TOKEN,
-    environment: process.env.NODE_ENV,
-    active: true,
-    captureBody: 'all',
-    errorOnAbortedRequests: true,
-    captureErrorLogStackTraces: 'always'
-  });
-}
+loadEnv();
+startElasticApm({ serviceName: 'ithust-review' });
 
 class Config {
   public DATABASE_HOST: string | undefined;

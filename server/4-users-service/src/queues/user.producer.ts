@@ -1,5 +1,5 @@
 import { config } from '@users/config';
-import { winstonLogger } from '@19010853/ithust-shared';
+import { publishDirectMessage as publishSharedDirectMessage, winstonLogger } from '@19010853/ithust-shared';
 import { Channel } from 'amqplib';
 import { Logger } from 'winston';
 import { createConnection } from '@users/queues/connection';
@@ -13,16 +13,16 @@ const publishDirectMessage = async (
   message: string,
   logMessage: string
 ): Promise<void> => {
-  try {
-    if (!channel) {
-      channel = (await createConnection()) as Channel;
-    }
-    await channel.assertExchange(exchangeName, 'direct');
-    channel.publish(exchangeName, routingKey, Buffer.from(message));
-    log.info(logMessage);
-  } catch (error) {
-    log.log('error', 'UsersService publishDirectMessage() method error:', error);
-  }
+  await publishSharedDirectMessage({
+    channel,
+    createConnection,
+    exchangeName,
+    routingKey,
+    message,
+    logMessage,
+    logger: log,
+    errorMessage: 'UsersService publishDirectMessage() method error:'
+  });
 };
 
 export { publishDirectMessage };

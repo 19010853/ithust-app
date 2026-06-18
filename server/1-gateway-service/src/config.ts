@@ -1,28 +1,10 @@
-import dotenv from 'dotenv';
-import { existsSync } from 'fs';
+import { loadEnv, parseCsv, startElasticApm, stripInlineComment } from '@19010853/ithust-shared';
 import { resolve } from 'path';
 
-const gatewayEnvPath: string | undefined = [
-  resolve(process.cwd(), '.env'),
-  resolve(__dirname, '..', '.env'),
-  resolve(__dirname, '..', '..', '.env')
-].find((envPath: string) => existsSync(envPath));
-
-dotenv.config(gatewayEnvPath ? { path: gatewayEnvPath } : {});
-
-if (process.env.ENABLE_APM === '1') {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  require('elastic-apm-node').start({
-    serviceName: 'ithust-gateway',
-    serverUrl: process.env.ELASTIC_APM_SERVER_URL,
-    secretToken: process.env.ELASTIC_APM_SECRET_TOKEN,
-    environment: process.env.NODE_ENV,
-    active: true,
-    captureBody: 'all',
-    errorOnAbortedRequests: true,
-    captureErrorLogStackTraces: 'always'
-  });
-}
+loadEnv({
+  paths: [resolve(process.cwd(), '.env'), resolve(__dirname, '..', '.env'), resolve(__dirname, '..', '..', '.env')]
+});
+startElasticApm({ serviceName: 'ithust-gateway' });
 
 class Config {
   public JWT_TOKEN: string | undefined;
@@ -49,10 +31,7 @@ class Config {
     this.SECRET_KEY_ONE = process.env.SECRET_KEY_ONE || '';
     this.SECRET_KEY_TWO = process.env.SECRET_KEY_TWO || '';
     this.CLIENT_URL = process.env.CLIENT_URL || '';
-    this.CLIENT_URLS = (process.env.CLIENT_URLS || this.CLIENT_URL)
-      .split(',')
-      .map((url: string) => url.trim())
-      .filter(Boolean);
+    this.CLIENT_URLS = parseCsv(process.env.CLIENT_URLS || this.CLIENT_URL);
     this.AUTH_BASE_URL = process.env.AUTH_BASE_URL || '';
     this.USERS_BASE_URL = process.env.USERS_BASE_URL || '';
     this.GIG_BASE_URL = process.env.GIG_BASE_URL || '';
@@ -61,7 +40,7 @@ class Config {
     this.REVIEW_BASE_URL = process.env.REVIEW_BASE_URL || '';
     this.REDIS_HOST = process.env.REDIS_HOST || '';
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
-    this.SEPAY_WEBHOOK_SECRET = (process.env.SEPAY_WEBHOOK_SECRET || '').split('#')[0].trim();
+    this.SEPAY_WEBHOOK_SECRET = stripInlineComment(process.env.SEPAY_WEBHOOK_SECRET);
   }
 }
 

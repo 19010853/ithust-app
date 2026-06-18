@@ -1,23 +1,19 @@
 import { config } from '@gateway/config';
-import { winstonLogger } from '@19010853/ithust-shared';
+import { createRedisConnection, ensureRedisClientOpen, type RedisClient, winstonLogger } from '@19010853/ithust-shared';
 import { Logger } from 'winston';
-import { createClient } from 'redis';
 
-type RedisClient = ReturnType<typeof createClient>;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gatewayCache', 'debug');
 
 export class GatewayCache {
   client: RedisClient;
 
   constructor() {
-    this.client = createClient({ url: `${config.REDIS_HOST}` });
+    this.client = createRedisConnection(`${config.REDIS_HOST}`, log);
   }
 
   public async saveUserSelectedCategory(key: string, value: string): Promise<void> {
     try {
-      if (!this.client.isOpen) {
-        await this.client.connect();
-      }
+      await ensureRedisClientOpen(this.client);
       await this.client.SET(key, value);
     } catch (error) {
       log.log('error', 'GatewayService Cache saveUserSelectedCategory() method error:', error);
@@ -26,9 +22,7 @@ export class GatewayCache {
 
   public async saveLoggedInUserToCache(key: string, value: string): Promise<string[]> {
     try {
-      if (!this.client.isOpen) {
-        await this.client.connect();
-      }
+      await ensureRedisClientOpen(this.client);
       const index: number | null = await this.client.LPOS(key, value);
       if (index === null) {
         await this.client.LPUSH(key, value);
@@ -44,9 +38,7 @@ export class GatewayCache {
 
   public async getLoggedInUsersFromCache(key: string): Promise<string[]> {
     try {
-      if (!this.client.isOpen) {
-        await this.client.connect();
-      }
+      await ensureRedisClientOpen(this.client);
       const response: string[] = await this.client.LRANGE(key, 0, -1);
       return response;
     } catch (error) {
@@ -57,9 +49,7 @@ export class GatewayCache {
 
   public async removeLoggedInUserFromCache(key: string, value: string): Promise<string[]> {
     try {
-      if (!this.client.isOpen) {
-        await this.client.connect();
-      }
+      await ensureRedisClientOpen(this.client);
       if (!value || typeof value !== 'string') {
         return await this.client.LRANGE(key, 0, -1);
       }

@@ -1,13 +1,12 @@
 import http from 'http';
 import 'express-async-errors';
-import { CustomError, IAuthPayload, IErrorResponse, winstonLogger } from '@19010853/ithust-shared';
+import { attachCurrentUser, createServiceErrorHandler, winstonLogger } from '@19010853/ithust-shared';
 import { Logger } from 'winston';
 import { config } from '@chat/config';
-import { Application, Request, Response, NextFunction, json, urlencoded } from 'express';
+import { Application, json, urlencoded } from 'express';
 import hpp from 'hpp';
 import helmet from 'helmet';
 import cors from 'cors';
-import { verify } from 'jsonwebtoken';
 import compression from 'compression';
 import { checkConnection } from '@chat/elasticsearch';
 import { appRoutes } from '@chat/routes';
@@ -40,14 +39,7 @@ const securityMiddleware = (app: Application): void => {
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
     })
   );
-  app.use((req: Request, _res: Response, next: NextFunction) => {
-    if (req.headers.authorization) {
-      const token = req.headers.authorization.split(' ')[1];
-      const payload: IAuthPayload = verify(token, config.JWT_TOKEN!) as IAuthPayload;
-      req.currentUser = payload;
-    }
-    next();
-  });
+  app.use(attachCurrentUser(config.JWT_TOKEN!));
 };
 
 const standardMiddleware = (app: Application): void => {
@@ -67,13 +59,7 @@ const startElasticSearch = (): void => {
 };
 
 const chatErrorHandler = (app: Application): void => {
-  app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {
-    log.log('error', `ChatService ${error.comingFrom}:`, error);
-    if (error instanceof CustomError) {
-      res.status(error.statusCode).json(error.serializedErrors());
-    }
-    next();
-  });
+  app.use(createServiceErrorHandler('ChatService', log));
 };
 
 const startServer = async (app: Application): Promise<void> => {

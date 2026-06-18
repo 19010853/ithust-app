@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
+import { createHealthHandler } from '@19010853/ithust-shared';
+
+const healthHandler = createHealthHandler('Users service is healthy and OK.');
 
 const health = (_req: Request, res: Response): void => {
-  res.status(StatusCodes.OK).send('Users service is healthy and OK.');
+  healthHandler(_req, res);
 };
 
 export { health };

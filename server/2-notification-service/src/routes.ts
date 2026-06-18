@@ -1,11 +1,10 @@
-import express, { Router, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
+import { createHealthHandler } from '@19010853/ithust-shared';
+import express, { Router } from 'express';
 
 const router: Router = express.Router();
+const healthHandler = createHealthHandler('Notification service is healthy and OK.');
 
 export function healthRoutes(): Router {
-  router.get('/notification-health', (_req: Request, res: Response) => {
-    res.status(StatusCodes.OK).send('Notification service is healthy and OK.');
-  });
+  router.get('/notification-health', healthHandler);
   return router;
 }
