@@ -68,7 +68,7 @@ const DashboardMain: FC = (): ReactElement => {
               <li className="mb-4 flex flex-col justify-between text-xs sm:mb-2 sm:flex-row sm:text-sm">
                 <div className="col-span-3 ml-3 flex pb-0 sm:pb-3">
                   <FaRegClock className="mr-2 mt-1" />
-                  <div className="mr-3">Thời gian phản hồi TB</div>
+                  <div className="mr-3">Thời gian phản hồi trung bình</div>
                 </div>
                 <div className="ml-8 mr-4 font-bold sm:ml-0">
                   {seller?.responseTime} giờ

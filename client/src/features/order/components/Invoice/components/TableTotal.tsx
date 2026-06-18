@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { FC, ReactElement, useContext } from 'react';
 import { OrderContext } from 'src/features/order/context/OrderContext';
 import { IOrderInvoiceService } from 'src/features/order/interfaces/order.interface';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 
 const styles = StyleSheet.create({
   tbody: {
@@ -39,12 +40,7 @@ const TableTotal: FC = (): ReactElement => {
             <Text>Tổng cộng</Text>
           </View>
           <View style={styles.tbody}>
-            <Text>
-              $
-              {orderInvoice.orderService
-                .reduce((sum: number, item: IOrderInvoiceService) => sum + item.price * item.quantity, 0)
-                .toFixed(2)}
-            </Text>
+            <Text>{formatVnd(orderInvoice.orderService.reduce((sum: number, item: IOrderInvoiceService) => sum + item.price * item.quantity, 0))}</Text>
           </View>
         </View>
       )}

@@ -1,5 +1,8 @@
 import Joi, { ObjectSchema } from 'joi';
 
+const GIG_MIN_PRICE_VND = 100000;
+const GIG_MAX_PRICE_VND = 250000000;
+
 const gigCreateSchema: ObjectSchema = Joi.object().keys({
   sellerId: Joi.string().required().messages({
     'string.base': 'Seller Id must be of type string',
@@ -38,11 +41,13 @@ const gigCreateSchema: ObjectSchema = Joi.object().keys({
     'any.required': 'Gig tags are required',
     'array.min': 'Please add at least one tag'
   }),
-  price: Joi.number().required().greater(4.99).messages({
+  price: Joi.number().integer().required().min(GIG_MIN_PRICE_VND).max(GIG_MAX_PRICE_VND).messages({
     'string.base': 'Please add a gig price',
     'string.empty': 'Gig price is required',
     'any.required': 'Gig price is required',
-    'number.greater': 'Gig price must be greater than $4.99'
+    'number.integer': 'Gig price must be a whole VND amount',
+    'number.min': `Gig price must be at least ${GIG_MIN_PRICE_VND} VND`,
+    'number.max': `Gig price must be at most ${GIG_MAX_PRICE_VND} VND`
   }),
   coverImage: Joi.string().required().messages({
     'string.base': 'Please add a cover image',
@@ -98,11 +103,13 @@ const gigUpdateSchema: ObjectSchema = Joi.object().keys({
     'any.required': 'Gig tags are required',
     'array.min': 'Please add at least one tag'
   }),
-  price: Joi.number().required().greater(4.99).messages({
+  price: Joi.number().integer().required().min(GIG_MIN_PRICE_VND).max(GIG_MAX_PRICE_VND).messages({
     'string.base': 'Please add a gig price',
     'string.empty': 'Gig price is required',
     'any.required': 'Gig price is required',
-    'number.greater': 'Gig price must be greater than $4.99'
+    'number.integer': 'Gig price must be a whole VND amount',
+    'number.min': `Gig price must be at least ${GIG_MIN_PRICE_VND} VND`,
+    'number.max': `Gig price must be at most ${GIG_MAX_PRICE_VND} VND`
   }),
   coverImage: Joi.string().required().messages({
     'string.base': 'Please add a cover image',

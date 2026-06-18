@@ -4,6 +4,7 @@ import { NavigateFunction, useLocation, useNavigate, useParams, useSearchParams 
 import { ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
 import { useGetGigByIdQuery } from 'src/features/gigs/services/gigs.service';
 import PageMessage from 'src/shared/page-message/PageMessage';
+import { calculateServiceFeeVnd, formatVnd } from 'src/shared/utils/currency.utils';
 
 import { IOffer } from '../interfaces/order.interface';
 import CheckoutForm from './checkout-form/CheckoutForm';
@@ -17,7 +18,7 @@ const Checkout: FC = (): ReactElement => {
   const { data, isSuccess } = useGetGigByIdQuery(`${gigId}`);
   const currentGig = isSuccess ? (data.gig as ISellerGig) : state;
   const gigIsPaused = currentGig?.active === false;
-  const serviceFee: number = offer.price < 50 ? Number(((5.5 / 100) * offer.price + 2).toFixed(2)) : Number(((5.5 / 100) * offer.price).toFixed(2));
+  const serviceFee: number = calculateServiceFeeVnd(offer.price);
 
   useEffect(() => {
     if (gigIsPaused) {
@@ -61,20 +62,20 @@ const Checkout: FC = (): ReactElement => {
                 <div className="text-sm font-normal flex gap-2">
                   <FaRegMoneyBillAlt className="self-center" /> Giá
                 </div>
-                <span className="text-sm">${offer.price}</span>
+                <span className="text-sm">{formatVnd(offer.price)}</span>
               </li>
               <li className="flex justify-between px-4 pt-2 pb-2">
                 <div className="text-sm font-normal flex gap-2">
                   <FaCog className="self-center" /> Phí dịch vụ
                 </div>
-                <span className="text-sm">${serviceFee.toFixed(2)}</span>
+                <span className="text-sm">{formatVnd(serviceFee)}</span>
               </li>
               <div className="border-b border-grey" />
               <li className="flex justify-between px-4 py-4">
                 <div className="text-sm md:text-base font-semibold flex gap-2">
                   <FaCog className="self-center" /> Tổng cộng
                 </div>
-                <span className="text-sm md:text-base font-semibold">${offer.price + serviceFee}</span>
+                <span className="text-sm md:text-base font-semibold">{formatVnd(offer.price + serviceFee)}</span>
               </li>
             </ul>
           </div>

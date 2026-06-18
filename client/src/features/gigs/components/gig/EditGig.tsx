@@ -13,6 +13,7 @@ import ApprovalModal from 'src/shared/modals/ApprovalModal';
 import { IApprovalModalContent } from 'src/shared/modals/interfaces/modal.interface';
 import CircularPageLoader from 'src/shared/page-loader/CircularPageLoader';
 import { IResponse } from 'src/shared/shared.interface';
+import { GIG_MAX_PRICE_VND, GIG_MIN_PRICE_VND } from 'src/shared/utils/currency.utils';
 import { checkImage, readAsBase64 } from 'src/shared/utils/image-utils.service';
 import {
   categories,
@@ -287,12 +288,16 @@ const EditGig: FC = (): ReactElement => {
                 <TextInput
                   type="number"
                   className="border-grey mb-1 w-full rounded border p-3.5 text-sm font-normal text-gray-600 focus:outline-none"
-                  placeholder="Nhập giá tối thiểu"
+                  placeholder="Nhập giá VND"
                   name="price"
                   value={`${gigInfo.price}`}
+                  min={GIG_MIN_PRICE_VND}
+                  max={GIG_MAX_PRICE_VND}
+                  step={1}
                   onChange={(event: ChangeEvent) => {
                     const value: string = (event.target as HTMLInputElement).value;
-                    setGigInfo({ ...gigInfo, price: parseInt(value) > 0 ? parseInt(value) : 0 });
+                    const price = Number(value);
+                    setGigInfo({ ...gigInfo, price: Number.isInteger(price) && price > 0 ? price : 0 });
                   }}
                 />
               </div>

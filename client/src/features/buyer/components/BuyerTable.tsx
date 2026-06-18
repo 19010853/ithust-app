@@ -1,6 +1,7 @@
 import { FC, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 import { IOrderDocument, IOrderTableProps } from 'src/features/order/interfaces/order.interface';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
 import { normalizeOrderStatus } from 'src/shared/utils/utils.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -76,7 +77,7 @@ const BuyerTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): ReactEl
                       ? TimeAgo.dayMonthYear(`${order.approvedAt}`)
                       : TimeAgo.dayMonthYear(`${order.offer.newDeliveryDate}`)}
                   </td>
-                  <td className="p-3 text-left lg:text-center">${order.price}</td>
+                  <td className="p-3 text-left lg:text-center">{formatVnd(order.price)}</td>
                   <td className="px-3 py-1 text-left lg:p-3 lg:text-center">
                     <span
                       className={`status rounded bg-transparent p-0 text-xs font-bold uppercase text-black sm:px-[5px] sm:py-[4px] sm:text-white ${normalizeOrderStatus(

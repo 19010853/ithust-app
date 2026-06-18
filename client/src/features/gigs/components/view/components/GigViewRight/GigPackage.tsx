@@ -6,6 +6,7 @@ import { IOffer } from 'src/features/order/interfaces/order.interface';
 import Button from 'src/shared/button/Button';
 import ApprovalModal from 'src/shared/modals/ApprovalModal';
 import { IApprovalModalContent } from 'src/shared/modals/interfaces/modal.interface';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 import { useAppSelector } from 'src/store/store';
 import { IReduxState } from 'src/store/store.interface';
 
@@ -49,7 +50,7 @@ const GigPackage: FC = (): ReactElement => {
       {showModal && <ApprovalModal approvalModalContent={approvalModalContent} hideCancel={true} onClick={() => setShowModal(false)} />}
       <div className="border-grey mb-8 border">
         <div className="flex border-b px-4 py-2">
-          <h4 className="font-bold">${gig.price}</h4>
+          <h4 className="font-bold">{formatVnd(gig.price)}</h4>
         </div>
         <ul className="mb-0 list-none px-4 py-2">
           <li className="flex justify-between">

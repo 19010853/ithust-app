@@ -1,5 +1,6 @@
 import { ChangeEvent, FC, ReactElement, useMemo, useState } from 'react';
 import Button from 'src/shared/button/Button';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 import { isFetchBaseQueryError, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 
 import { IAdminUserSearchItem, IRestrictionPreview, IRestrictionStatusPayload } from '../interfaces/admin.interface';
@@ -75,7 +76,7 @@ const AdminUsers: FC = (): ReactElement => {
     return new Date(value).toLocaleDateString();
   };
 
-  const money = (value?: number): string => `$${Number(value || 0).toFixed(2)}`;
+  const money = (value?: number): string => formatVnd(value);
 
   const openStatusAction = (scope: 'account' | 'seller', status: IRestrictionStatusPayload['status'], label: string): void => {
     setStatusAction({ scope, status, label });

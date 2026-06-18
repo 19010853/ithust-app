@@ -3,20 +3,12 @@ import { FC, ReactElement, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { IOrderDocument } from 'src/features/order/interfaces/order.interface';
 import Button from 'src/shared/button/Button';
+import { formatVnd, toVndInteger } from 'src/shared/utils/currency.utils';
 import { isFetchBaseQueryError, normalizeOrderStatus, shortenLargeNumbers, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 
 import { SellerContextType } from '../../interfaces/seller.interface';
 import { useCreateWithdrawalMutation } from '../../services/seller.service';
 import ManageEarningsTable from './components/ManageEarningsTable';
-
-const normalizeMoney = (value?: number): number => Math.round(Number(value || 0) * 100) / 100;
-const formatMoney = (value?: number): string =>
-  new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(normalizeMoney(value));
 
 const ManageEarnings: FC = (): ReactElement => {
   const { orders, seller } = useOutletContext<SellerContextType>();
@@ -30,7 +22,7 @@ const ManageEarnings: FC = (): ReactElement => {
   const [accountName, setAccountName] = useState<string>(seller?.bankAccount?.accountName || '');
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [createWithdrawal, { isLoading }] = useCreateWithdrawalMutation();
-  const availableBalance = normalizeMoney(seller?.availableBalance);
+  const availableBalance = toVndInteger(seller?.availableBalance);
 
   useEffect(() => {
     setBankName(seller?.bankAccount?.bankName || '');
@@ -47,8 +39,8 @@ const ManageEarnings: FC = (): ReactElement => {
       }
 
       const nextErrors: Record<string, string> = {};
-      if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
-        nextErrors.amount = 'Nhập số tiền rút lớn hơn 0.';
+      if (!Number.isFinite(parsedAmount) || parsedAmount <= 0 || !Number.isInteger(parsedAmount)) {
+        nextErrors.amount = 'Nhập số tiền rút VND nguyên lớn hơn 0.';
       } else if (parsedAmount > availableBalance) {
         nextErrors.amount = 'Số tiền rút không được vượt quá số dư khả dụng.';
       }
@@ -94,13 +86,13 @@ const ManageEarnings: FC = (): ReactElement => {
           <div className="border border-grey flex items-center justify-center p-8 sm:col-span-1">
             <div className="flex flex-col gap-3">
               <span className="text-center text-base lg:text-xl">Doanh thu đến nay</span>
-              <span className="text-center font-bold text-base md:text-xl lg:text-2xl truncate">{formatMoney(seller?.totalEarnings)}</span>
+              <span className="text-center font-bold text-base md:text-xl lg:text-2xl truncate">{formatVnd(seller?.totalEarnings)}</span>
             </div>
           </div>
           <div className="border border-grey flex items-center justify-center p-8 sm:col-span-1">
             <div className="flex flex-col gap-3">
               <span className="text-center text-base lg:text-xl">Giá bán trung bình</span>
-              <span className="text-center font-bold text-base md:text-xl lg:text-2xl truncate">{formatMoney(averageSellingPrice)}</span>
+              <span className="text-center font-bold text-base md:text-xl lg:text-2xl truncate">{formatVnd(averageSellingPrice)}</span>
             </div>
           </div>
           <div className="border border-grey flex items-center justify-center p-8 sm:col-span-1">
@@ -119,16 +111,16 @@ const ManageEarnings: FC = (): ReactElement => {
           <div className="grid gap-3 md:grid-cols-2">
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-700">Số dư khả dụng</label>
-              <div className="rounded border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700">{formatMoney(availableBalance)}</div>
+              <div className="rounded border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700">{formatVnd(availableBalance)}</div>
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-700">Số tiền rút</label>
               <input
                 className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
                 type="number"
-                min="0.01"
+                min="1"
                 max={availableBalance}
-                step="0.01"
+                step="1"
                 value={amount}
                 onChange={(event) => {
                   setAmount(event.target.value);

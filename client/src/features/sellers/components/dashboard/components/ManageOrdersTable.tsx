@@ -6,6 +6,7 @@ import Button from 'src/shared/button/Button';
 import { updateHeader } from 'src/shared/header/reducers/header.reducer';
 import ApprovalModal from 'src/shared/modals/ApprovalModal';
 import { IApprovalModalContent } from 'src/shared/modals/interfaces/modal.interface';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
 import { normalizeOrderStatus, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 import { useAppDispatch } from 'src/store/store';
@@ -114,7 +115,7 @@ const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): 
                     {type === 'completed' && order.events.orderDelivered && (
                       <td className="p-3 text-left lg:text-center">{TimeAgo.dayMonthYear(`${order.events.orderDelivered}`)}</td>
                     )}
-                    <td className="p-3 text-left lg:text-center">${order.price}</td>
+                    <td className="p-3 text-left lg:text-center">{formatVnd(order.price)}</td>
                     <td className="px-3 py-1 lg:p-3 text-left lg:text-center">
                       <span
                         className={`rounded bg-transparent text-black p-0 text-xs font-bold uppercase sm:text-white sm:px-[5px] sm:py-[4px] status ${normalizeOrderStatus(

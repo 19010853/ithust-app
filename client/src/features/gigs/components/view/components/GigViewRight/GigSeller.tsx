@@ -77,7 +77,7 @@ const GigSeller: FC = (): ReactElement => {
               <span className="font-bold">{TimeAgo.formatDateToMonthAndYear(`${seller.createdAt}`)}</span>
             </div>
             <div className="flex flex-col">
-              <span className="">Thời gian phản hồi TB</span>
+              <span className="">Thời gian phản hồi trung bình</span>
               <span className="font-bold">
                 {seller.responseTime} giờ{' '}
               </span>

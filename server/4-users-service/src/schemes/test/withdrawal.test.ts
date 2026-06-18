@@ -3,7 +3,7 @@ import { withdrawalSchema } from '@users/schemes/withdrawal';
 describe('Withdrawal schema', () => {
   it('accepts a positive withdrawal with complete bank account details', () => {
     const { error, value } = withdrawalSchema.validate({
-      amount: 2.2,
+      amount: 100000,
       bankAccount: {
         bankName: ' VCB ',
         accountNumber: ' 3123231313123131 ',
@@ -13,7 +13,7 @@ describe('Withdrawal schema', () => {
 
     expect(error).toBeUndefined();
     expect(value).toEqual({
-      amount: 2.2,
+      amount: 100000,
       bankAccount: {
         bankName: 'VCB',
         accountNumber: '3123231313123131',
@@ -33,5 +33,18 @@ describe('Withdrawal schema', () => {
     });
 
     expect(error?.details[0].message).toBe('Withdrawal amount must be greater than zero');
+  });
+
+  it('rejects decimal withdrawal amounts', () => {
+    const { error } = withdrawalSchema.validate({
+      amount: 100000.5,
+      bankAccount: {
+        bankName: 'VCB',
+        accountNumber: '3123231313123131',
+        accountName: 'NGUYEN MANH TUONG'
+      }
+    });
+
+    expect(error?.details[0].message).toBe('Withdrawal amount must be a whole VND amount');
   });
 });

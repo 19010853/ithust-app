@@ -13,6 +13,7 @@
     "prettier:check": "prettier --check 'src/**/*.{ts,json}'",
     "prettier:fix": "prettier --write 'src/**/*.{ts,json}'",
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "migrate:usd-to-vnd": "ts-node -r tsconfig-paths/register src/scripts/migrate-usd-to-vnd.ts",
     "test": "jest --coverage=true -w=1 --forceExit --detectOpenHandles --watchAll=false"
   },
   "keywords": [],

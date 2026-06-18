@@ -33,7 +33,7 @@ export interface IParams {
 export const orderDocument: IOrderDocument = {
   offer: {
     gigTitle: '',
-    price: 20,
+    price: 500000,
     description: '',
     deliveryInDays: 2,
     oldDeliveryDate: '2023-10-19T07:42:24.451Z',
@@ -59,7 +59,7 @@ export const orderDocument: IOrderDocument = {
   orderId: '60263f14648fed5246e322e4',
   invoiceId: 'JO123456789',
   quantity: 1,
-  price: 20,
+  price: 500000,
   requestExtension: {
     originalDate: '2023-10-19T07:42:24.451Z',
     newDate: '2023-10-20T07:42:24.451Z',

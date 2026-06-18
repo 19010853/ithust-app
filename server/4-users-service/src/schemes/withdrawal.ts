@@ -1,10 +1,10 @@
 import Joi, { ObjectSchema } from 'joi';
 
 const withdrawalSchema: ObjectSchema = Joi.object().keys({
-  amount: Joi.number().positive().precision(2).required().messages({
+  amount: Joi.number().positive().integer().required().messages({
     'number.base': 'Withdrawal amount must be a number',
     'number.positive': 'Withdrawal amount must be greater than zero',
-    'number.precision': 'Withdrawal amount can have at most 2 decimal places',
+    'number.integer': 'Withdrawal amount must be a whole VND amount',
     'any.required': 'Withdrawal amount is required'
   }),
   bankAccount: Joi.object({

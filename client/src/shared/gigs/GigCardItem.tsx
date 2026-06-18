@@ -12,6 +12,7 @@ import { updateHeader } from '../header/reducers/header.reducer';
 import ApprovalModal from '../modals/ApprovalModal';
 import { IApprovalModalContent } from '../modals/interfaces/modal.interface';
 import { IGigCardItemModal } from '../shared.interface';
+import { formatVnd } from '../utils/currency.utils';
 import { lowerCase, replaceSpacesWithDash, showErrorToast, showSuccessToast } from '../utils/utils.service';
 
 const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
@@ -168,7 +169,7 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
           </div>
           <div className="flex justify-between px-2 pb-2">
             <FaEllipsisH size={14} className="self-center" onClick={() => setGigCardItemModal({ ...gigCardItemModal, overlay: true })} />
-            <strong className="text-base font-normal">${gig.price}</strong>
+            <strong className="text-base font-normal">{formatVnd(gig.price)}</strong>
           </div>
         </div>
       </div>

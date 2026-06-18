@@ -4,12 +4,18 @@ import { StatusCodes } from 'http-status-codes';
 import { orderSchema } from '@order/schemes/order';
 import { BadRequestError, IOrderDocument } from '@19010853/ithust-shared';
 import { createOrder } from '@order/services/order.service';
-import { getUsdToVndRate } from '@order/services/exchange-rate.service';
 
 type SePayOrderData = IOrderDocument & {
   paymentAmountVnd: number;
   paymentCurrency: 'VND';
 };
+
+const SERVICE_FEE_RATE = 0.055;
+const SERVICE_FEE_THRESHOLD_VND = 1250000;
+const SERVICE_FEE_FIXED_AMOUNT_VND = 50000;
+
+const calculateServiceFeeVnd = (price: number): number =>
+  Math.round(price * SERVICE_FEE_RATE + (price < SERVICE_FEE_THRESHOLD_VND ? SERVICE_FEE_FIXED_AMOUNT_VND : 0));
 
 const getTransferContent = (orderId: string): string => {
   const orderReference = `PAYORDER${orderId}`;
@@ -22,9 +28,8 @@ const order = async (req: Request, res: Response): Promise<void> => {
     throw new BadRequestError(error.details[0].message, 'Create order() method');
   }
 
-  const serviceFee: number = req.body.price < 50 ? Number(((5.5 / 100) * req.body.price + 2).toFixed(2)) : Number(((5.5 / 100) * req.body.price).toFixed(2));
-  const totalUsd: number = Number((req.body.price + serviceFee).toFixed(2));
-  const paymentAmountVnd: number = Math.round(totalUsd * (await getUsdToVndRate()));
+  const serviceFee: number = calculateServiceFeeVnd(req.body.price);
+  const paymentAmountVnd: number = req.body.price + serviceFee;
   const orderData: SePayOrderData = {
     ...req.body,
     serviceFee,

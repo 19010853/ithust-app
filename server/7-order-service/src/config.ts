@@ -32,8 +32,6 @@ class Config {
   public PLATFORM_BANK_ID: string | undefined;
   public PLATFORM_BANK_ACCOUNT: string | undefined;
   public SEPAY_MODE: string | undefined;
-  public USD_TO_VND_RATE_API_URL: string | undefined;
-  public USD_TO_VND_RATE_FALLBACK: string | undefined;
 
   constructor() {
     this.DATABASE_URL = process.env.DATABASE_URL || '';
@@ -52,8 +50,6 @@ class Config {
     this.PLATFORM_BANK_ID = (process.env.PLATFORM_BANK_ID || '').split('#')[0].trim();
     this.PLATFORM_BANK_ACCOUNT = (process.env.PLATFORM_BANK_ACCOUNT || '').split('#')[0].trim();
     this.SEPAY_MODE = (process.env.SEPAY_MODE || 'test').split('#')[0].trim().toLowerCase();
-    this.USD_TO_VND_RATE_API_URL = (process.env.USD_TO_VND_RATE_API_URL || '').split('#')[0].trim();
-    this.USD_TO_VND_RATE_FALLBACK = (process.env.USD_TO_VND_RATE_FALLBACK || '').split('#')[0].trim();
   }
 
   public cloudinaryConfig(): void {
@@ -62,14 +58,6 @@ class Config {
       api_key: this.CLOUD_API_KEY,
       api_secret: this.CLOUD_API_SECRET
     });
-  }
-
-  public getUsdToVndRateFallback(): number {
-    const rate: number = Number(this.USD_TO_VND_RATE_FALLBACK);
-    if (!Number.isFinite(rate) || rate <= 0) {
-      throw new Error('USD_TO_VND_RATE_FALLBACK must be configured as a positive number.');
-    }
-    return rate;
   }
 
   public getSepayMode(): 'test' | 'live' {

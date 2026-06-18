@@ -3,6 +3,7 @@ import { FaRegStar, FaStar } from 'react-icons/fa';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Link } from 'react-router-dom';
 import { IGigsProps, ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 import { rating, replaceSpacesWithDash } from 'src/shared/utils/utils.service';
 
 const GigIndexItem: FC<IGigsProps> = ({ gig }): ReactElement => {
@@ -45,7 +46,7 @@ const GigIndexItem: FC<IGigsProps> = ({ gig }): ReactElement => {
           <strong className="text-sm font-bold">({rating(parseInt(`${gigData.ratingSum}`) / parseInt(`${gigData.ratingsCount}`))})</strong>
         </div>
         <div>
-          <strong className="text-sm font-bold md:text-base">Từ ${gigData.price}</strong>
+          <strong className="text-sm font-bold md:text-base">Từ {formatVnd(gigData.price)}</strong>
         </div>
       </div>
     </div>

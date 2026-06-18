@@ -9,6 +9,7 @@ import { socket, socketService } from 'src/sockets/socket.service';
 import { useAppSelector } from 'src/store/store';
 import { IReduxState } from 'src/store/store.interface';
 
+import { formatVnd } from '../utils/currency.utils';
 import { lowerCase, replaceSpacesWithDash } from '../utils/utils.service';
 
 const GigCardDisplayItem: FC<IGigCardItems> = ({ gig, linkTarget, showEditIcon }): ReactElement => {
@@ -89,7 +90,7 @@ const GigCardDisplayItem: FC<IGigCardItems> = ({ gig, linkTarget, showEditIcon }
           <strong className="text-sm font-bold">({rating(parseInt(`${gig.ratingSum}`) / parseInt(`${gig.ratingsCount}`))})</strong>
         </div>
         <div>
-          <strong className="text-sm font-bold md:text-base">Từ ${gig.price}</strong>
+          <strong className="text-sm font-bold md:text-base">Từ {formatVnd(gig.price)}</strong>
         </div>
       </div>
     </div>

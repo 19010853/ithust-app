@@ -22,7 +22,7 @@ describe('Seller service', () => {
       sellerId: 'seller-id',
       ongoingJobs: -1,
       completedJobs: 1,
-      totalEarnings: 0.8,
+      totalEarnings: 80000,
       recentDelivery: '2026-05-21T12:00:00.000Z'
     } as never);
 
@@ -32,8 +32,8 @@ describe('Seller service', () => {
         $inc: {
           ongoingJobs: -1,
           completedJobs: 1,
-          totalEarnings: 0.8,
-          availableBalance: 0.8
+          totalEarnings: 80000,
+          availableBalance: 80000
         },
         $set: { recentDelivery: new Date('2026-05-21T12:00:00.000Z') }
       }

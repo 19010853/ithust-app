@@ -1,6 +1,7 @@
 import { FC, MutableRefObject, ReactElement, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from 'src/shared/button/Button';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
 import { socket, socketService } from 'src/sockets/socket.service';
 import { useAppSelector } from 'src/store/store';
@@ -130,7 +131,7 @@ const Order: FC = (): ReactElement => {
                   </li>
                   <li className="flex justify-between px-4 pb-4 pt-2">
                     <div className="flex gap-2 text-sm font-normal">Tổng giá</div>
-                    <span className="text-sm font-bold">${order?.price}</span>
+                    <span className="text-sm font-bold">{formatVnd(order?.price)}</span>
                   </li>
                 </ul>
               </div>

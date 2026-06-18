@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { ISelectedBudget } from 'src/features/gigs/interfaces/gig.interface';
 import Button from 'src/shared/button/Button';
 import TextInput from 'src/shared/inputs/TextInput';
+import { formatVnd, GIG_MAX_PRICE_VND, GIG_MIN_PRICE_VND } from 'src/shared/utils/currency.utils';
 import { saveToLocalStorage } from 'src/shared/utils/utils.service';
 
 const BudgetDropdown: FC = (): ReactElement => {
@@ -40,13 +41,16 @@ const BudgetDropdown: FC = (): ReactElement => {
                     <TextInput
                       type="number"
                       id="min"
-                      min="0"
+                      min={GIG_MIN_PRICE_VND}
+                      max={GIG_MAX_PRICE_VND}
+                      step={1}
                       name="minPrice"
                       value={selectedBudget.minPrice ?? ''}
                       className="block w-full border border-gray-300 p-2.5 text-sm text-gray-900 dark:placeholder-gray-400 dark:focus:border-black dark:focus:ring-black"
                       placeholder="Bất kỳ"
                       onChange={(event: ChangeEvent) => {
-                        setSelectedBudget({ ...selectedBudget, minPrice: `${(event.target as HTMLInputElement).value}` });
+                        const value = (event.target as HTMLInputElement).value;
+                        setSelectedBudget({ ...selectedBudget, minPrice: /^\d*$/.test(value) ? value : selectedBudget.minPrice });
                       }}
                       onKeyDown={(event: KeyboardEvent) => {
                         if (event.key !== 'Backspace' && isNaN(parseInt(event.key))) {
@@ -62,12 +66,16 @@ const BudgetDropdown: FC = (): ReactElement => {
                     <TextInput
                       type="number"
                       id="max"
+                      min={GIG_MIN_PRICE_VND}
+                      max={GIG_MAX_PRICE_VND}
+                      step={1}
                       name="maxPrice"
                       value={selectedBudget.maxPrice ?? ''}
                       className="block w-full border border-gray-300 p-2.5 text-sm text-gray-900 dark:placeholder-gray-400 dark:focus:border-black dark:focus:ring-black"
                       placeholder="Bất kỳ"
                       onChange={(event: ChangeEvent) => {
-                        setSelectedBudget({ ...selectedBudget, maxPrice: `${(event.target as HTMLInputElement).value}` });
+                        const value = (event.target as HTMLInputElement).value;
+                        setSelectedBudget({ ...selectedBudget, maxPrice: /^\d*$/.test(value) ? value : selectedBudget.maxPrice });
                       }}
                       onKeyDown={(event: KeyboardEvent) => {
                         if (event.key !== 'Backspace' && isNaN(parseInt(event.key))) {
@@ -112,7 +120,7 @@ const BudgetDropdown: FC = (): ReactElement => {
             className="flex gap-4 self-center rounded-full bg-gray-200 px-5 py-1 font-bold hover:text-gray-500"
             label={
               <>
-                ${selectedBudget.minPrice} - ${selectedBudget.maxPrice}
+                {formatVnd(Number(selectedBudget.minPrice))} - {formatVnd(Number(selectedBudget.maxPrice))}
                 <FaTimes className="self-center font-normal" />
               </>
             }

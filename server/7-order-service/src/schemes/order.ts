@@ -1,9 +1,19 @@
 import Joi, { ObjectSchema } from 'joi';
 
+const ORDER_MIN_PRICE_VND = 100000;
+const ORDER_MAX_PRICE_VND = 250000000;
+
+const orderPriceSchema = Joi.number().integer().min(ORDER_MIN_PRICE_VND).max(ORDER_MAX_PRICE_VND).messages({
+  'number.base': 'Order price must be a number',
+  'number.integer': 'Order price must be a whole VND amount',
+  'number.min': `Order price must be at least ${ORDER_MIN_PRICE_VND} VND`,
+  'number.max': `Order price must be at most ${ORDER_MAX_PRICE_VND} VND`
+});
+
 const orderSchema: ObjectSchema = Joi.object().keys({
   offer: Joi.object({
     gigTitle: Joi.string().required(),
-    price: Joi.number().required(),
+    price: orderPriceSchema.required(),
     description: Joi.string().required(),
     deliveryInDays: Joi.number().required(),
     oldDeliveryDate: Joi.string().required(),
@@ -28,8 +38,12 @@ const orderSchema: ObjectSchema = Joi.object().keys({
   orderId: Joi.string().required(),
   invoiceId: Joi.string().required(),
   quantity: Joi.number().required(),
-  price: Joi.number().required(),
-  serviceFee: Joi.number().optional(),
+  price: orderPriceSchema.required(),
+  serviceFee: Joi.number().integer().min(0).optional().messages({
+    'number.base': 'Service fee must be a number',
+    'number.integer': 'Service fee must be a whole VND amount',
+    'number.min': 'Service fee must be zero or greater'
+  }),
   requirements: Joi.string().optional().allow(null, ''),
   requestExtension: Joi.object({
     originalDate: Joi.string().required(),

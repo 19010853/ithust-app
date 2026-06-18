@@ -31,10 +31,10 @@ const TableHead: FC = (): ReactElement => {
           <Text>SL</Text>
         </View>
         <View style={styles.theader}>
-          <Text>Giá($)</Text>
+          <Text>Giá (VND)</Text>
         </View>
         <View style={styles.theader}>
-          <Text>Tổng($)</Text>
+          <Text>Tổng (VND)</Text>
         </View>
       </View>
     </>

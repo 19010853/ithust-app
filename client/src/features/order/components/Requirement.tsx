@@ -9,6 +9,7 @@ import TextAreaInput from 'src/shared/inputs/TextAreaInput';
 import PageMessage from 'src/shared/page-message/PageMessage';
 import { IResponse } from 'src/shared/shared.interface';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
+import { calculateServiceFeeVnd, formatVnd } from 'src/shared/utils/currency.utils';
 import { generateRandomNumber, isFetchBaseQueryError, normalizeOrderStatus, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 import { useAppSelector } from 'src/store/store';
 import { IReduxState } from 'src/store/store.interface';
@@ -27,7 +28,7 @@ const Requirement: FC = (): ReactElement => {
   const placeholder = 'https://placehold.co/330x220?text=Anh+tam';
   const offer: IOffer = JSON.parse(`${searchParams.get('offer')}`);
   const order_date = `${searchParams.get('order_date')}`;
-  const serviceFee: number = offer.price < 50 ? Number(((5.5 / 100) * offer.price + 2).toFixed(2)) : Number(((5.5 / 100) * offer.price).toFixed(2));
+  const serviceFee: number = calculateServiceFeeVnd(offer.price);
   const navigate: NavigateFunction = useNavigate();
   const orderIdRef = useRef<string>(`JO${generateRandomNumber(11)}`);
   const invoiceIdRef = useRef<string>(`JI${generateRandomNumber(11)}`);
@@ -39,7 +40,6 @@ const Requirement: FC = (): ReactElement => {
 
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
-  const [paymentCurrency, setPaymentCurrency] = useState<string>('VND');
   const [paymentMode, setPaymentMode] = useState<'test' | 'live'>('test');
   const [paymentContent, setPaymentContent] = useState<string>('');
   const [paymentWaitExpired, setPaymentWaitExpired] = useState<boolean>(false);
@@ -154,7 +154,6 @@ const Requirement: FC = (): ReactElement => {
       if (response.payment?.qrCodeUrl) {
         setQrCodeUrl(response.payment.qrCodeUrl);
         setPaymentAmount(response.payment.amount);
-        setPaymentCurrency(response.payment.currency);
         setPaymentMode(response.payment.mode);
         setPaymentContent(response.payment.content);
       } else {
@@ -208,9 +207,7 @@ const Requirement: FC = (): ReactElement => {
                 <div className="mb-4 w-full max-w-md rounded border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700">
                   <div className="flex justify-between gap-3">
                     <span>Số tiền</span>
-                    <strong>
-                      {new Intl.NumberFormat('vi-VN').format(paymentAmount)} {paymentCurrency}
-                    </strong>
+                    <strong>{formatVnd(paymentAmount)}</strong>
                   </div>
                   <div className="mt-2 flex flex-col gap-1">
                     <span>Nội dung chuyển khoản</span>
@@ -281,7 +278,7 @@ const Requirement: FC = (): ReactElement => {
               </li>
               <li className="flex justify-between px-4 pb-4 pt-2">
                 <div className="flex gap-2 text-sm font-normal">Giá</div>
-                <span className="text-sm">${offer.price}</span>
+                <span className="text-sm">{formatVnd(offer.price)}</span>
               </li>
             </ul>
           </div>

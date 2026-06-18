@@ -31,7 +31,7 @@ const AboutMe: FC = (): ReactElement => {
             <li className="flex justify-between text-sm md:text-base mb-2">
               <div className="col-span-3 ml-3 flex pb-3">
                 <FaRegClock className="mr-2 mt-1" />
-                <div className="mr-3 font-bold">Thời gian phản hồi TB</div>
+                <div className="mr-3 font-bold">Thời gian phản hồi trung bình</div>
               </div>
               <div className="mr-4">
                 {sellerProfile.responseTime} giờ

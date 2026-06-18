@@ -41,7 +41,7 @@ export const sellerGig: ISellerGig = {
   categories: 'programming',
   subCategories: ['Java', 'Javascript'],
   tags: ['Java', 'Javascript'],
-  price: 50,
+  price: 500000,
   expectedDelivery: '3',
   basicTitle: 'Do any job',
   basicDescription: 'I will do nay job',

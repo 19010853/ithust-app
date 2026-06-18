@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { FC, Fragment, ReactElement, useContext } from 'react';
 import { OrderContext } from 'src/features/order/context/OrderContext';
 import { IOrderInvoiceService } from 'src/features/order/interfaces/order.interface';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 
 const styles = StyleSheet.create({
   tbody: { fontSize: 9, paddingTop: 4, textAlign: 'center', flex: 1, borderColor: 'whitesmoke', borderBottomWidth: 1 },
@@ -37,10 +38,10 @@ const TableBody: FC = (): ReactElement => {
                 <Text>{order.quantity}</Text>
               </View>
               <View style={styles.tbody}>
-                <Text>{order.price.toFixed(2)} </Text>
+                <Text>{formatVnd(order.price)}</Text>
               </View>
               <View style={styles.tbody}>
-                <Text>{(order.price * order.quantity).toFixed(2)}</Text>
+                <Text>{formatVnd(order.price * order.quantity)}</Text>
               </View>
             </View>
           </Fragment>

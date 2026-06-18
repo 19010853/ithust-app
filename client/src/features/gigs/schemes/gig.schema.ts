@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { array, number, object, ObjectSchema, string } from 'yup';
 
+import { GIG_MAX_PRICE_VND, GIG_MIN_PRICE_VND } from 'src/shared/utils/currency.utils';
+
 import { ICreateGig } from '../interfaces/gig.interface';
 
 const gigInfoSchema: ObjectSchema<ICreateGig | any> = object({
@@ -25,7 +27,11 @@ const gigInfoSchema: ObjectSchema<ICreateGig | any> = object({
     .required({ basicTitle: 'Vui lòng nhập tiêu đề gói cơ bản' }),
   subCategories: array(string()).min(1, { subCategories: 'Vui lòng thêm danh mục con' }),
   tags: array(string()).min(1, { tags: 'Vui lòng thêm thẻ tìm kiếm' }),
-  price: number().min(5, { price: 'Giá phải tối thiểu là 5' }).required({ price: 'Vui lòng nhập giá' })
+  price: number()
+    .integer({ price: 'Giá phải là số nguyên VND' })
+    .min(GIG_MIN_PRICE_VND, { price: `Giá phải tối thiểu là ${GIG_MIN_PRICE_VND} VND` })
+    .max(GIG_MAX_PRICE_VND, { price: `Giá tối đa là ${GIG_MAX_PRICE_VND} VND` })
+    .required({ price: 'Vui lòng nhập giá' })
 });
 
 export { gigInfoSchema };

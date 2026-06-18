@@ -2,6 +2,7 @@ import { FC, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 import { IOrderDocument, IOrderTableProps } from 'src/features/order/interfaces/order.interface';
 import { updateHeader } from 'src/shared/header/reducers/header.reducer';
+import { calculateSellerEarningsVnd, formatVnd } from 'src/shared/utils/currency.utils';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
 import { useAppDispatch } from 'src/store/store';
 import { v4 as uuidv4 } from 'uuid';
@@ -44,7 +45,7 @@ const ManageEarningsTable: FC<IOrderTableProps> = ({ type, orders, orderTypes })
                       {order.orderId}
                     </Link>
                   </td>
-                  <td className="px-3 text-left md:text-center text-sky-500 font-bold">US ${0.8 * order.price}</td>
+                  <td className="px-3 text-left md:text-center text-sky-500 font-bold">{formatVnd(calculateSellerEarningsVnd(order.price))}</td>
                 </tr>
               ))}
             </tbody>

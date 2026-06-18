@@ -119,6 +119,7 @@ export interface ITextInputProps {
   maxLength?: number;
   min?: string | number;
   max?: string | number;
+  step?: string | number;
   onChange?: (event: ChangeEvent) => void;
   onClick?: () => void;
   onFocus?: () => void;

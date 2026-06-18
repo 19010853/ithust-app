@@ -3,6 +3,7 @@ import { FaRegClock } from 'react-icons/fa';
 import { createSearchParams, NavigateFunction, useNavigate } from 'react-router-dom';
 import { IOffer } from 'src/features/order/interfaces/order.interface';
 import Button from 'src/shared/button/Button';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 import { showErrorToast } from 'src/shared/utils/utils.service';
 
 import { IChatMessageProps } from '../../interfaces/chat.interface';
@@ -39,7 +40,7 @@ const ChatOffer: FC<IChatMessageProps> = ({ message, seller, gig }): ReactElemen
       <div className="w-full">
         <div className="border-grey flex flex-row justify-between border-b bg-[#fafafa] p-4 text-sm font-bold md:text-base">
           <span className="">{message.offer?.gigTitle}</span>
-          <span>${message.offer?.price}</span>
+          <span>{formatVnd(message.offer?.price)}</span>
         </div>
         <div className="border-grey h-28 max-h-28 overflow-y-scroll border-b px-4 py-3">{messageOffer.description}</div>
         <div className="border-grey flex flex-row gap-x-2 border-b px-4 py-3 text-sm font-bold md:text-base">

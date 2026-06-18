@@ -2,6 +2,7 @@ import { ChangeEvent, FC, ReactElement, useMemo, useState } from 'react';
 import { IWithdrawalDocument } from 'src/features/sellers/interfaces/seller.interface';
 import { useGetWithdrawalsQuery, useUpdateWithdrawalStatusMutation } from 'src/features/sellers/services/seller.service';
 import Button from 'src/shared/button/Button';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 import { isFetchBaseQueryError, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 
 type WithdrawalStatus = 'PENDING' | 'COMPLETED' | 'REJECTED';
@@ -201,7 +202,7 @@ const AdminWithdrawals: FC = (): ReactElement => {
               withdrawals.map((withdrawal) => (
                 <tr key={withdrawal._id} className="border-b border-grey last:border-b-0">
                   <td className="px-4 py-3 font-medium text-gray-900">{sellerName(withdrawal)}</td>
-                  <td className="px-4 py-3">${withdrawal.amount}</td>
+                  <td className="px-4 py-3">{formatVnd(withdrawal.amount)}</td>
                   <td className="px-4 py-3">{withdrawal.bankInfo?.bankName || '-'}</td>
                   <td className="px-4 py-3">
                     <div className="font-medium">{withdrawal.bankInfo?.accountNumber || '-'}</div>
@@ -265,7 +266,7 @@ const AdminWithdrawals: FC = (): ReactElement => {
           <div className="w-full max-w-lg bg-white p-5 shadow-xl">
             <h2 className="mb-2 text-lg font-bold text-gray-900">Đánh dấu yêu cầu là {withdrawalStatusLabel[nextStatus].toLowerCase()}</h2>
             <p className="mb-4 text-sm text-gray-600">
-              Yêu cầu {selectedWithdrawal._id} với số tiền ${selectedWithdrawal.amount}
+              Yêu cầu {selectedWithdrawal._id} với số tiền {formatVnd(selectedWithdrawal.amount)}
             </p>
             <div className="mb-3 flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-700">Mã tham chiếu thanh toán</label>

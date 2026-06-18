@@ -2,6 +2,7 @@ import { FC, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 import { IActiveOrderProps, IOrderDocument } from 'src/features/order/interfaces/order.interface';
 import { updateHeader } from 'src/shared/header/reducers/header.reducer';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
 import { useAppDispatch } from 'src/store/store';
 import { v4 as uuidv4 } from 'uuid';
@@ -45,7 +46,7 @@ const ActiveOrderTable: FC<IActiveOrderProps> = ({ activeOrders }): ReactElement
                       <span className="flex self-center font-bold">{order.buyerUsername}</span>
                     </div>
                   </td>
-                  <td className="p-3 text-left lg:text-center">${order.price}</td>
+                  <td className="p-3 text-left lg:text-center">{formatVnd(order.price)}</td>
                   <td className="p-3 text-left lg:text-center">{TimeAgo.dayMonthYear(`${order.offer.newDeliveryDate}`)}</td>
                   <td className="p-3 text-left lg:text-center">
                     <span className="rounded bg-green-500 px-[5px] py-[4px] text-xs font-bold uppercase text-white">Đang thực hiện</span>

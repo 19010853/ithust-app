@@ -166,7 +166,7 @@ const seedData = async (sellers: ISellerDocument[], count: string): Promise<void
       subCategories: [faker.commerce.department(), faker.commerce.department(), faker.commerce.department()],
       description: faker.lorem.sentences({ min: 2, max: 4 }),
       tags: [faker.commerce.product(), faker.commerce.product(), faker.commerce.product(), faker.commerce.product()],
-      price: parseInt(faker.commerce.price({ min: 20, max: 30, dec: 0 })),
+      price: parseInt(faker.commerce.price({ min: 100000, max: 5000000, dec: 0 })),
       coverImage: faker.image.urlPicsumPhotos(),
       expectedDelivery: `${sample(expectedDelivery)}`,
       sortId: parseInt(count, 10) + i + 1,

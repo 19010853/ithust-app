@@ -9,6 +9,7 @@ import { useApproveOrderMutation } from 'src/features/order/services/order.servi
 import Button from 'src/shared/button/Button';
 import ApprovalModal from 'src/shared/modals/ApprovalModal';
 import { IApprovalModalContent } from 'src/shared/modals/interfaces/modal.interface';
+import { calculateSellerEarningsVnd } from 'src/shared/utils/currency.utils';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
 import { bytesToSize, downloadFile, getFileBlob, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -44,7 +45,7 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
           completedJobs: 1,
           // seller will receiver 80% of original price
           // 20% goes to the platform
-          totalEarnings: 0.8 * parseInt(`${order?.price}`),
+          totalEarnings: calculateSellerEarningsVnd(order?.price),
           purchasedGigs: `${order?.gigId}`
         };
         await approveOrder({ orderId: `${order?.orderId}`, body: orderMessage });

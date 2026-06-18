@@ -1,5 +1,8 @@
 import Joi, { ObjectSchema } from 'joi';
 
+const OFFER_MIN_PRICE_VND = 100000;
+const OFFER_MAX_PRICE_VND = 250000000;
+
 const messageSchema: ObjectSchema = Joi.object().keys({
   conversationId: Joi.string().optional().allow(null, ''),
   _id: Joi.string().optional(),
@@ -44,7 +47,12 @@ const messageSchema: ObjectSchema = Joi.object().keys({
   hasOffer: Joi.boolean().optional(),
   offer: Joi.object({
     gigTitle: Joi.string().optional(),
-    price: Joi.number().optional(),
+    price: Joi.number().integer().min(OFFER_MIN_PRICE_VND).max(OFFER_MAX_PRICE_VND).optional().messages({
+      'number.base': 'Offer price must be a number',
+      'number.integer': 'Offer price must be a whole VND amount',
+      'number.min': `Offer price must be at least ${OFFER_MIN_PRICE_VND} VND`,
+      'number.max': `Offer price must be at most ${OFFER_MAX_PRICE_VND} VND`
+    }),
     description: Joi.string().optional(),
     deliveryInDays: Joi.number().optional(),
     oldDeliveryDate: Joi.string().optional(),

@@ -8,6 +8,7 @@ import Button from '../button/Button';
 import Dropdown from '../dropdown/Dropdown';
 import TextAreaInput from '../inputs/TextAreaInput';
 import TextInput from '../inputs/TextInput';
+import { GIG_MAX_PRICE_VND, GIG_MIN_PRICE_VND } from '../utils/currency.utils';
 import { expectedGigDelivery, showErrorToast } from '../utils/utils.service';
 import { IModalProps } from './interfaces/modal.interface';
 import ModalBg from './ModalBg';
@@ -27,9 +28,16 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
     deliveryDate: ''
   });
   const [saveChatMessage] = useSaveChatMessageMutation();
+  const offerPrice = Number(offer.price);
+  const offerHasValidPrice = Number.isInteger(offerPrice) && offerPrice >= GIG_MIN_PRICE_VND && offerPrice <= GIG_MAX_PRICE_VND;
 
   const sendGigOffer = async (): Promise<void> => {
     try {
+      if (!offerHasValidPrice) {
+        showErrorToast(`Giá đề nghị phải từ ${GIG_MIN_PRICE_VND} đến ${GIG_MAX_PRICE_VND} VND.`);
+        return;
+      }
+
       const messageBody: IMessageDocument = {
         conversationId: `${singleMessage?.conversationId}`,
         hasConversationId: true,
@@ -45,7 +53,7 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
         hasOffer: true,
         offer: {
           gigTitle: `${gigTitle}`,
-          price: parseInt(offer.price),
+          price: offerPrice,
           description: offer.description,
           deliveryInDays: parseInt(offer.delivery),
           oldDeliveryDate: offer.deliveryDate,
@@ -109,10 +117,13 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
                   type="number"
                   value={offer.price}
                   className="flex h-10 w-full items-center rounded border border-gray-300 pl-3 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-                  placeholder="Nhập giá tùy chỉnh"
+                  placeholder="Nhập giá tùy chỉnh bằng VND"
+                  min={GIG_MIN_PRICE_VND}
+                  max={GIG_MAX_PRICE_VND}
+                  step={1}
                   onChange={(event: ChangeEvent) => {
                     const value = (event.target as HTMLInputElement).value;
-                    setOffer({ ...offer, price: parseInt(value) > 0 ? value : '' });
+                    setOffer({ ...offer, price: /^\d*$/.test(value) ? value : offer.price });
                   }}
                 />
               </div>
@@ -143,7 +154,7 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
             <div className="ml-2 flex w-full justify-center text-sm font-medium">
               <Button
                 className="rounded bg-sky-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
-                disabled={!offer.description || !offer.price || !offer.delivery}
+                disabled={!offer.description || !offerHasValidPrice || !offer.deliveryDate}
                 label="Gửi đề nghị"
                 onClick={sendGigOffer}
               />

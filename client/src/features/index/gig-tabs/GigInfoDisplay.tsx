@@ -11,6 +11,7 @@ import HtmlParser from 'src/shared/html-parser/HtmlParser';
 import CircularPageLoader from 'src/shared/page-loader/CircularPageLoader';
 import StarRating from 'src/shared/rating/StarRating';
 import { emptyGigData } from 'src/shared/utils/static-data';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 import { rating, shortenLargeNumbers } from 'src/shared/utils/utils.service';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -109,7 +110,7 @@ const GigInfoDisplay: FC = (): ReactElement => {
                   <StickyBox>
                     <div className="border-grey mb-8 border">
                       <div className="flex border-b px-4 py-2">
-                        <h4 className="font-bold">${gig.current.price}</h4>
+                        <h4 className="font-bold">{formatVnd(gig.current.price)}</h4>
                       </div>
                       <ul className="mb-0 list-none px-4 py-2">
                         <li className="flex justify-between">

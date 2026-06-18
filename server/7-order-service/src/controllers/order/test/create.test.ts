@@ -6,6 +6,15 @@ import { order } from '@order/controllers/order/create';
 import { orderSchema } from '@order/schemes/order';
 import { BadRequestError, IOrderDocument } from '@19010853/ithust-shared';
 
+type OrderDocumentWithPayment = IOrderDocument & {
+  serviceFee: number;
+  paymentAmountVnd: number;
+  paymentCurrency: 'VND';
+  paymentStatus: 'PENDING';
+  status: 'PENDING_PAYMENT';
+  _id?: string;
+};
+
 jest.mock('@order/services/order.service');
 jest.mock('@19010853/ithust-shared');
 jest.mock('@order/schemes/order');
@@ -16,9 +25,6 @@ jest.mock('@order/config', () => ({
     PLATFORM_BANK_ID: 'VietinBank',
     getSepayMode: jest.fn(() => 'test')
   }
-}));
-jest.mock('@order/services/exchange-rate.service', () => ({
-  getUsdToVndRate: jest.fn(() => Promise.resolve(25000))
 }));
 
 describe('Order Controller', () => {
@@ -54,9 +60,16 @@ describe('Order Controller', () => {
     it('should return correct json response', async () => {
       const req: Request = orderMockRequest({}, orderDocument, authUserPayload) as unknown as Request;
       const res: Response = orderMockResponse();
-      let orderData: IOrderDocument = req.body;
-      orderData = { ...orderData, serviceFee: 3.1, status: 'PENDING_PAYMENT' };
-      (orderData as IOrderDocument & { _id: string })._id = '65f1f1f1f1f1f1f1f1f1f1f1';
+      let orderData = req.body as OrderDocumentWithPayment;
+      orderData = {
+        ...orderData,
+        serviceFee: 77500,
+        status: 'PENDING_PAYMENT',
+        paymentAmountVnd: 577500,
+        paymentCurrency: 'VND',
+        paymentStatus: 'PENDING'
+      };
+      orderData._id = '65f1f1f1f1f1f1f1f1f1f1f1';
       jest.spyOn(orderSchema, 'validate').mockImplementation((): any => Promise.resolve({ error: {} }));
       jest.spyOn(orderService, 'createOrder').mockResolvedValue(orderData);
 
@@ -75,7 +88,7 @@ describe('Order Controller', () => {
       });
       expect(orderService.createOrder).toHaveBeenCalledWith(
         expect.objectContaining({
-          serviceFee: 3.1,
+          serviceFee: 77500,
           paymentAmountVnd: 577500,
           paymentCurrency: 'VND'
         })

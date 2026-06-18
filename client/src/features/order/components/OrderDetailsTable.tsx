@@ -3,6 +3,7 @@ import { FC, ReactElement, useRef, useState } from 'react';
 import { FaBox, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
+import { formatVnd } from 'src/shared/utils/currency.utils';
 
 import { OrderContext } from '../context/OrderContext';
 import { IOrderInvoice, IOrderProps } from '../interfaces/order.interface';
@@ -111,7 +112,7 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
                           <td className="px-4 py-4">
                             {offer?.deliveryInDays ?? 0} ngày
                           </td>
-                          <td className="px-4 py-4">${order.price}</td>
+                          <td className="px-4 py-4">{formatVnd(order.price)}</td>
                         </tr>
                         <tr className="bg-white">
                           <th scope="row" className="whitespace-wrap px-4 py-4 font-normal">
@@ -129,7 +130,7 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
                           </th>
                           <td className="px-4 py-3"></td>
                           <td className="px-4 py-3"></td>
-                          <td className="px-4 py-3 font-bold">${order.serviceFee?.toFixed(2)}</td>
+                          <td className="px-4 py-3 font-bold">{formatVnd(order.serviceFee)}</td>
                         </tr>
                         <tr>
                           <th scope="row" className="px-4 py-3 text-base">
@@ -137,7 +138,7 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
                           </th>
                           <td className="px-4 py-3"></td>
                           <td className="px-4 py-3"></td>
-                          <td className="px-4 py-3 font-bold">${Number(order.price ?? 0) + Number(order.serviceFee ?? 0)}</td>
+                          <td className="px-4 py-3 font-bold">{formatVnd(Number(order.price ?? 0) + Number(order.serviceFee ?? 0))}</td>
                         </tr>
                       </tfoot>
                     </table>

@@ -33,7 +33,7 @@ const orderSchema: Schema = new Schema(
     price: { type: Number, required: true },
     serviceFee: { type: Number, default: 0 },
     paymentAmountVnd: { type: Number },
-    paymentCurrency: { type: String, enum: ['VND'] },
+    paymentCurrency: { type: String, enum: ['VND'], default: 'VND' },
     requirements: { type: String, default: '' },
     approved: { type: Boolean, default: false },
     delivered: { type: Boolean, default: false },
