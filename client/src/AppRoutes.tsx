@@ -29,6 +29,7 @@ import ManageEarnings from './features/sellers/components/dashboard/ManageEarnin
 import ManageOrders from './features/sellers/components/dashboard/ManageOrders';
 import Seller from './features/sellers/components/dashboard/Seller';
 import SellerDashboard from './features/sellers/components/dashboard/SellerDashboard';
+import StripeConnectReturn from './features/sellers/components/dashboard/StripeConnectReturn';
 import CurrentSellerProfile from './features/sellers/components/profile/CurrentSellerProfile';
 import SellerProfile from './features/sellers/components/profile/SellerProfile';
 import Settings from './features/settings/components/Settings';
@@ -224,6 +225,30 @@ const AppRouter: FC = () => {
           <ProtectedRoute>
             <Layout backgroundColor="#ffffff">
               <SellerProfile />
+            </Layout>
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/seller/stripe/return',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <Layout backgroundColor="#ffffff">
+              <StripeConnectReturn />
+            </Layout>
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/seller/stripe/refresh',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <Layout backgroundColor="#ffffff">
+              <StripeConnectReturn />
             </Layout>
           </ProtectedRoute>
         </Suspense>

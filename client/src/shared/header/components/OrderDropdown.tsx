@@ -38,8 +38,8 @@ const OrderDropdown: FC<IHomeHeaderProps> = ({ buyer, setIsDropdownOpen }): Reac
                   <div className="flex gap-2 text-[11px]">
                     <span className="font-normal text-[#b5b6ba]">bởi {order.sellerUsername}</span>
                     <span className="font-normal">&#x2022;</span>
-                    <span className={`rounded text-white px-2 ${lowerCase(order.status.replace(/ /g, ''))}`}>
-                      {orderStatusDisplayLabel(order.status)}
+                    <span className={`rounded text-white px-2 ${lowerCase((order.paymentStatus === 'REFUND_PROCESSING' ? 'REFUND_PROCESSING' : order.status).replace(/ /g, ''))}`}>
+                      {orderStatusDisplayLabel(order.paymentStatus === 'REFUND_PROCESSING' ? 'refund processing' : order.status)}
                     </span>
                   </div>
                 </div>

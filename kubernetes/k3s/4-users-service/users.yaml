@@ -99,3 +99,29 @@ spec:
                 secretKeyRef:
                   name: ithust-backend-secret
                   key: platform-owner-email
+            - name: CLIENT_URL
+              value: "https://ithust.shop"
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ithust-backend-secret
+                  key: stripe-secret-key
+            - name: STRIPE_CONNECT_WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ithust-backend-secret
+                  key: stripe-connect-webhook-secret
+            - name: STRIPE_CURRENCY
+              value: "usd"
+            - name: STRIPE_VND_PER_UNIT
+              value: "25000"
+            - name: STRIPE_AUTOMATIC_PAYOUT_ENABLED
+              value: "true"
+            - name: STRIPE_CONNECT_RETURN_URL
+              value: "https://ithust.shop/seller/stripe/return"
+            - name: STRIPE_CONNECT_REFRESH_URL
+              value: "https://ithust.shop/seller/stripe/refresh"
+            - name: PAYOUT_MIN_AMOUNT
+              value: "100000"
+            - name: PAYOUT_MAX_AMOUNT_PER_REQUEST
+              value: "20000000"

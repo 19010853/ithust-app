@@ -35,6 +35,18 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
       _id: `${order?.buyerId}`,
       profilePicture: `${order?.buyerImage}`
     };
+    const canShowDeliveredWork =
+      order?.delivered &&
+      order?.deliveredWork &&
+      order.deliveredWork.length > 0 &&
+      !['REFUND_PROCESSING', 'REFUNDED'].includes(`${order.paymentStatus || ''}`) &&
+      order.status !== 'REFUNDED';
+    const canApproveDelivery =
+      canShowDeliveredWork &&
+      order?.paymentStatus === 'HELD' &&
+      order.status !== 'DISPUTED' &&
+      !order?.approved &&
+      authUser?.username === order?.buyerUsername;
 
     const onDeliveryApprovalHandler = async (): Promise<void> => {
       try {
@@ -75,7 +87,7 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
             onClick={onDeliveryApprovalHandler}
           />
         )}
-        {order?.delivered && order?.deliveredWork && order?.deliveredWork.length > 0 && (
+        {canShowDeliveredWork && (
           <div className="flex rounded-[4px] bg-white px-4 py-3">
             <div className="w-full">
               <div className="flex gap-4">
@@ -107,7 +119,7 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
                           <div className="border-grey border-b bg-[#fafafb] py-3 font-medium uppercase">
                             <span className="px-5">Nội dung bàn giao</span>
                           </div>
-                          {order.deliveredWork.map((work: IDeliveredWork) => (
+                          {(order.deliveredWork || []).map((work: IDeliveredWork) => (
                             <div
                               key={uuidv4()}
                               className="border-grey flex w-full cursor-pointer flex-col items-center space-x-4 border-b px-5 pt-2 last:border-none md:flex-row"
@@ -147,7 +159,7 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
           </div>
         )}
 
-        {order?.delivered && order?.deliveredWork && order?.deliveredWork.length > 0 && (
+        {canShowDeliveredWork && (
           <div className="flex rounded-[4px] bg-white px-4 py-1">
             <div className="w-full">
               <div className="flex gap-4">
@@ -159,13 +171,13 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
                 <div className="border-grey w-full cursor-pointer border-b pb-6">
                   <div className="mt-2 flex items-center gap-2 font-medium text-gray-500">
                     <span>{order.approved && `${authUser?.username === order.buyerUsername ? 'Đơn hàng của bạn' : 'Đơn hàng'} đã hoàn tất`}</span>
-                    {!order.approved && authUser?.username === order.buyerUsername && <span>Bạn đã sẵn sàng duyệt phần bàn giao?</span>}
+                    {canApproveDelivery && <span>Bạn đã sẵn sàng duyệt phần bàn giao?</span>}
                     {!order.approved && authUser?.username !== order.buyerUsername && (
                       <span className="italic">Đang chờ đơn hàng được duyệt.</span>
                     )}
                     {order.approved && <p className="text-sm font-normal italic">{TimeAgo.dayWithTime(`${order?.approvedAt}`)}</p>}
                   </div>
-                  {!order.approved && authUser?.username === order.buyerUsername && (
+                  {canApproveDelivery && (
                     <div className="my-3 flex flex-col">
                       <div className="relative overflow-x-auto">
                         <div className="text-left text-sm text-gray-500">

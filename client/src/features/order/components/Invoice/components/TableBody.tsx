@@ -5,7 +5,7 @@ import { IOrderInvoiceService } from 'src/features/order/interfaces/order.interf
 import { formatVnd } from 'src/shared/utils/currency.utils';
 
 const styles = StyleSheet.create({
-  tbody: { fontSize: 9, paddingTop: 4, textAlign: 'center', flex: 1, borderColor: 'whitesmoke', borderBottomWidth: 1 },
+  tbody: { fontSize: 9, fontFamily: 'Noto Sans', fontWeight: 400, paddingTop: 4, textAlign: 'center', flex: 1, borderColor: 'whitesmoke', borderBottomWidth: 1 },
   tbody2: { flex: 2, textAlign: 'left' }
 });
 

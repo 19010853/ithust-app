@@ -45,7 +45,7 @@ const AddSeller: FC = (): ReactElement => {
   ]);
   const [educationFields, setEducationFields] = useState<IEducation[]>([
     {
-      country: 'Quốc gia',
+      country: '',
       university: '',
       title: 'Bằng cấp',
       major: '',
@@ -89,7 +89,7 @@ const AddSeller: FC = (): ReactElement => {
         const socialLinks: string[] = filter(socialFields, (item: string) => item !== '') as string[];
         const certificates: ICertificate[] = filter(
           certificateFields,
-          (item: ICertificate) => item.name !== '' && item.from !== '' && item.year !== ''
+          (item: ICertificate) => item.name !== '' && item.from !== '' && item.year !== '' && item.year !== 'Năm'
         ) as ICertificate[];
         const sellerData: ISellerDocument = {
           email: `${authUser.email}`,

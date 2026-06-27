@@ -39,7 +39,18 @@ const orderSchema: Schema = new Schema(
     delivered: { type: Boolean, default: false },
     cancelled: { type: Boolean, default: false },
     approvedAt: { type: Date },
-    paymentStatus: { type: String, enum: ['PENDING', 'HELD', 'RELEASED', 'REFUND_REQUESTED'], default: 'PENDING' },
+    refundedAt: { type: Date },
+    refundBalanceAdjustedAt: { type: Date },
+    paymentProvider: { type: String, enum: ['stripe', 'paypal', 'sepay'], default: 'stripe', index: true },
+    providerPaymentId: { type: String, default: '', index: true },
+    providerChargeId: { type: String, default: '' },
+    providerAmount: { type: String, default: '' },
+    providerCurrency: { type: String, default: '' },
+    paymentStatus: {
+      type: String,
+      enum: ['PENDING', 'HELD', 'RELEASED', 'REFUND_REQUESTED', 'REFUND_PROCESSING', 'REFUNDED', 'PAYMENT_EXPIRED', 'PAYMENT_FAILED'],
+      default: 'PENDING'
+    },
     paymentTransactionId: { type: String, unique: true, sparse: true },
     deliveredWork: [
       {

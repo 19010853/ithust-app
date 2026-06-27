@@ -1,20 +1,19 @@
 <div style="font-family: Arial, sans-serif; background: #f7f7f7; padding: 24px; color: #1f2937;">
   <div style="max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid #e5e7eb;">
-    <h2 style="margin: 0 0 12px; font-size: 22px;">Yêu cầu hoàn tiền đã được gửi</h2>
+    <h2 style="margin: 0 0 12px; font-size: 22px;">Yêu cầu hoàn tiền đã được ghi nhận</h2>
     <p style="margin: 0 0 16px; line-height: 1.6;">
-      Người mua <strong><%= buyerUsername %></strong> (<%= buyerEmail %>) đã yêu cầu xem xét hoàn tiền thủ công.
+      Người mua <strong><%= buyerUsername %></strong> (<%= buyerEmail %>) đã yêu cầu hoàn tiền cho đơn hàng này.
+      Khoản hoàn tiền Stripe sẽ được trả về phương thức thanh toán ban đầu của buyer.
     </p>
     <table style="width: 100%; border-collapse: collapse; margin: 16px 0 20px;">
       <tr><td style="padding: 8px 0; font-weight: 700; width: 180px;">Đơn hàng</td><td style="padding: 8px 0;"><%= orderId %></td></tr>
       <tr><td style="padding: 8px 0; font-weight: 700;">Số tiền</td><td style="padding: 8px 0;"><%= amount %></td></tr>
       <tr><td style="padding: 8px 0; font-weight: 700;">Lý do</td><td style="padding: 8px 0;"><%= reason %></td></tr>
-      <tr><td style="padding: 8px 0; font-weight: 700;">Ngân hàng</td><td style="padding: 8px 0;"><%= bankName %></td></tr>
-      <tr><td style="padding: 8px 0; font-weight: 700;">Số tài khoản</td><td style="padding: 8px 0;"><%= accountNumber %></td></tr>
-      <tr><td style="padding: 8px 0; font-weight: 700;">Tên tài khoản</td><td style="padding: 8px 0;"><%= accountName %></td></tr>
+      <tr><td style="padding: 8px 0; font-weight: 700;">Phương thức</td><td style="padding: 8px 0;"><%= paymentProvider || 'Stripe' %> - <%= settlementMode || 'ORIGINAL_SOURCE' %></td></tr>
       <tr><td style="padding: 8px 0; font-weight: 700;">Mã yêu cầu hoàn tiền</td><td style="padding: 8px 0;"><%= refundRequestId %></td></tr>
     </table>
     <p style="margin: 0; line-height: 1.6;">
-      Mở <a href="<%= orderUrl %>">đơn hàng</a>, xem xét trường hợp này, chuyển tiền thủ công khi được phê duyệt và lưu lại bản ghi yêu cầu để đối soát.
+      Mở <a href="<%= orderUrl %>">đơn hàng</a> để theo dõi trạng thái xử lý. Không cần thu thập thông tin ngân hàng của buyer cho luồng này.
     </p>
   </div>
 </div>

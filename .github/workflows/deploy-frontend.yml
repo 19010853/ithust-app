@@ -36,9 +36,10 @@ jobs:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           VITE_BASE_ENDPOINT: ${{ secrets.VITE_BASE_ENDPOINT }}
           VITE_CLIENT_ENDPOINT: ${{ secrets.VITE_CLIENT_ENDPOINT }}
+          VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
         run: |
           missing=0
-          for secret_name in DOCKERHUB_USERNAME DOCKERHUB_PASSWORD KUBECONFIG_B64 TELEGRAM_TO TELEGRAM_TOKEN VITE_BASE_ENDPOINT VITE_CLIENT_ENDPOINT; do
+          for secret_name in DOCKERHUB_USERNAME DOCKERHUB_PASSWORD KUBECONFIG_B64 TELEGRAM_TO TELEGRAM_TOKEN VITE_BASE_ENDPOINT VITE_CLIENT_ENDPOINT VITE_STRIPE_PUBLISHABLE_KEY; do
             if [ -z "${!secret_name}" ]; then
               echo "::error title=Missing GitHub Actions secret::$secret_name is required in Repository secrets."
               missing=1
@@ -55,6 +56,7 @@ jobs:
           echo "VITE_NODE_ENV=production" > .env.production
           echo "VITE_BASE_ENDPOINT=${{ secrets.VITE_BASE_ENDPOINT }}" >> .env.production
           echo "VITE_CLIENT_ENDPOINT=${{ secrets.VITE_CLIENT_ENDPOINT }}" >> .env.production
+          echo "VITE_STRIPE_PUBLISHABLE_KEY=${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}" >> .env.production
           echo "VITE_ELASTIC_APM_SERVER=${{ secrets.VITE_ELASTIC_APM_SERVER }}" >> .env.production
           echo "VITE_ELASTIC_APM_SERVER_TOKEN=${{ secrets.VITE_ELASTIC_APM_SERVER_TOKEN }}" >> .env.production
 

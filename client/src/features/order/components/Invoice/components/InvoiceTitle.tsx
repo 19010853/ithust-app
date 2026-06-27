@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch'
   },
   spaceBetween: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', color: '#3E3E3E' },
-  reportTitle: { fontSize: 18, textAlign: 'center', fontWeight: 'bold' }
+  reportTitle: { fontSize: 18, textAlign: 'center', fontFamily: 'Noto Sans', fontWeight: 700 }
 });
 
 const InvoiceTitle: FC = (): ReactElement => {

@@ -12,11 +12,14 @@ import { IReduxState } from 'src/store/store.interface';
 
 const GigPackage: FC = (): ReactElement => {
   const authUser = useAppSelector((state: IReduxState) => state.authUser);
-  const { gig } = useContext(GigContext);
+  const { gig, seller } = useContext(GigContext);
   const [approvalModalContent, setApprovalModalContent] = useState<IApprovalModalContent>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const navigate: NavigateFunction = useNavigate();
   const gigIsPaused = gig.active === false;
+  const isOwnGig =
+    `${authUser.username || ''}`.toLowerCase() === `${seller.username || gig.username || ''}`.toLowerCase() ||
+    `${authUser.email || ''}`.toLowerCase() === `${seller.email || gig.email || ''}`.toLowerCase();
 
   const continueToCheck = () => {
     if (gigIsPaused) {
@@ -71,9 +74,9 @@ const GigPackage: FC = (): ReactElement => {
           <li className="flex justify-between">
             <div className="ml-15 flex w-full py-1">
               <Button
-                disabled={authUser.username === gig.username || gigIsPaused}
+                disabled={isOwnGig || gigIsPaused}
                 className={`text-md flex w-full justify-between rounded bg-sky-500 px-8 py-2 font-bold text-white focus:outline-none
-                ${authUser.username === gig.username || gigIsPaused ? 'opacity-20 cursor-not-allowed' : 'hover:bg-sky-400 cursor-pointer'}
+                ${isOwnGig || gigIsPaused ? 'opacity-20 cursor-not-allowed' : 'hover:bg-sky-400 cursor-pointer'}
                 `}
                 label={
                   <>

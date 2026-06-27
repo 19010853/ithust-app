@@ -9,6 +9,7 @@ import {
   updateSellerCancelledJobsProp,
   updateSellerCompletedJobsProp,
   updateSellerOngoingJobsProp,
+  updateSellerRefundedOrderProp,
   updateSellerReview,
   updateTotalGigsCount
 } from '@users/services/seller.service';
@@ -80,6 +81,8 @@ const consumeSellerDirectMessage = async (channel: Channel): Promise<void> => {
         await updateTotalGigsCount(`${gigSellerId}`, count);
       } else if (type === 'cancel-order') {
         await updateSellerCancelledJobsProp(sellerId);
+      } else if (type === 'refund-order') {
+        await updateSellerRefundedOrderProp(sellerId, ongoingJobs || -1);
       }
       channel.ack(msg!);
     });

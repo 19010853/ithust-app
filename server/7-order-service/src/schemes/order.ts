@@ -92,10 +92,10 @@ const orderUpdateSchema: ObjectSchema = Joi.object().keys({
 const refundRequestSchema: ObjectSchema = Joi.object().keys({
   reason: Joi.string().trim().min(10).max(1000).required(),
   bankInfo: Joi.object({
-    bankName: Joi.string().trim().required(),
-    accountNumber: Joi.string().trim().required(),
-    accountName: Joi.string().trim().required()
-  }).required()
+    bankName: Joi.string().trim().allow('').optional(),
+    accountNumber: Joi.string().trim().allow('').optional(),
+    accountName: Joi.string().trim().allow('').optional()
+  }).optional()
 });
 
 export { orderSchema, orderUpdateSchema, refundRequestSchema };

@@ -8,7 +8,7 @@ import ChatList from './chatlist/ChatList';
 import ChatWindow from './chatwindow/ChatWindow';
 
 const Chat: FC = (): ReactElement => {
-  const { conversationId } = useParams<string>();
+  const { conversationId, username } = useParams<string>();
   const location = useLocation();
   const draftConversation = (location.state as { draftConversation?: IInboxDraftConversation } | null)?.draftConversation;
   const activeDraftConversation = draftConversation?.conversationId === conversationId ? draftConversation : undefined;
@@ -41,7 +41,7 @@ const Chat: FC = (): ReactElement => {
       </div>
 
       <div className="relative hidden w-full overflow-hidden md:w-2/3 lg:flex">
-        {conversationId && (chatMessagesData.length > 0 || activeDraftConversation) ? (
+        {conversationId && (chatMessagesData.length > 0 || activeDraftConversation || username) ? (
           <ChatWindow
             setSkip={setSkip}
             chatMessages={chatMessagesData}

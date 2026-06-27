@@ -19,6 +19,7 @@ const TextInput: ForwardRefExoticComponent<Omit<ITextInputProps, 'ref'> & RefAtt
       min={props.min}
       max={props.max}
       step={props.step}
+      inputMode={props.inputMode}
       onChange={props.onChange}
       onClick={props.onClick}
       onFocus={props.onFocus}

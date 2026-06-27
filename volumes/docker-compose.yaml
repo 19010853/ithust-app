@@ -13,7 +13,7 @@ services:
     image: mongo:latest
     restart: always
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - ./docker-volumes/data:/data/db
   mysql:
@@ -54,7 +54,7 @@ services:
       - "15672:15672"
   elasticsearch:
     container_name: elasticsearch_container
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.3
     restart: always
     environment:
       ES_JAVA_OPTS: -Xms1g -Xmx1g
@@ -77,7 +77,7 @@ services:
     networks:
       - elastic
   apmServer:
-    image: docker.elastic.co/apm/apm-server:8.11.0
+    image: docker.elastic.co/apm/apm-server:8.17.3
     container_name: apm_server_container
     restart: always
     ports:
@@ -98,7 +98,7 @@ services:
         -E apm-server.auth.anonymous.enabled=true
   kibana:
     container_name: kibana_container
-    image: docker.elastic.co/kibana/kibana:8.11.0
+    image: docker.elastic.co/kibana/kibana:8.17.3
     restart: always
     environment:
       - ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
@@ -116,7 +116,7 @@ services:
       - elasticsearch
   metricbeat:
     container_name: metricbeat_container
-    image: docker.elastic.co/beats/metricbeat:8.11.0
+    image: docker.elastic.co/beats/metricbeat:8.17.3
     restart: always
     ports:
       - 5066:5066
@@ -133,7 +133,7 @@ services:
       - elasticsearch
   heartbeat:
     container_name: heartbeat_container
-    image: docker.elastic.co/beats/heartbeat:8.11.0
+    image: docker.elastic.co/beats/heartbeat:8.17.3
     restart: always
     hostname: heartbeat
     cap_add:
@@ -269,7 +269,7 @@ services:
     env_file: ../server/4-users-service/.env
     environment:
       - ENABLE_APM=0
-      - DATABASE_URL=mongodb://127.0.0.1:27017/ithust-users
+      - DATABASE_URL=mongodb://mongodb_container:27017/ithust-users
       - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
       - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
       - NODE_ENV=development
@@ -296,7 +296,7 @@ services:
     env_file: ../server/5-gig-service/.env
     environment:
       - ENABLE_APM=0
-      - DATABASE_URL=mongodb://127.0.0.1:27017/ithust-gig
+      - DATABASE_URL=mongodb://mongodb_container:27017/ithust-gig
       - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
       - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
       - NODE_ENV=development
@@ -323,7 +323,7 @@ services:
     env_file: ../server/6-chat-service/.env
     environment:
       - ENABLE_APM=0
-      - DATABASE_URL=mongodb://127.0.0.1:27017/ithust-chat
+      - DATABASE_URL=mongodb://mongodb_container:27017/ithust-chat
       - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
       - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
       - NODE_ENV=development
@@ -349,7 +349,7 @@ services:
     env_file: ../server/7-order-service/.env
     environment:
       - ENABLE_APM=0
-      - DATABASE_URL=mongodb://127.0.0.1:27017/ithust-order
+      - DATABASE_URL=mongodb://mongodb_container:27017/ithust-order
       - GATEWAY_JWT_TOKEN=16c8a66dfd0ab081047840e3c04c520e
       - JWT_TOKEN=e3ae7fbb00a36638c0a8ee35e3a04a7f
       - NODE_ENV=development

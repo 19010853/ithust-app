@@ -11,9 +11,10 @@ import App from './App.tsx';
 import { store } from './store/store.ts';
 
 const persistor: Persistor = persistStore(store);
+const enableElasticApm = import.meta.env.VITE_ENABLE_APM === 'true';
 const elasticApmServerUrl = import.meta.env.VITE_ELASTIC_APM_SERVER;
 
-if (elasticApmServerUrl) {
+if (enableElasticApm && elasticApmServerUrl) {
   init({
     serviceName: 'ITHust Client App',
     serverUrl: elasticApmServerUrl,

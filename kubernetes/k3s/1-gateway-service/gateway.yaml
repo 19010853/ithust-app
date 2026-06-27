@@ -57,11 +57,6 @@ spec:
                 secretKeyRef:
                   name: ithust-backend-secret
                   key: jwt-token
-            - name: SEPAY_WEBHOOK_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: ithust-backend-secret
-                  key: sepay-webhook-secret
             - name: CLIENT_URL
               value: "https://ithust.shop"
             - name: CLIENT_URLS

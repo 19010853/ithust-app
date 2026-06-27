@@ -6,6 +6,8 @@ export interface IBuyerDocument {
   country: string;
   accountStatus?: 'ACTIVE' | 'ACCOUNT_LOCKED';
   isSeller?: boolean;
+  refundAvailableBalance?: number;
+  refundPendingWithdrawals?: number;
   purchasedGigs: string[];
   createdAt?: Date | string;
   updatedAt?: Date | string;

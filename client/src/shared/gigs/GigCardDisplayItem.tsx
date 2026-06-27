@@ -41,12 +41,16 @@ const GigCardDisplayItem: FC<IGigCardItems> = ({ gig, linkTarget, showEditIcon }
   return (
     <div className="rounded">
       <div className="mb-8 flex cursor-pointer flex-col gap-2">
-        <Link to={`/gig/${lowerCase(`${gig.username}`)}/${title}/${gig.sellerId}/${gig.id}/view`} onClick={() => saveGigTitle(gig)}>
+        <Link
+          to={`/gig/${lowerCase(`${gig.username}`)}/${title}/${gig.sellerId}/${gig.id}/view`}
+          onClick={() => saveGigTitle(gig)}
+          className="block aspect-[3/2] overflow-hidden rounded-lg bg-[#f5f5f5]"
+        >
           <LazyLoadImage
             src={gig.coverImage}
             alt="Ảnh bìa gig"
-            className="w-full rounded-lg"
-            wrapperClassName="bg-center"
+            className="h-full w-full object-cover"
+            wrapperClassName="block h-full w-full bg-center"
             placeholderSrc="https://placehold.co/330x220?text=Anh+dai+dien"
             effect="opacity"
           />

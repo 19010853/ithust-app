@@ -52,8 +52,12 @@ const GigView: FC = (): ReactElement => {
             </div>
           )}
           <div className="mb-4 flex flex-row gap-x-2 px-4">
-            <img className="flex h-8 w-8 self-center rounded-full object-cover" src={gig.current.profilePicture} alt="" />
-            <span className="flex self-center font-extrabold">{gig.current.username}</span>
+            <img
+              className="flex h-8 w-8 self-center rounded-full object-cover"
+              src={seller.current.profilePicture || gig.current.profilePicture}
+              alt=""
+            />
+            <span className="flex self-center font-extrabold">{seller.current.username || gig.current.username}</span>
             <>
               {gig.current.ratingSum && gig.current.ratingsCount && gig.current.ratingSum >= 1 && gig.current.ratingsCount >= 1 ? (
                 <>

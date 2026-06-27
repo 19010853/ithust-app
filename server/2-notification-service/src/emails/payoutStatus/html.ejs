@@ -1,0 +1,7 @@
+<div style="font-family: Arial, sans-serif; padding: 24px; color: #1f2937;">
+  <h2>PayPal payout: <%= status %></h2>
+  <p>Chào <strong><%= ownerFullName || ownerUsername %></strong>, yêu cầu rút <strong><%= amount %></strong> đang ở trạng thái <strong><%= status %></strong>.</p>
+  <p>Mã yêu cầu: <%= withdrawalId %>. Nhà cung cấp: <%= provider || 'PAYPAL' %>.</p>
+  <% if (paymentReference) { %><p>Mã PayPal: <%= paymentReference %>.</p><% } %>
+  <% if (failureReason) { %><p>Lý do lỗi: <%= failureReason %>.</p><% } %>
+</div>

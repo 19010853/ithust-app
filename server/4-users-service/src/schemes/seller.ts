@@ -105,7 +105,7 @@ const sellerSchema: ObjectSchema = Joi.object().keys({
         _id: Joi.string().optional(),
         name: Joi.string(),
         from: Joi.string(),
-        year: Joi.number()
+        year: Joi.string()
       })
     )
     .optional()

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express';
 import * as orderService from '@order/services/order.service';
+import { OrderModel } from '@order/models/order.schema';
+import { createStripePaymentIntent } from '@order/services/stripe.service';
 import { authUserPayload, orderDocument, orderMockRequest, orderMockResponse } from '@order/controllers/order/test/mocks/order.mock';
 import { order } from '@order/controllers/order/create';
 import { orderSchema } from '@order/schemes/order';
@@ -16,14 +18,19 @@ type OrderDocumentWithPayment = IOrderDocument & {
 };
 
 jest.mock('@order/services/order.service');
+jest.mock('@order/services/stripe.service');
+jest.mock('@order/models/order.schema', () => ({ OrderModel: { updateOne: jest.fn() } }));
 jest.mock('@19010853/ithust-shared');
 jest.mock('@order/schemes/order');
 jest.mock('@elastic/elasticsearch');
 jest.mock('@order/config', () => ({
   config: {
-    PLATFORM_BANK_ACCOUNT: '0123456789',
-    PLATFORM_BANK_ID: 'VietinBank',
-    getSepayMode: jest.fn(() => 'test')
+    CLIENT_URL: 'http://localhost:3000',
+    STRIPE_SECRET_KEY: 'sk_test_123',
+    STRIPE_WEBHOOK_SECRET: 'whsec_test_123',
+    STRIPE_CURRENCY: 'usd',
+    STRIPE_VND_PER_UNIT: 25000,
+    REFUND_SETTLEMENT_MODE: 'ORIGINAL_SOURCE'
   }
 }));
 
@@ -72,18 +79,34 @@ describe('Order Controller', () => {
       orderData._id = '65f1f1f1f1f1f1f1f1f1f1f1';
       jest.spyOn(orderSchema, 'validate').mockImplementation((): any => Promise.resolve({ error: {} }));
       jest.spyOn(orderService, 'createOrder').mockResolvedValue(orderData);
+      (createStripePaymentIntent as jest.Mock).mockResolvedValue({
+        clientSecret: 'cs_test_123',
+        providerPaymentId: 'pi_test_123',
+        amount: '23.10',
+        currency: 'usd',
+        exchangeRate: 25000,
+        exchangeRateSource: 'test',
+        exchangeRateFetchedAt: '2026-06-25T00:00:00.000Z'
+      });
+      (OrderModel.updateOne as jest.Mock).mockReturnValue({ exec: jest.fn().mockResolvedValue({}) });
 
       await order(req, res);
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith({
-        message: 'Order created. Please scan QR to pay.',
+        message: 'Order created. Confirm payment with Stripe Sandbox.',
         order: expect.objectContaining(orderData),
         payment: {
-          qrCodeUrl: expect.stringContaining('amount=577500&des=SEVQR%20PAYORDER'),
+          provider: 'stripe',
+          mode: 'sandbox',
+          clientSecret: 'cs_test_123',
+          providerPaymentId: 'pi_test_123',
           amount: 577500,
           currency: 'VND',
-          mode: 'test',
-          content: expect.stringMatching(/^SEVQR PAYORDER[a-fA-F0-9]{24}$/)
+          providerAmount: '23.10',
+          providerCurrency: 'usd',
+          exchangeRate: 25000,
+          exchangeRateSource: 'test',
+          exchangeRateFetchedAt: '2026-06-25T00:00:00.000Z'
         }
       });
       expect(orderService.createOrder).toHaveBeenCalledWith(
@@ -92,6 +115,11 @@ describe('Order Controller', () => {
           paymentAmountVnd: 577500,
           paymentCurrency: 'VND'
         })
+      );
+      expect(createStripePaymentIntent).toHaveBeenCalledWith('65f1f1f1f1f1f1f1f1f1f1f1', orderData.orderId, 577500, orderData.orderId);
+      expect(OrderModel.updateOne).toHaveBeenCalledWith(
+        { _id: '65f1f1f1f1f1f1f1f1f1f1f1', paymentStatus: 'PENDING' },
+        { $set: { providerPaymentId: 'pi_test_123', providerAmount: '23.10', providerCurrency: 'usd' } }
       );
     });
   });

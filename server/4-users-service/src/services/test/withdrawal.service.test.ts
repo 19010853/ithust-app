@@ -8,6 +8,7 @@ jest.mock('@users/models/withdrawal.schema', () => ({
   WithdrawalModel: {
     countDocuments: jest.fn(),
     find: jest.fn(),
+    findById: jest.fn(),
     findOneAndUpdate: jest.fn()
   }
 }));
@@ -56,6 +57,7 @@ describe('Withdrawal service', () => {
       paymentReference: 'PAY-1'
     };
     (WithdrawalModel.findOneAndUpdate as jest.Mock).mockReturnValue({ exec: jest.fn().mockResolvedValue(withdrawal) });
+    (WithdrawalModel.findById as jest.Mock).mockReturnValue({ exec: jest.fn().mockResolvedValue(withdrawal) });
     (SellerModel.updateOne as jest.Mock).mockReturnValue({ exec: jest.fn().mockResolvedValue({ modifiedCount: 1 }) });
 
     const result = await updateWithdrawalStatus('withdrawal-id', {
@@ -65,9 +67,9 @@ describe('Withdrawal service', () => {
 
     expect(result).toEqual(withdrawal);
     expect(WithdrawalModel.findOneAndUpdate).toHaveBeenCalledWith(
-      { _id: 'withdrawal-id', status: 'PENDING' },
+      { _id: 'withdrawal-id', status: { $in: ['PENDING', 'MANUAL_REVIEW', 'FAILED', 'RECONCILIATION_REQUIRED'] } },
       expect.objectContaining({ $set: expect.objectContaining({ status: 'COMPLETED', paymentReference: 'PAY-1' }) }),
-      { new: true }
+      { new: false }
     );
     expect(SellerModel.updateOne).toHaveBeenCalledWith({ _id: 'seller-id' }, { $inc: { pendingWithdrawals: -50 } });
   });
@@ -84,6 +86,7 @@ describe('Withdrawal service', () => {
       paymentReference: ''
     };
     (WithdrawalModel.findOneAndUpdate as jest.Mock).mockReturnValue({ exec: jest.fn().mockResolvedValue(withdrawal) });
+    (WithdrawalModel.findById as jest.Mock).mockReturnValue({ exec: jest.fn().mockResolvedValue(withdrawal) });
     (SellerModel.updateOne as jest.Mock).mockReturnValue({ exec: jest.fn().mockResolvedValue({ modifiedCount: 1 }) });
 
     await updateWithdrawalStatus('withdrawal-id', {
@@ -141,6 +144,9 @@ describe('Withdrawal service', () => {
         { 'bankInfo.bankName': expect.any(RegExp) },
         { 'bankInfo.accountNumber': expect.any(RegExp) },
         { 'bankInfo.accountName': expect.any(RegExp) },
+        { providerTransferId: expect.any(RegExp) },
+        { providerPayoutId: expect.any(RegExp) },
+        { paymentReference: expect.any(RegExp) },
         { sellerId: { $in: ['seller-id'] } }
       ]
     });

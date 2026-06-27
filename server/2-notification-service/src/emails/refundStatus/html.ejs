@@ -1,0 +1,12 @@
+<div style="font-family: Arial, sans-serif; padding: 24px; color: #1f2937;">
+  <h2>Khoản hoàn tiền đã được xử lý</h2>
+  <p>
+    Chào <strong><%= recipientUsername || buyerUsername %></strong>, khoản hoàn tiền
+    <strong><%= amount %></strong> của đơn hàng <strong><%= orderId %></strong> đã được gửi qua Stripe.
+  </p>
+  <p>
+    Stripe sẽ hoàn tiền về đúng phương thức thanh toán ban đầu của bạn. Mã yêu cầu:
+    <strong><%= refundRequestId %></strong>.
+  </p>
+  <% if (orderUrl) { %><p><a href="<%= orderUrl %>">Xem đơn hàng</a></p><% } %>
+</div>

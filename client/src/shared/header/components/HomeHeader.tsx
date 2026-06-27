@@ -132,7 +132,7 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
 
     socket.on('order notification', (_, data: IOrderNotifcation) => {
       // only for receiver
-      if (data.userTo === `${authUser.username}` && !data.isRead) {
+      if (data && data.userTo === `${authUser.username}` && !data.isRead) {
         dispatch(updateNotification({ hasUnreadNotification: true }));
       }
     });

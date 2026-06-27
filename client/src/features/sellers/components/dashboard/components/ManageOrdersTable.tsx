@@ -27,7 +27,11 @@ const orderStatusLabel = (status: string): string => {
     delivered: 'Đã giao',
     completed: 'Hoàn thành',
     cancelled: 'Đã hủy',
-    pending: 'Đang chờ'
+    pending: 'Đang chờ',
+    disputed: 'Đang tranh chấp',
+    refunded: 'Đã hoàn tiền',
+    refund_processing: 'Đang hoàn tiền',
+    'refund processing': 'Đang hoàn tiền'
   };
   return labels[normalizeOrderStatus(status)] || status;
 };
@@ -119,10 +123,10 @@ const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): 
                     <td className="px-3 py-1 lg:p-3 text-left lg:text-center">
                       <span
                         className={`rounded bg-transparent text-black p-0 text-xs font-bold uppercase sm:text-white sm:px-[5px] sm:py-[4px] status ${normalizeOrderStatus(
-                          order.status
+                          order.paymentStatus === 'REFUND_PROCESSING' ? 'REFUND_PROCESSING' : order.status
                         ).replace(/ /g, '')}`}
                       >
-                        {orderStatusLabel(order.status)}
+                        {orderStatusLabel(order.paymentStatus === 'REFUND_PROCESSING' ? 'refund processing' : order.status)}
                       </span>
                     </td>
                     {type === 'active' && (

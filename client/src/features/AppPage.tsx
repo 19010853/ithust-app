@@ -1,41 +1,22 @@
 import { FC, ReactElement, useCallback, useEffect, useState } from 'react';
-
 import { Navigate, NavigateFunction, useNavigate } from 'react-router-dom';
-
 import HomeHeader from 'src/shared/header/components/HomeHeader';
-
 import CircularPageLoader from 'src/shared/page-loader/CircularPageLoader';
-
 import { applicationLogout, getDataFromLocalStorage, saveToSessionStorage } from 'src/shared/utils/utils.service';
-
 import { socket } from 'src/sockets/socket.service';
-
 import { useAppDispatch, useAppSelector } from 'src/store/store';
-
 import { IReduxState } from 'src/store/store.interface';
 
-
-
 import { addAuthUser } from './auth/reducers/auth.reducer';
-
 import { useCheckCurrentUserQuery } from './auth/services/auth.service';
-
 import { addBuyer } from './buyer/reducers/buyer.reducer';
-
 import { useGetCurrentBuyerByUsernameQuery } from './buyer/services/buyer.service';
-
 import Home from './home/components/Home';
-
 import Index from './index/Index';
-
 import { addSeller } from './sellers/reducers/seller.reducer';
-
 import { useGetSellerByUsernameQuery } from './sellers/services/seller.service';
 
-
-
 const AppPage: FC = (): ReactElement => {
-
   const authUser = useAppSelector((state: IReduxState) => state.authUser);
 
   const appLogout = useAppSelector((state: IReduxState) => state.logout);
@@ -53,132 +34,84 @@ const AppPage: FC = (): ReactElement => {
   const { data: buyerData, isLoading: isBuyerLoading } = useGetCurrentBuyerByUsernameQuery(undefined, { skip: authUser.id === null });
 
   const { data: sellerData, isLoading: isSellerLoading } = useGetSellerByUsernameQuery(`${authUser.username}`, {
-
     skip: authUser.id === null
-
   });
 
-
-
   const checkUser = useCallback(async () => {
-
     try {
-
       if (currentUserData && currentUserData.user && !appLogout) {
-
         setTokenIsValid(true);
 
         dispatch(addAuthUser({ authInfo: currentUserData.user }));
 
         if (`${currentUserData.user.role || ''}`.toLowerCase() === 'admin') {
-
           saveToSessionStorage(JSON.stringify(true), JSON.stringify(currentUserData.user.username));
 
           navigate('/admin/users');
 
           return;
-
         }
 
-        dispatch(addBuyer(buyerData?.buyer));
+        if (buyerData?.buyer) {
+          dispatch(addBuyer(buyerData.buyer));
+        }
 
-        dispatch(addSeller(sellerData?.seller));
+        if (sellerData?.seller) {
+          dispatch(addSeller(sellerData.seller));
+        }
 
         saveToSessionStorage(JSON.stringify(true), JSON.stringify(authUser.username));
 
         const becomeASeller = getDataFromLocalStorage('becomeASeller');
 
         if (becomeASeller) {
-
           navigate('/seller_onboarding');
-
         }
 
         if (authUser.username !== null) {
-
           socket.emit('loggedInUsers', authUser.username);
-
         }
-
       }
-
     } catch (error) {
-
       console.log(error);
-
     }
-
   }, [currentUserData, navigate, dispatch, appLogout, authUser.username, buyerData, sellerData]);
 
-
-
   const logoutUser = useCallback(async () => {
-
     if ((!currentUserData && appLogout) || isError) {
-
       setTokenIsValid(false);
 
       applicationLogout(dispatch, navigate);
-
     }
-
   }, [currentUserData, dispatch, navigate, appLogout, isError]);
 
-
-
   useEffect(() => {
-
     checkUser();
 
     logoutUser();
-
   }, [checkUser, logoutUser]);
 
-
-
   if (authUser) {
-
     return !authUser.id ? (
-
       <Index />
-
     ) : (
-
       <>
-
         {isBuyerLoading && isSellerLoading ? (
-
           <CircularPageLoader />
-
+        ) : `${authUser.role || ''}`.toLowerCase() === 'admin' ? (
+          <Navigate to="/admin/users" />
         ) : (
+          <>
+            <HomeHeader showCategoryContainer={showCategoryContainer} />
 
-          `${authUser.role || ''}`.toLowerCase() === 'admin' ? (
-            <Navigate to="/admin/users" />
-          ) : (
-            <>
-
-              <HomeHeader showCategoryContainer={showCategoryContainer} />
-
-              <Home />
-
-            </>
-          )
-
+            <Home />
+          </>
         )}
-
       </>
-
     );
-
   } else {
-
     return <Index />;
-
   }
-
 };
 
-
-
 export default AppPage;
-

@@ -5,17 +5,21 @@ import Button from 'src/shared/button/Button';
 import { formatVnd } from 'src/shared/utils/currency.utils';
 import { isFetchBaseQueryError, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 
-type WithdrawalStatus = 'PENDING' | 'COMPLETED' | 'REJECTED';
+type WithdrawalStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'REJECTED' | 'FAILED' | 'MANUAL_REVIEW' | 'RECONCILIATION_REQUIRED';
 
-const statusOptions: WithdrawalStatus[] = ['PENDING', 'COMPLETED', 'REJECTED'];
+const statusOptions: WithdrawalStatus[] = ['PENDING', 'PROCESSING', 'MANUAL_REVIEW', 'COMPLETED', 'REJECTED', 'FAILED', 'RECONCILIATION_REQUIRED'];
 const withdrawalStatusLabel: Record<WithdrawalStatus, string> = {
   PENDING: 'Chờ xử lý',
+  PROCESSING: 'Stripe đang xử lý',
+  MANUAL_REVIEW: 'Cần xử lý thủ công',
   COMPLETED: 'Đã hoàn tất',
-  REJECTED: 'Đã từ chối'
+  REJECTED: 'Đã từ chối',
+  FAILED: 'Thất bại',
+  RECONCILIATION_REQUIRED: 'Cần đối soát'
 };
 
 const AdminWithdrawals: FC = (): ReactElement => {
-  const [statusFilter, setStatusFilter] = useState<string>('PENDING');
+  const [statusFilter, setStatusFilter] = useState<string>('PROCESSING');
   const [q, setQ] = useState<string>('');
   const [bankName, setBankName] = useState<string>('');
   const [minAmount, setMinAmount] = useState<string>('');
@@ -106,22 +110,23 @@ const AdminWithdrawals: FC = (): ReactElement => {
     return `${withdrawal.sellerId || '-'}`;
   };
 
+  const canManualUpdate = (withdrawal: IWithdrawalDocument): boolean =>
+    withdrawal.provider !== 'STRIPE_CONNECT' && ['PENDING', 'MANUAL_REVIEW'].includes(withdrawal.status);
+
   return (
     <div className="container mx-auto mt-8 px-4">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Yêu cầu rút tiền</h1>
-          <p className="text-sm text-gray-600">Xem xét yêu cầu thanh toán của người bán và ghi nhận kết quả chuyển khoản thủ công.</p>
+          <p className="text-sm text-gray-600">Theo dõi payout Stripe Connect và xử lý các yêu cầu manual nếu có.</p>
         </div>
-        <div className="text-sm text-gray-500">
-          Tìm thấy {pagination?.total || 0} yêu cầu
-        </div>
+        <div className="text-sm text-gray-500">Tìm thấy {pagination?.total || 0} yêu cầu</div>
       </div>
 
       <div className="mb-4 grid gap-3 bg-white p-4 md:grid-cols-4">
         <input
           className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-          placeholder="Tìm người bán hoặc tài khoản ngân hàng"
+          placeholder="Tìm người bán, payout id hoặc tham chiếu"
           value={q}
           onChange={resetPageOnChange(setQ)}
         />
@@ -139,23 +144,13 @@ const AdminWithdrawals: FC = (): ReactElement => {
         </select>
         <input
           className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-          placeholder="Ngân hàng"
+          placeholder="Ngân hàng manual"
           value={bankName}
           onChange={resetPageOnChange(setBankName)}
         />
         <div className="grid grid-cols-2 gap-2">
-          <input
-            className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-            placeholder="Số tiền tối thiểu"
-            value={minAmount}
-            onChange={resetPageOnChange(setMinAmount)}
-          />
-          <input
-            className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-            placeholder="Số tiền tối đa"
-            value={maxAmount}
-            onChange={resetPageOnChange(setMaxAmount)}
-          />
+          <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" placeholder="Tối thiểu" value={minAmount} onChange={resetPageOnChange(setMinAmount)} />
+          <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" placeholder="Tối đa" value={maxAmount} onChange={resetPageOnChange(setMaxAmount)} />
         </div>
         <label className="flex flex-col gap-1 text-xs text-gray-500">
           Yêu cầu từ ngày
@@ -176,13 +171,13 @@ const AdminWithdrawals: FC = (): ReactElement => {
       </div>
 
       <div className="overflow-x-auto border border-grey bg-white">
-        <table className="w-full min-w-[980px] text-left text-sm">
+        <table className="w-full min-w-[1160px] text-left text-sm">
           <thead className="border-b border-grey bg-gray-50 text-xs uppercase text-gray-600">
             <tr>
               <th className="px-4 py-3">Người bán</th>
               <th className="px-4 py-3">Số tiền</th>
-              <th className="px-4 py-3">Ngân hàng</th>
-              <th className="px-4 py-3">Tài khoản</th>
+              <th className="px-4 py-3">Provider</th>
+              <th className="px-4 py-3">Payout</th>
               <th className="px-4 py-3">Trạng thái</th>
               <th className="px-4 py-3">Ngày yêu cầu</th>
               <th className="px-4 py-3">Ngày xử lý</th>
@@ -203,16 +198,19 @@ const AdminWithdrawals: FC = (): ReactElement => {
                 <tr key={withdrawal._id} className="border-b border-grey last:border-b-0">
                   <td className="px-4 py-3 font-medium text-gray-900">{sellerName(withdrawal)}</td>
                   <td className="px-4 py-3">{formatVnd(withdrawal.amount)}</td>
-                  <td className="px-4 py-3">{withdrawal.bankInfo?.bankName || '-'}</td>
                   <td className="px-4 py-3">
-                    <div className="font-medium">{withdrawal.bankInfo?.accountNumber || '-'}</div>
-                    <div className="text-xs text-gray-500">{withdrawal.bankInfo?.accountName || '-'}</div>
+                    <div className="font-medium">{withdrawal.provider || '-'}</div>
+                    <div className="text-xs text-gray-500">{withdrawal.providerTransferId || withdrawal.stripeAccountId || '-'}</div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="font-medium">{withdrawal.providerPayoutId || withdrawal.paymentReference || '-'}</div>
+                    <div className="text-xs text-gray-500">{withdrawal.payoutStatus || withdrawal.failureReason || '-'}</div>
                   </td>
                   <td className="px-4 py-3">{withdrawalStatusLabel[withdrawal.status as WithdrawalStatus] || withdrawal.status}</td>
                   <td className="px-4 py-3">{formatDate(withdrawal.createdAt)}</td>
                   <td className="px-4 py-3">{formatDate(withdrawal.processedDate)}</td>
                   <td className="px-4 py-3">
-                    {withdrawal.status === 'PENDING' ? (
+                    {canManualUpdate(withdrawal) ? (
                       <div className="flex justify-end gap-2">
                         <Button
                           className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500"
@@ -226,7 +224,7 @@ const AdminWithdrawals: FC = (): ReactElement => {
                         />
                       </div>
                     ) : (
-                      <div className="text-right text-xs text-gray-500">{withdrawal.paymentReference || withdrawal.adminNote || '-'}</div>
+                      <div className="text-right text-xs text-gray-500">{withdrawal.provider === 'STRIPE_CONNECT' ? 'Theo dõi bằng webhook Stripe' : withdrawal.paymentReference || withdrawal.adminNote || '-'}</div>
                     )}
                   </td>
                 </tr>
@@ -246,18 +244,8 @@ const AdminWithdrawals: FC = (): ReactElement => {
           Trang {pagination?.page || page} / {pagination?.totalPages || 1}
         </span>
         <div className="flex gap-2">
-          <Button
-            className="rounded border border-gray-300 px-3 py-1 font-bold text-gray-700 disabled:opacity-40"
-            label="Trước"
-            disabled={page <= 1}
-            onClick={() => setPage((value) => Math.max(value - 1, 1))}
-          />
-          <Button
-            className="rounded border border-gray-300 px-3 py-1 font-bold text-gray-700 disabled:opacity-40"
-            label="Sau"
-            disabled={page >= (pagination?.totalPages || 1)}
-            onClick={() => setPage((value) => value + 1)}
-          />
+          <Button className="rounded border border-gray-300 px-3 py-1 font-bold text-gray-700 disabled:opacity-40" label="Trước" disabled={page <= 1} onClick={() => setPage((value) => Math.max(value - 1, 1))} />
+          <Button className="rounded border border-gray-300 px-3 py-1 font-bold text-gray-700 disabled:opacity-40" label="Sau" disabled={page >= (pagination?.totalPages || 1)} onClick={() => setPage((value) => value + 1)} />
         </div>
       </div>
 
@@ -270,21 +258,11 @@ const AdminWithdrawals: FC = (): ReactElement => {
             </p>
             <div className="mb-3 flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-700">Mã tham chiếu thanh toán</label>
-              <input
-                className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-                value={paymentReference}
-                onChange={(event) => setPaymentReference(event.target.value)}
-                placeholder="Mã giao dịch hoặc mã tham chiếu ngân hàng"
-              />
+              <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" value={paymentReference} onChange={(event) => setPaymentReference(event.target.value)} placeholder="Mã giao dịch hoặc mã tham chiếu ngân hàng" />
             </div>
             <div className="mb-5 flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-700">Ghi chú admin</label>
-              <textarea
-                className="min-h-[100px] rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-                value={adminNote}
-                onChange={(event) => setAdminNote(event.target.value)}
-                placeholder="Ghi chú tùy chọn cho log kiểm duyệt và email gửi người bán"
-              />
+              <textarea className="min-h-[100px] rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" value={adminNote} onChange={(event) => setAdminNote(event.target.value)} placeholder="Ghi chú tùy chọn cho log kiểm duyệt và email gửi người bán" />
             </div>
             <div className="flex justify-end gap-2">
               <Button className="rounded border border-gray-300 px-4 py-2 text-sm font-bold text-gray-700" label="Hủy" onClick={closeStatusModal} />

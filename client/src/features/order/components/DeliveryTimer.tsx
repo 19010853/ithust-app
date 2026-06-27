@@ -13,6 +13,12 @@ const DeliveryTimer: FC<IModalProps> = ({ order, authUser }): ReactElement => {
     extendDelivery: false
   });
   const [days, hours, minutes, seconds]: number[] = useCountDown(`${order?.offer.newDeliveryDate}`);
+  const canManageDelivery =
+    order?.paymentStatus === 'HELD' && !order?.approved && !order?.cancelled && !['DISPUTED', 'REFUNDED'].includes(`${order?.status}`);
+
+  if (!canManageDelivery) {
+    return <></>;
+  }
 
   return (
     <>

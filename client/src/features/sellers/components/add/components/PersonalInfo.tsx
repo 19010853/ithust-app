@@ -95,14 +95,21 @@ const PersonalInfo: FC<IPersonalInfoProps> = ({ personalInfo, setPersonalInfo, p
         </div>
         <div className="w-full col-span-4">
           <TextInput
-            className="w-full rounded border border-grey p-2.5 mb-1 text-sm font-normal text-gray-600 focus:outline-none"
+            className="show-number-spinner w-full rounded border border-grey p-2.5 mb-1 text-sm font-normal text-gray-600 focus:outline-none"
             type="number"
             name="responseTime"
+            min={1}
+            step={1}
             placeholder="Ví dụ: 1"
             value={personalInfo.responseTime}
             onChange={(event: ChangeEvent) => {
               const value = (event.target as HTMLInputElement).value;
               setPersonalInfo({ ...personalInfo, responseTime: parseInt(value) > 0 ? value : '' });
+            }}
+            onKeyDown={(event: KeyboardEvent) => {
+              if (['e', 'E', '+', '-', '.'].includes(event.key)) {
+                event.preventDefault();
+              }
             }}
           />
           {getErrorMessage('responseTime') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('responseTime')}</p>}

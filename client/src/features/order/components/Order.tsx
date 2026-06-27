@@ -12,7 +12,7 @@ import { useGetOrderByOrderIdQuery } from '../services/order.service';
 import DeliveryTimer from './DeliveryTimer';
 import OrderActivities from './order-activities/OrderActivities';
 import OrderDetailsTable from './OrderDetailsTable';
-import RefundRequest from './RefundRequest';
+import QualityDisputeRequest from './QualityDisputeRequest';
 
 const orderStatusLabel = (status?: string): string => {
   const labels: Record<string, string> = {
@@ -23,6 +23,21 @@ const orderStatusLabel = (status?: string): string => {
     cancelled: 'Đã hủy'
   };
   return labels[`${status}`.toLowerCase()] || `${status || ''}`;
+};
+
+const orderDisplayStatus = (order: IOrderDocument): string => (order.paymentStatus === 'REFUND_PROCESSING' ? 'REFUND_PROCESSING' : order.status);
+
+const orderDisplayLabel = (order: IOrderDocument): string => {
+  if (order.paymentStatus === 'REFUND_PROCESSING') {
+    return 'Đang hoàn tiền';
+  }
+  if (order.status === 'REFUNDED') {
+    return 'Đã hoàn tiền';
+  }
+  if (order.status === 'DISPUTED') {
+    return 'Đang tranh chấp';
+  }
+  return orderStatusLabel(order.status);
 };
 
 const Order: FC = (): ReactElement => {
@@ -53,8 +68,8 @@ const Order: FC = (): ReactElement => {
       <div className="flex flex-wrap">
         <div className="order-last w-full p-4 lg:order-first lg:w-2/3">
           <OrderDetailsTable order={order} authUser={authUser} />
-          {order && order.buyerUsername === authUser.username && <RefundRequest order={order} />}
-          {order && order.buyerUsername === authUser.username && (
+          {order && order.buyerUsername === authUser.username && <QualityDisputeRequest order={order} username={authUser.username} />}
+          {order && order.buyerUsername === authUser.username && order.paymentStatus === 'HELD' && !['DISPUTED', 'REFUNDED'].includes(order.status) && (
             <div className="mt-4 flex flex-col justify-between bg-white md:flex-row">
               <div className="flex w-full flex-col flex-wrap p-4 md:w-2/3">
                 <span className="text-base font-bold text-black lg:text-lg">
@@ -97,9 +112,9 @@ const Order: FC = (): ReactElement => {
         <div className="w-full p-4 lg:w-1/3 ">
           {Object.keys(order).length > 0 ? (
             <>
-              {order.delivered && authUser.username === order.sellerUsername && <DeliveryTimer order={order} authUser={authUser} />}
+              {order.paymentStatus === 'HELD' && order.delivered && authUser.username === order.sellerUsername && <DeliveryTimer order={order} authUser={authUser} />}
               {order.delivered && authUser.username === order.sellerUsername && <></>}
-              {!order.delivered && <DeliveryTimer order={order} authUser={authUser} />}
+              {order.paymentStatus === 'HELD' && !order.delivered && <DeliveryTimer order={order} authUser={authUser} />}
 
               <div className="bg-white">
                 <div className="mb-2 flex flex-col border-b px-4 pb-4 pt-3 md:flex-row">
@@ -107,12 +122,12 @@ const Order: FC = (): ReactElement => {
                   <div className="flex flex-col">
                     <h4 className="mt-2 text-sm font-bold text-[#161c2d] md:mt-0 md:pl-4">{order.offer.gigTitle}</h4>
                     <span
-                      className={`status mt-1 w-24 rounded px-[3px] py-[3px] text-xs font-bold uppercase text-white md:ml-4 ${order.status.replace(
+                      className={`status mt-1 w-24 rounded px-[3px] py-[3px] text-xs font-bold uppercase text-white md:ml-4 ${orderDisplayStatus(order).replace(
                         / /g,
                         ''
                       )}`}
                     >
-                      {orderStatusLabel(order.status)}
+                      {orderDisplayLabel(order)}
                     </span>
                   </div>
                 </div>

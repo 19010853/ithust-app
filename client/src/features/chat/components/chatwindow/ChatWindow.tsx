@@ -3,8 +3,9 @@ import { ChangeEvent, FC, FormEvent, ReactElement, useEffect, useRef, useState }
 import { FaPaperclip, FaPaperPlane } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { IBuyerDocument } from 'src/features/buyer/interfaces/buyer.interface';
-import { useGetBuyerByUsernameQuery } from 'src/features/buyer/services/buyer.service';
+import { useGetBuyerByUsernameQuery, useGetCurrentBuyerByUsernameQuery } from 'src/features/buyer/services/buyer.service';
 import { useGetGigByIdQuery } from 'src/features/gigs/services/gigs.service';
+import { useGetSellerByUsernameQuery } from 'src/features/sellers/services/seller.service';
 import Button from 'src/shared/button/Button';
 import { updateNotification } from 'src/shared/header/reducers/notification.reducer';
 import TextInput from 'src/shared/inputs/TextInput';
@@ -31,8 +32,18 @@ const MESSAGE_STATUS = {
 };
 const NOT_EXISTING_ID = '649db27404c0c7b7d4b112ec';
 
+const isUsableText = (value?: string | null): value is string => {
+  const normalizedValue = `${value ?? ''}`.trim();
+  return !!normalizedValue && normalizedValue !== 'undefined' && normalizedValue !== 'null';
+};
+
+const firstUsableText = (...values: Array<string | null | undefined>): string | undefined => {
+  return values.find(isUsableText);
+};
+
 const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isLoading, setSkip }): ReactElement => {
   const seller = useAppSelector((state: IReduxState) => state.seller);
+  const buyer = useAppSelector((state: IReduxState) => state.buyer);
   const authUser = useAppSelector((state: IReduxState) => state.authUser);
   const fileRef = useRef<HTMLInputElement>(null);
   const scrollRef = useChatScrollToBottom([]);
@@ -47,18 +58,40 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
   const [message, setMessage] = useState<string>(MESSAGE_STATUS.EMPTY);
   const [hasConversationId, setHasConversationId] = useState<boolean>(draftConversation?.hasConversationId ?? true);
   const dispatch = useAppDispatch();
+  const routeReceiverUsername = firstUsableText(username);
+  const { data: currentBuyerData } = useGetCurrentBuyerByUsernameQuery();
+  const activeBuyer = firstUsableText(buyer?._id) ? buyer : currentBuyerData?.buyer;
   const draftReceiver =
     draftConversation && lowerCase(`${authUser?.username}`) === lowerCase(draftConversation.seller.username)
       ? draftConversation.buyer
       : draftConversation?.seller;
-  const { data: buyerData, isSuccess: isBuyerSuccess } = useGetBuyerByUsernameQuery(`${firstLetterUppercase(`${username}`)}`);
+  const { data: buyerData, isSuccess: isBuyerSuccess } = useGetBuyerByUsernameQuery(`${routeReceiverUsername || ''}`, {
+    skip: !routeReceiverUsername
+  });
+  const { data: sellerData, isSuccess: isSellerSuccess } = useGetSellerByUsernameQuery(`${routeReceiverUsername || ''}`, {
+    skip: !routeReceiverUsername
+  });
   const { data } = useGetGigByIdQuery(
     singleMessageRef.current ? `${singleMessageRef.current?.gigId}` : draftConversation?.gigId ?? NOT_EXISTING_ID
   );
   const [saveChatMessage] = useSaveChatMessageMutation();
+  const receiverBuyer = isBuyerSuccess ? buyerData?.buyer : undefined;
+  const receiverSeller = isSellerSuccess ? sellerData?.seller : undefined;
 
-  if (isBuyerSuccess) {
-    receiverRef.current = buyerData.buyer;
+  if (receiverBuyer) {
+    receiverRef.current = receiverBuyer;
+  }
+
+  if (receiverSeller && lowerCase(`${receiverRef.current?.username}`) !== lowerCase(`${receiverSeller.username}`)) {
+    receiverRef.current = {
+      ...receiverRef.current,
+      _id: receiverSeller._id,
+      country: receiverSeller.country ?? receiverRef.current?.country ?? '',
+      email: receiverSeller.email ?? receiverRef.current?.email ?? '',
+      profilePicture: receiverSeller.profilePicture ?? '',
+      purchasedGigs: receiverRef.current?.purchasedGigs ?? [],
+      username: receiverSeller.username ?? ''
+    };
   }
 
   if (draftReceiver && lowerCase(`${receiverRef.current?.username}`) !== lowerCase(draftReceiver.username)) {
@@ -84,6 +117,70 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
     };
   }
 
+  const currentMessage = singleMessageRef.current;
+  const authUsername = `${authUser?.username ?? ''}`;
+  const receiverProfile = receiverSeller || receiverBuyer || draftReceiver;
+  const currentUserIsDraftSeller = lowerCase(authUsername) === lowerCase(`${draftConversation?.seller.username ?? ''}`);
+  const currentUserIsMessageSeller = firstUsableText(currentMessage?.sellerId, seller?._id) ? currentMessage?.sellerId === seller?._id : false;
+  const currentUserIsSeller = currentUserIsDraftSeller || currentUserIsMessageSeller;
+  const lastMessageReceiverUsername =
+    lowerCase(`${currentMessage?.senderUsername ?? ''}`) === lowerCase(authUsername)
+      ? currentMessage?.receiverUsername
+      : currentMessage?.senderUsername;
+  const lastMessageReceiverPicture =
+    lowerCase(`${currentMessage?.senderUsername ?? ''}`) === lowerCase(authUsername)
+      ? currentMessage?.receiverPicture
+      : currentMessage?.senderPicture;
+  const resolvedConversationId = firstUsableText(currentMessage?.conversationId, conversationId, draftConversation?.conversationId);
+  const resolvedGigId = firstUsableText(currentMessage?.gigId, draftConversation?.gigId, data?.gig?._id, data?.gig?.id);
+  const resolvedBuyerId = firstUsableText(
+    draftConversation?.buyer._id,
+    currentMessage?.buyerId,
+    currentUserIsSeller ? firstUsableText(receiverBuyer?._id, receiverRef.current?._id) : activeBuyer?._id
+  );
+  const resolvedSellerId = firstUsableText(
+    draftConversation?.seller._id,
+    currentMessage?.sellerId,
+    receiverSeller?._id,
+    data?.gig?.sellerId,
+    currentUserIsSeller ? seller?._id : undefined
+  );
+  const resolvedReceiverUsername = firstUsableText(
+    receiverProfile?.username,
+    receiverRef.current?.username,
+    draftReceiver?.username,
+    lastMessageReceiverUsername,
+    routeReceiverUsername
+  );
+  const resolvedReceiverPicture = firstUsableText(
+    receiverProfile?.profilePicture,
+    receiverRef.current?.profilePicture,
+    draftReceiver?.profilePicture,
+    lastMessageReceiverPicture,
+    'https://placehold.co/150x150?text=Anh+dai+dien'
+  );
+  const receiver = resolvedReceiverUsername
+    ? {
+        ...receiverRef.current,
+        country: receiverRef.current?.country ?? '',
+        profilePicture: resolvedReceiverPicture ?? receiverRef.current?.profilePicture ?? '',
+        purchasedGigs: receiverRef.current?.purchasedGigs ?? [],
+        username: resolvedReceiverUsername
+      }
+    : receiverRef.current;
+  const messageContext: IMessageDocument | undefined = currentMessage || draftConversation || resolvedConversationId
+    ? {
+        ...currentMessage,
+        buyerId: resolvedBuyerId,
+        conversationId: resolvedConversationId,
+        gigId: resolvedGigId,
+        receiverPicture: resolvedReceiverPicture,
+        receiverUsername: resolvedReceiverUsername,
+        sellerId: resolvedSellerId
+      }
+    : undefined;
+  const canCreateCustomOffer = !showImagePreview && hasConversationId && messageContext?.sellerId === seller?._id;
+
   const handleFileChange = (event: ChangeEvent): void => {
     const target: HTMLInputElement = event.target as HTMLInputElement;
     if (target.files) {
@@ -104,22 +201,26 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
     if (!message && !selectedFile) {
       return;
     }
+    if (!messageContext?.buyerId || !messageContext?.sellerId || !messageContext?.receiverUsername || !messageContext?.receiverPicture) {
+      showErrorToast('Không thể xác định người nhận. Vui lòng tải lại cuộc trò chuyện.');
+      return;
+    }
     if (setSkip) {
       setSkip(true);
     }
     try {
       setIsUploadingFile(MESSAGE_STATUS.LOADING);
       const messageBody: IMessageDocument = {
-        conversationId: singleMessageRef?.current?.conversationId ?? conversationId,
+        conversationId: messageContext.conversationId,
         hasConversationId,
         body: message,
-        gigId: singleMessageRef?.current?.gigId,
-        sellerId: singleMessageRef?.current?.sellerId,
-        buyerId: singleMessageRef?.current?.buyerId,
+        gigId: messageContext.gigId,
+        sellerId: messageContext.sellerId,
+        buyerId: messageContext.buyerId,
         senderUsername: `${authUser?.username}`,
         senderPicture: `${authUser?.profilePicture}`,
-        receiverUsername: receiverRef?.current?.username,
-        receiverPicture: receiverRef?.current?.profilePicture,
+        receiverUsername: messageContext.receiverUsername,
+        receiverPicture: messageContext.receiverPicture,
         isRead: false,
         hasOffer: false
       };
@@ -167,8 +268,8 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
           <OfferModal
           header="Tạo đề nghị tùy chỉnh"
           gigTitle={data && data?.gig?.title ? data?.gig?.title : ''}
-          singleMessage={singleMessageRef?.current}
-          receiver={receiverRef?.current}
+          singleMessage={messageContext}
+          receiver={receiver}
           authUser={authUser}
           cancelBtnHandler={() => setDisplayCustomOffer(MESSAGE_STATUS.IS_LOADING)}
         />
@@ -245,11 +346,11 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
                 <div className="flex cursor-pointer flex-row justify-between">
                   <div className="flex gap-4">
                     {!showImagePreview && <FaPaperclip className="mt-1 self-center" onClick={() => fileRef?.current?.click()} />}
-                    {!showImagePreview && hasConversationId && singleMessageRef.current && singleMessageRef.current.sellerId === seller?._id && (
+                    {canCreateCustomOffer && (
                       <Button
                         className="rounded bg-sky-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
                         disabled={false}
-                        label="Thêm đề nghị"
+                        label="Tạo đơn hàng"
                         onClick={() => setDisplayCustomOffer(MESSAGE_STATUS.LOADING)}
                       />
                     )}

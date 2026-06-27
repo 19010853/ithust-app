@@ -18,32 +18,34 @@ const Dropdown: FC<IDropdownProps> = ({
   values,
   style,
   setValue,
-  onClick
+  onClick,
+  displayValue
 }): ReactElement => {
   const [dropdownItems, setDropdownItems] = useState<string[]>(values);
   const [inputText, setInputText] = useState<string>(text);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [toggleDropdown, setToggleDropdown] = useDetectOutsideClick(dropdownRef, false);
-  const displayText = text || placeholder || '';
+  const formatDisplayValue = (item: string): string => (displayValue ? displayValue(item) : item);
+  const displayText = text ? formatDisplayValue(text) : placeholder || '';
 
   useEffect(() => {
-    setInputText(text);
+    setInputText(formatDisplayValue(text));
   }, [text]);
 
   const onHandleToggleDropdown = (): void => {
     if (!toggleDropdown) {
-      setInputText(text);
+      setInputText(formatDisplayValue(text));
       setDropdownItems(values);
     }
     setToggleDropdown(!toggleDropdown);
   };
 
   const onHandleSelect = (event: MouseEvent): void => {
-    const selectedItem: string = (event.target as HTMLLIElement).textContent as string;
+    const selectedItem: string = `${(event.currentTarget as HTMLLIElement).dataset.value || ''}`;
     if (setValue) {
       setValue(selectedItem);
     }
-    setInputText(selectedItem);
+    setInputText(formatDisplayValue(selectedItem));
     setDropdownItems(values);
     setToggleDropdown(false);
     if (onClick) {
@@ -81,7 +83,7 @@ const Dropdown: FC<IDropdownProps> = ({
             onChange={(event: ChangeEvent) => {
               const inputValue: string = (event.target as HTMLInputElement).value;
               setInputText(inputValue);
-              const filtered: string[] = filter(values, (item: string) => item.toLowerCase().includes(inputValue.toLowerCase()));
+              const filtered: string[] = filter(values, (item: string) => formatDisplayValue(item).toLowerCase().includes(inputValue.toLowerCase()));
               setDropdownItems(filtered);
               if (!inputValue) {
                 setDropdownItems(values);
@@ -101,8 +103,8 @@ const Dropdown: FC<IDropdownProps> = ({
           style={{ maxHeight: `${maxHeight}px` }}
         >
           {dropdownItems.map((value: string) => (
-            <li key={uuidv4()} onClick={onHandleSelect}>
-              <div className="block px-4 py-2 text-slate-900 dark:hover:bg-gray-200">{value}</div>
+            <li key={uuidv4()} data-value={value} onClick={onHandleSelect}>
+              <div className="block px-4 py-2 text-slate-900 dark:hover:bg-gray-200">{formatDisplayValue(value)}</div>
             </li>
           ))}
         </ul>

@@ -148,13 +148,30 @@ export const isFetchBaseQueryError = (error: unknown): boolean => {
   return typeof error === 'object' && error !== null && 'status' in error && 'data' in error;
 };
 
+const isActiveHeldStatus = (status: string): boolean => ['in progress', 'delivered', 'revision required', 'disputed'].includes(status);
+
+const orderMatchesStatus = (status: string, order: IOrderDocument): boolean => {
+  const requestedStatus = normalizeOrderStatus(status);
+  const orderStatus = normalizeOrderStatus(order.status);
+  if (isActiveHeldStatus(requestedStatus)) {
+    return orderStatus === requestedStatus && order.paymentStatus === 'HELD';
+  }
+  if (requestedStatus === 'completed') {
+    return orderStatus === requestedStatus && order.paymentStatus === 'RELEASED';
+  }
+  if (requestedStatus === 'cancelled') {
+    return orderStatus === requestedStatus;
+  }
+  return orderStatus === requestedStatus && !['REFUND_PROCESSING', 'REFUNDED'].includes(`${order.paymentStatus || ''}`);
+};
+
 export const orderTypes = (status: string, orders: IOrderDocument[]): number => {
-  const orderList: IOrderDocument[] = filter(orders, (order: IOrderDocument) => normalizeOrderStatus(order.status) === normalizeOrderStatus(status));
+  const orderList: IOrderDocument[] = filter(orders, (order: IOrderDocument) => orderMatchesStatus(status, order));
   return orderList.length;
 };
 
 export const sellerOrderList = (status: string, orders: IOrderDocument[]): IOrderDocument[] => {
-  const orderList: IOrderDocument[] = filter(orders, (order: IOrderDocument) => normalizeOrderStatus(order.status) === normalizeOrderStatus(status));
+  const orderList: IOrderDocument[] = filter(orders, (order: IOrderDocument) => orderMatchesStatus(status, order));
   return orderList;
 };
 
@@ -164,7 +181,11 @@ export const orderStatusDisplayLabel = (status?: string): string => {
     'in progress': 'Đang thực hiện',
     delivered: 'Đã giao',
     completed: 'Hoàn thành',
-    cancelled: 'Đã hủy'
+    cancelled: 'Đã hủy',
+    disputed: 'Đang tranh chấp',
+    refunded: 'Đã hoàn tiền',
+    'refund processing': 'Đang hoàn tiền',
+    refund_processing: 'Đang hoàn tiền'
   };
   return labels[normalizeOrderStatus(`${status || ''}`)] || `${status || ''}`;
 };

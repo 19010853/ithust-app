@@ -1,6 +1,7 @@
 import { gigService } from '@gateway/services/api/gig.service';
 import { sellerService } from '@gateway/services/api/seller.service';
 import { assertGigCanReceiveNewOrders, assertGigOwner } from '@gateway/services/restriction.service';
+import { IAuthPayload } from '@19010853/ithust-shared';
 
 jest.mock('@gateway/services/api/gig.service', () => ({
   gigService: {
@@ -36,8 +37,19 @@ describe('Gateway restriction service', () => {
         }
       }
     });
+    (sellerService.getSellerById as jest.Mock).mockResolvedValue({
+      data: {
+        seller: {
+          _id: 'seller-id',
+          username: 'seller-one',
+          email: 'seller-one@test.com'
+        }
+      }
+    });
 
-    await expect(assertGigOwner('gig-id', 'seller-two')).rejects.toThrow('You are not allowed to update this gig.');
+    await expect(
+      assertGigOwner('gig-id', { username: 'seller-two', email: 'seller-two@test.com', id: 2 } as unknown as IAuthPayload)
+    ).rejects.toThrow('You are not allowed to manage this seller profile gigs.');
   });
 
   it('allows gig active changes from the owner', async () => {
@@ -51,8 +63,19 @@ describe('Gateway restriction service', () => {
         }
       }
     });
+    (sellerService.getSellerById as jest.Mock).mockResolvedValue({
+      data: {
+        seller: {
+          _id: 'seller-id',
+          username: 'seller-one',
+          email: 'seller-one@test.com'
+        }
+      }
+    });
 
-    await expect(assertGigOwner('gig-id', 'Seller-One')).resolves.toMatchObject({ id: 'gig-id' });
+    await expect(
+      assertGigOwner('gig-id', { username: 'Seller-One', email: 'seller-one@test.com', id: 1 } as unknown as IAuthPayload)
+    ).resolves.toMatchObject({ id: 'gig-id' });
   });
 
   it('rejects new orders for paused gigs', async () => {

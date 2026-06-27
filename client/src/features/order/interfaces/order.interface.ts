@@ -149,6 +149,8 @@ export interface IOrderDocument {
   cancelled?: boolean;
   delivered?: boolean;
   approvedAt?: string;
+  refundedAt?: string;
+  refundBalanceAdjustedAt?: string;
   deliveredWork?: IDeliveredWork[];
   dateOrdered?: string;
   events: IOrderEvents;
@@ -156,16 +158,46 @@ export interface IOrderDocument {
   sellerReview?: IOrderReview;
   paymentAmountVnd?: number;
   paymentCurrency?: 'VND';
-  paymentStatus?: 'PENDING' | 'HELD' | 'RELEASED' | 'REFUND_REQUESTED';
+  paymentProvider?: 'stripe' | 'paypal' | 'sepay';
+  providerPaymentId?: string;
+  providerAmount?: string;
+  providerCurrency?: string;
+  paymentStatus?: 'PENDING' | 'HELD' | 'RELEASED' | 'REFUND_REQUESTED' | 'REFUND_PROCESSING' | 'REFUNDED' | 'PAYMENT_EXPIRED' | 'PAYMENT_FAILED';
 }
 
 export interface IRefundRequestPayload {
   reason: string;
-  bankInfo: {
-    bankName: string;
-    accountNumber: string;
-    accountName: string;
+  bankInfo?: {
+    bankName?: string;
+    accountNumber?: string;
+    accountName?: string;
   };
+}
+
+export interface IDisputeDocument {
+  _id?: string;
+  orderId: string;
+  buyerUsername: string;
+  sellerUsername: string;
+  reason: string;
+  evidence?: Array<{ url: string; fileName?: string; fileType?: string }>;
+  status: 'OPEN' | 'SELLER_RESPONSE_REQUIRED' | 'REVISION_REQUIRED' | 'REFUND_BUYER' | 'RELEASE_SELLER' | 'CLOSED';
+  sellerResponseDeadlineAt?: string;
+  revisionDeadlineAt?: string;
+  decisionReason?: string;
+  decidedAt?: string;
+}
+
+export interface IDisputeMessageDocument {
+  _id?: string;
+  disputeId: string;
+  orderId: string;
+  senderUsername: string;
+  senderRole: 'buyer' | 'seller' | 'admin';
+  visibility: 'PARTICIPANTS' | 'ADMIN_INTERNAL';
+  body: string;
+  attachments?: Array<{ url: string; fileName?: string; fileType?: string }>;
+  createdAt?: string;
 }
 
 export interface IOrderMessage {

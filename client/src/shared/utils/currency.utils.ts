@@ -6,20 +6,22 @@ const SERVICE_FEE_THRESHOLD_VND = 1250000;
 const SERVICE_FEE_FIXED_AMOUNT_VND = 50000;
 const SELLER_EARNINGS_RATE = 0.8;
 
-const toFiniteAmount = (value?: number): number => {
+const toFiniteAmount = (value?: number | string): number => {
   const amount = Number(value || 0);
   return Number.isFinite(amount) ? amount : 0;
 };
 
-export const toVndInteger = (value?: number): number => Math.round(toFiniteAmount(value));
+export const toVndInteger = (value?: number | string): number => Math.round(toFiniteAmount(value));
 
-export const formatVnd = (value?: number): string =>
+export const formatVndNumber = (value?: number | string): string =>
   new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
   }).format(toVndInteger(value));
+
+export const formatVnd = (value?: number | string): string => `${formatVndNumber(value)} VND`;
+
+export const parseVndInput = (value?: string | number): string => `${value ?? ''}`.replace(/\D/g, '');
 
 export const calculateServiceFeeVnd = (price?: number): number => {
   const amount = toFiniteAmount(price);
