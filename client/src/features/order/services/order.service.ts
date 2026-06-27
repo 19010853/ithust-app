@@ -1,7 +1,14 @@
 import { IResponse } from 'src/shared/shared.interface';
 import { api } from 'src/store/api';
 
-import { IDeliveredWork, IExtendedDelivery, IOrderDocument, IOrderMessage, IRefundRequestPayload } from '../interfaces/order.interface';
+import {
+  IDeliveredWork,
+  IDisputeDocument,
+  IExtendedDelivery,
+  IOrderDocument,
+  IOrderMessage,
+  IRefundRequestPayload
+} from '../interfaces/order.interface';
 
 export const ordersApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -27,12 +34,65 @@ export const ordersApi = api.injectEndpoints({
       },
       invalidatesTags: ['Order']
     }),
+    capturePayPalOrder: build.mutation<IResponse, string>({
+      query(localOrderId: string) {
+        return {
+          url: `order/paypal/${localOrderId}/capture`,
+          method: 'POST'
+        };
+      },
+      invalidatesTags: ['Order']
+    }),
     createRefundRequest: build.mutation<IResponse, { orderId: string; body: IRefundRequestPayload }>({
       query({ orderId, body }) {
         return {
           url: `order/${orderId}/refund`,
           method: 'POST',
           body
+        };
+      },
+      invalidatesTags: ['Order']
+    }),
+    createDispute: build.mutation<IResponse, { orderId: string; reason: string; evidence?: Array<{ url: string; fileName?: string; fileType?: string }> }>({
+      query({ orderId, reason, evidence = [] }) {
+        return {
+          url: `order/${orderId}/dispute`,
+          method: 'POST',
+          body: { reason, evidence }
+        };
+      },
+      invalidatesTags: ['Order']
+    }),
+    getDisputes: build.query<IResponse, { status?: IDisputeDocument['status'] } | undefined>({
+      query: (params) => ({
+        url: 'order/disputes',
+        params
+      }),
+      providesTags: ['Order']
+    }),
+    getDisputeMessages: build.query<IResponse, string>({
+      query: (disputeId: string) => `order/dispute/${disputeId}/messages`,
+      providesTags: ['Order']
+    }),
+    createDisputeMessage: build.mutation<IResponse, { disputeId: string; body: string; visibility?: 'PARTICIPANTS' | 'ADMIN_INTERNAL' }>({
+      query({ disputeId, body, visibility = 'PARTICIPANTS' }) {
+        return {
+          url: `order/dispute/${disputeId}/messages`,
+          method: 'POST',
+          body: { body, visibility }
+        };
+      },
+      invalidatesTags: ['Order']
+    }),
+    decideDispute: build.mutation<
+      IResponse,
+      { disputeId: string; decision: 'REVISION_REQUIRED' | 'REFUND_BUYER' | 'RELEASE_SELLER'; reason: string; revisionDeadlineAt?: string }
+    >({
+      query({ disputeId, decision, reason, revisionDeadlineAt }) {
+        return {
+          url: `order/dispute/${disputeId}/decision`,
+          method: 'PUT',
+          body: { decision, reason, revisionDeadlineAt }
         };
       },
       invalidatesTags: ['Order']
@@ -96,7 +156,13 @@ export const {
   useGetOrdersBySellerIdQuery,
   useGetOrdersByBuyerIdQuery,
   useCreateOrderMutation,
+  useCapturePayPalOrderMutation,
   useCreateRefundRequestMutation,
+  useCreateDisputeMutation,
+  useGetDisputesQuery,
+  useGetDisputeMessagesQuery,
+  useCreateDisputeMessageMutation,
+  useDecideDisputeMutation,
   useCancelOrderMutation,
   useRequestDeliveryDateExtensionMutation,
   useUpdateDeliveryDateMutation,

@@ -6,7 +6,7 @@ import { IAdminUserDetail, IAdminUserSearchItem, IPagination, IRestrictionPrevie
 import { IBuyerDocument } from 'src/features/buyer/interfaces/buyer.interface';
 import { IConversationDocument, IMessageDocument } from 'src/features/chat/interfaces/chat.interface';
 import { ICreateGig, ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
-import { IOrderDocument, IOrderNotifcation } from 'src/features/order/interfaces/order.interface';
+import { IDisputeDocument, IDisputeMessageDocument, IOrderDocument, IOrderNotifcation } from 'src/features/order/interfaces/order.interface';
 import { IReviewDocument } from 'src/features/order/interfaces/review.interface';
 import { IEducation, IExperience, ILanguage, IPersonalInfoData, ISellerDocument, IWithdrawalDocument } from 'src/features/sellers/interfaces/seller.interface';
 
@@ -45,8 +45,24 @@ export interface IResponse {
   review?: IReviewDocument;
   reviews?: IReviewDocument[];
   notifications?: IOrderNotifcation[];
-  payment?: { qrCodeUrl: string; amount: number; currency: 'VND'; mode: 'test' | 'live'; content: string };
+  payment?: {
+    provider: 'stripe';
+    mode: 'sandbox';
+    clientSecret: string;
+    providerPaymentId: string;
+    amount: number;
+    currency: 'VND';
+    providerAmount: string;
+    providerCurrency: string;
+    exchangeRate?: number;
+    exchangeRateSource?: string;
+    exchangeRateFetchedAt?: string;
+  };
   refund?: unknown;
+  dispute?: IDisputeDocument;
+  disputes?: IDisputeDocument[];
+  disputeMessage?: IDisputeMessageDocument;
+  disputeMessages?: IDisputeMessageDocument[];
   withdrawal?: unknown;
   withdrawals?: IWithdrawalDocument[];
   users?: IAdminUserSearchItem[];
@@ -93,6 +109,7 @@ export interface IDropdownProps {
   style?: CSSProperties;
   setValue?: Dispatch<SetStateAction<string>>;
   onClick?: (item: string) => void;
+  displayValue?: (item: string) => string;
 }
 
 export interface IHtmlParserProps {
@@ -120,6 +137,7 @@ export interface ITextInputProps {
   min?: string | number;
   max?: string | number;
   step?: string | number;
+  inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
   onChange?: (event: ChangeEvent) => void;
   onClick?: () => void;
   onFocus?: () => void;

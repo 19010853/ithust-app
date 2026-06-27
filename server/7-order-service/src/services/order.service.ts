@@ -3,6 +3,7 @@ import { OrderModel } from '@order/models/order.schema';
 import { publishDirectMessage } from '@order/queues/order.producer';
 import { orderChannel } from '@order/server';
 import {
+  BadRequestError,
   IDeliveredWork,
   IExtendedDelivery,
   IOrderDocument,
@@ -11,26 +12,62 @@ import {
   lowerCase
 } from '@19010853/ithust-shared';
 import { sendNotification } from '@order/services/notification.service';
+import { processOverdueRefunds, refundHeldOrderToOriginalSource } from '@order/services/refund.service';
+
+const ACTIVE_ORDER_STATUSES = ['IN_PROGRESS', 'in progress', 'In Progress'];
+const DELIVERABLE_ORDER_STATUSES = [...ACTIVE_ORDER_STATUSES, 'Delivered', 'delivered', 'REVISION_REQUIRED'];
+const APPROVABLE_ORDER_STATUSES = ['Delivered', 'delivered', 'DISPUTED'];
 
 export const getOrderByOrderId = async (orderId: string): Promise<IOrderDocument> => {
+  void processOverdueRefunds().catch(() => undefined);
   const order: IOrderDocument[] = (await OrderModel.aggregate([{ $match: { orderId } }])) as IOrderDocument[];
   return order[0];
 };
 
 export const getOrdersBySellerId = async (sellerId: string): Promise<IOrderDocument[]> => {
+  void processOverdueRefunds().catch(() => undefined);
   const orders: IOrderDocument[] = (await OrderModel.aggregate([{ $match: { sellerId } }])) as IOrderDocument[];
   return orders;
 };
 
 export const getOrdersByBuyerId = async (buyerId: string): Promise<IOrderDocument[]> => {
+  void processOverdueRefunds().catch(() => undefined);
   const orders: IOrderDocument[] = (await OrderModel.aggregate([{ $match: { buyerId } }])) as IOrderDocument[];
   return orders;
 };
 
 export const createOrder = async (data: IOrderDocument): Promise<IOrderDocument> => {
   const order: IOrderDocument = await OrderModel.create(data);
+  return order;
+};
+
+export const activatePaidOrder = async (
+  mongoOrderId: string,
+  provider: 'stripe',
+  providerChargeId: string,
+  providerEventId: string
+): Promise<{ order: IOrderDocument | null; activated: boolean }> => {
+  const order = (await OrderModel.findOneAndUpdate(
+    { _id: mongoOrderId, paymentProvider: provider, paymentStatus: 'PENDING', status: 'PENDING_PAYMENT' },
+    {
+      $set: {
+        status: 'IN_PROGRESS',
+        paymentStatus: 'HELD',
+        paymentTransactionId: providerEventId,
+        providerChargeId,
+        ['events.orderStarted']: new Date()
+      }
+    },
+    { new: true }
+  ).exec()) as IOrderDocument | null;
+
+  if (!order) {
+    const existing = (await OrderModel.findById(mongoOrderId).exec()) as IOrderDocument | null;
+    return { order: existing, activated: false };
+  }
+
   const messageDetails: IOrderMessage = {
-    sellerId: data.sellerId,
+    sellerId: order.sellerId,
     ongoingJobs: 1,
     type: 'create-order'
   };
@@ -43,18 +80,18 @@ export const createOrder = async (data: IOrderDocument): Promise<IOrderDocument>
     'Details sent to users service'
   );
   const emailMessageDetails: IOrderMessage = {
-    orderId: data.orderId,
-    invoiceId: data.invoiceId,
-    orderDue: `${data.offer.newDeliveryDate}`,
-    amount: `${data.price}`,
-    buyerUsername: lowerCase(data.buyerUsername),
-    sellerUsername: lowerCase(data.sellerUsername),
-    title: data.offer.gigTitle,
-    description: data.offer.description,
-    requirements: data.requirements,
+    orderId: order.orderId,
+    invoiceId: order.invoiceId,
+    orderDue: `${order.offer.newDeliveryDate}`,
+    amount: `${order.price}`,
+    buyerUsername: lowerCase(order.buyerUsername),
+    sellerUsername: lowerCase(order.sellerUsername),
+    title: order.offer.gigTitle,
+    description: order.offer.description,
+    requirements: order.requirements,
     serviceFee: `${order.serviceFee}`,
     total: `${order.price + order.serviceFee!}`,
-    orderUrl: `${config.CLIENT_URL}/orders/${data.orderId}/activities`,
+    orderUrl: `${config.CLIENT_URL}/orders/${order.orderId}/activities`,
     template: 'orderPlaced'
   };
   // send email
@@ -65,8 +102,8 @@ export const createOrder = async (data: IOrderDocument): Promise<IOrderDocument>
     JSON.stringify(emailMessageDetails),
     'Order email sent to notification service.'
   );
-  sendNotification(order, data.sellerUsername, 'placed an order for your gig.');
-  return order;
+  sendNotification(order, order.sellerUsername, 'placed an order for your gig.');
+  return { order, activated: true };
 };
 
 export const cancelOrder = async (orderId: string, data: IOrderMessage): Promise<IOrderDocument> => {
@@ -101,9 +138,16 @@ export const cancelOrder = async (orderId: string, data: IOrderMessage): Promise
   return order;
 };
 
-export const approveOrder = async (orderId: string, data: IOrderMessage): Promise<IOrderDocument> => {
+export const approveOrder = async (orderId: string, data: IOrderMessage, allowDisputed = false): Promise<IOrderDocument> => {
   const order: IOrderDocument = (await OrderModel.findOneAndUpdate(
-    { orderId },
+    {
+      orderId,
+      paymentStatus: 'HELD',
+      status: { $in: allowDisputed ? APPROVABLE_ORDER_STATUSES : ['Delivered', 'delivered'] },
+      delivered: true,
+      approved: false,
+      cancelled: { $ne: true }
+    },
     {
       $set: {
         approved: true,
@@ -114,6 +158,9 @@ export const approveOrder = async (orderId: string, data: IOrderMessage): Promis
     },
     { new: true }
   ).exec()) as IOrderDocument;
+  if (!order) {
+    throw new BadRequestError('Order cannot be approved because funds are not held or delivery is not ready.', 'approveOrder()');
+  }
   const messageDetails: IOrderMessage = {
     sellerId: data.sellerId,
     buyerId: data.buyerId,
@@ -144,8 +191,16 @@ export const approveOrder = async (orderId: string, data: IOrderMessage): Promis
 };
 
 export const sellerDeliverOrder = async (orderId: string, delivered: boolean, deliveredWork: IDeliveredWork): Promise<IOrderDocument> => {
+  await processOverdueRefunds();
   const order: IOrderDocument = (await OrderModel.findOneAndUpdate(
-    { orderId },
+    {
+      orderId,
+      paymentStatus: 'HELD',
+      status: { $in: DELIVERABLE_ORDER_STATUSES },
+      approved: false,
+      cancelled: { $ne: true },
+      'offer.newDeliveryDate': { $gt: new Date() }
+    },
     {
       $set: {
         delivered,
@@ -158,6 +213,9 @@ export const sellerDeliverOrder = async (orderId: string, delivered: boolean, de
     },
     { new: true }
   ).exec()) as IOrderDocument;
+  if (!order) {
+    throw new BadRequestError('Order cannot be delivered because funds are not held or the order is closed.', 'sellerDeliverOrder()');
+  }
   if (order) {
     const messageDetails: IOrderMessage = {
       orderId,
@@ -184,7 +242,15 @@ export const sellerDeliverOrder = async (orderId: string, delivered: boolean, de
 export const requestDeliveryExtension = async (orderId: string, data: IExtendedDelivery): Promise<IOrderDocument> => {
   const { newDate, days, reason, originalDate } = data;
   const order: IOrderDocument = (await OrderModel.findOneAndUpdate(
-    { orderId },
+    {
+      orderId,
+      paymentStatus: 'HELD',
+      status: { $in: ACTIVE_ORDER_STATUSES },
+      approved: false,
+      delivered: false,
+      cancelled: { $ne: true },
+      'offer.newDeliveryDate': { $gt: new Date() }
+    },
     {
       $set: {
         ['requestExtension.originalDate']: originalDate,
@@ -195,6 +261,9 @@ export const requestDeliveryExtension = async (orderId: string, data: IExtendedD
     },
     { new: true }
   ).exec()) as IOrderDocument;
+  if (!order) {
+    throw new BadRequestError('Order delivery date can only be extended for active held orders before the current deadline.', 'requestDeliveryExtension()');
+  }
   if (order) {
     const messageDetails: IOrderMessage = {
       buyerUsername: lowerCase(order.buyerUsername),
@@ -221,7 +290,15 @@ export const requestDeliveryExtension = async (orderId: string, data: IExtendedD
 export const approveDeliveryDate = async (orderId: string, data: IExtendedDelivery): Promise<IOrderDocument> => {
   const { newDate, days, reason, deliveryDateUpdate } = data;
   const order: IOrderDocument = (await OrderModel.findOneAndUpdate(
-    { orderId },
+    {
+      orderId,
+      paymentStatus: 'HELD',
+      status: { $in: ACTIVE_ORDER_STATUSES },
+      approved: false,
+      delivered: false,
+      cancelled: { $ne: true },
+      'requestExtension.newDate': { $ne: '' }
+    },
     {
       $set: {
         ['offer.deliveryInDays']: days,
@@ -238,6 +315,9 @@ export const approveDeliveryDate = async (orderId: string, data: IExtendedDelive
     },
     { new: true }
   ).exec()) as IOrderDocument;
+  if (!order) {
+    throw new BadRequestError('Order delivery extension cannot be approved for this order.', 'approveDeliveryDate()');
+  }
   if (order) {
     const messageDetails: IOrderMessage = {
       subject: 'Congratulations: Your extension request was approved',
@@ -263,28 +343,35 @@ export const approveDeliveryDate = async (orderId: string, data: IExtendedDelive
 };
 
 export const rejectDeliveryDate = async (orderId: string): Promise<IOrderDocument> => {
-  const order: IOrderDocument = (await OrderModel.findOneAndUpdate(
-    { orderId },
+  const order: IOrderDocument = (await OrderModel.findOne(
     {
-      $set: {
-        requestExtension: {
-          originalDate: '',
-          newDate: '',
-          days: 0,
-          reason: ''
-        }
-      }
+      orderId,
+      paymentStatus: 'HELD',
+      status: { $in: ACTIVE_ORDER_STATUSES },
+      approved: false,
+      delivered: false,
+      cancelled: { $ne: true },
+      'requestExtension.newDate': { $ne: '' }
     },
-    { new: true }
   ).exec()) as IOrderDocument;
-  if (order) {
+  if (!order) {
+    throw new BadRequestError('Order delivery extension cannot be rejected for this order.', 'rejectDeliveryDate()');
+  }
+  await refundHeldOrderToOriginalSource(
+    order,
+    'Buyer rejected the seller delivery extension request.',
+    'EXTENSION_REJECTED',
+    'BUYER'
+  );
+  const updatedOrder = ((await OrderModel.findOne({ orderId }).exec()) as IOrderDocument) || order;
+  if (updatedOrder) {
     const messageDetails: IOrderMessage = {
       subject: 'Sorry: Your extension request was rejected',
-      buyerUsername: lowerCase(order.buyerUsername),
-      sellerUsername: lowerCase(order.sellerUsername),
+      buyerUsername: lowerCase(updatedOrder.buyerUsername),
+      sellerUsername: lowerCase(updatedOrder.sellerUsername),
       header: 'Request Rejected',
       type: 'rejected',
-      message: 'You can contact the buyer for more information.',
+      message: 'The buyer rejected the extension request. The order payment is being refunded to the original payment method.',
       orderUrl: `${config.CLIENT_URL}/orders/${orderId}/activities`,
       template: 'orderExtensionApproval'
     };
@@ -296,9 +383,9 @@ export const rejectDeliveryDate = async (orderId: string): Promise<IOrderDocumen
       JSON.stringify(messageDetails),
       'Order request extension rejection message sent to notification service.'
     );
-    sendNotification(order, order.sellerUsername, 'rejected your order delivery date extension request.');
+    sendNotification(updatedOrder, updatedOrder.sellerUsername, 'rejected your order delivery date extension request.');
   }
-  return order;
+  return updatedOrder;
 };
 
 export const updateOrderReview = async (data: IReviewMessageDetails): Promise<IOrderDocument> => {

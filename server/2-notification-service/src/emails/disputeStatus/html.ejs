@@ -1,0 +1,8 @@
+<div style="font-family: Arial, sans-serif; padding: 24px; color: #1f2937;">
+  <h2>Cập nhật tranh chấp #<%= orderId %></h2>
+  <p>Chào <strong><%= recipientUsername %></strong>, tranh chấp <strong><%= disputeId %></strong> vừa có cập nhật.</p>
+  <% if (actorUsername) { %><p>Người cập nhật: <%= actorUsername %>.</p><% } %>
+  <% if (decision) { %><p>Quyết định: <strong><%= decision %></strong>.</p><% } %>
+  <% if (reason) { %><p>Nội dung: <%= reason %></p><% } %>
+  <% if (orderUrl) { %><p><a href="<%= orderUrl %>">Mở đơn hàng</a></p><% } %>
+</div>

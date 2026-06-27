@@ -42,7 +42,7 @@ async function consumeAuthEmailMessages(channel: Channel): Promise<void> {
         template = parsedMessage.template;
         const locals: IEmailLocals = {
           appLink: `${config.CLIENT_URL}`,
-          appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
+          appIcon: 'https://res.cloudinary.com/dbxa1k1w1/image/upload/v1782299631/ithustapp-logo_aqsc4o.png',
           username,
           verifyLink,
           resetLink,
@@ -118,7 +118,7 @@ async function consumeOrderEmailMessages(channel: Channel): Promise<void> {
         template = parsedMessage.template;
         const locals: IEmailLocals & Record<string, unknown> = {
           appLink: `${config.CLIENT_URL}`,
-          appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
+          appIcon: 'https://res.cloudinary.com/dbxa1k1w1/image/upload/v1782299631/ithustapp-logo_aqsc4o.png',
           username,
           sender,
           offerLink,
@@ -207,7 +207,7 @@ async function consumeWithdrawalEmailMessages(channel: Channel): Promise<void> {
         template = parsedMessage.template;
         const locals: IEmailLocals & Record<string, unknown> = {
           appLink: `${config.CLIENT_URL}`,
-          appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
+          appIcon: 'https://res.cloudinary.com/dbxa1k1w1/image/upload/v1782299631/ithustapp-logo_aqsc4o.png',
           username: sellerUsername,
           sellerUsername,
           sellerFullName,

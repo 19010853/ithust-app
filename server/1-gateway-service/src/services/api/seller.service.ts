@@ -51,6 +51,32 @@ class SellerService {
     return response;
   }
 
+  async createStripeConnectAccount(sellerId: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosSellerInstance.post(`/${sellerId}/stripe/connect-account`);
+    return response;
+  }
+
+  async createStripeAccountLink(sellerId: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosSellerInstance.post(`/${sellerId}/stripe/account-link`);
+    return response;
+  }
+
+  async getStripeAccountStatus(sellerId: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosSellerInstance.get(`/${sellerId}/stripe/status`);
+    return response;
+  }
+
+  async stripeConnectWebhook(body: unknown, stripeSignature: string, rawBody?: Buffer): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosSellerInstance.post('/stripe/connect/webhook', rawBody || body, {
+      headers: {
+        'stripe-signature': stripeSignature,
+        ...(rawBody ? { 'Content-Type': 'application/json' } : {})
+      },
+      transformRequest: rawBody ? [(data) => data] : undefined
+    });
+    return response;
+  }
+
   async seed(count: string): Promise<AxiosResponse> {
     const response: AxiosResponse = await axiosSellerInstance.put(`/seed/${count}`);
     return response;

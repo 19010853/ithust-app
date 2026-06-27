@@ -242,6 +242,16 @@ export interface ISellerDocument extends Record<string, SellerType> {
   totalEarnings?: number;
   totalGigs?: number;
   paypal?: string; // not needed
+  stripeAccountId?: string;
+  stripeOnboardingStatus?: 'NOT_STARTED' | 'PENDING' | 'COMPLETED';
+  stripePayoutReadiness?: 'NOT_STARTED' | 'RESTRICTED' | 'READY';
+  payoutsEnabled?: boolean;
+  chargesEnabled?: boolean;
+  stripeDetailsSubmitted?: boolean;
+  stripeExternalAccountReady?: boolean;
+  stripeRequirementsCurrentlyDue?: string[];
+  stripeRequirementsPastDue?: string[];
+  stripeRequirementsDisabledReason?: string;
   createdAt?: Date | string;
 }
 
@@ -254,7 +264,18 @@ export interface IWithdrawalDocument {
     accountNumber?: string;
     accountName?: string;
   };
-  status: 'PENDING' | 'COMPLETED' | 'REJECTED';
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'REJECTED' | 'FAILED' | 'MANUAL_REVIEW' | 'RECONCILIATION_REQUIRED';
+  provider?: 'STRIPE_CONNECT' | 'MANUAL_BANK';
+  stripeAccountId?: string;
+  providerTransferId?: string;
+  providerPayoutId?: string;
+  payoutStatus?: string;
+  providerAmount?: string;
+  providerCurrency?: string;
+  providerFailureCode?: string;
+  providerFailureMessage?: string;
+  failureReason?: string;
+  reconciliationStatus?: 'NONE' | 'REQUIRED';
   createdAt?: Date | string;
   processedDate?: Date | string | null;
   processedBy?: {

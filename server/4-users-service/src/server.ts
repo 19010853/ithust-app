@@ -3,7 +3,7 @@ import 'express-async-errors';
 import { attachCurrentUser, createServiceErrorHandler, winstonLogger } from '@19010853/ithust-shared';
 import { Logger } from 'winston';
 import { config } from '@users/config';
-import { Application, json, urlencoded } from 'express';
+import { Application, json, Request, urlencoded } from 'express';
 import hpp from 'hpp';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -21,6 +21,11 @@ import {
 
 const SERVER_PORT = 4003;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'usersServer', 'debug');
+let usersHttpServer: http.Server | undefined;
+
+type RawBodyRequest = Request & {
+  rawBody?: Buffer;
+};
 
 const start = (app: Application): void => {
   securityMiddleware(app);
@@ -48,7 +53,16 @@ const securityMiddleware = (app: Application): void => {
 
 const standardMiddleware = (app: Application): void => {
   app.use(compression());
-  app.use(json({ limit: '200mb' }));
+  app.use(
+    json({
+      limit: '200mb',
+      verify: (req: RawBodyRequest, _res, buffer: Buffer) => {
+        if (req.originalUrl.includes('/stripe/connect/webhook')) {
+          req.rawBody = Buffer.from(buffer);
+        }
+      }
+    })
+  );
   app.use(urlencoded({ extended: true, limit: '200mb' }));
 };
 
@@ -75,6 +89,15 @@ const usersErrorHandler = (app: Application): void => {
 const startServer = (app: Application): void => {
   try {
     const httpServer: http.Server = new http.Server(app);
+    usersHttpServer = httpServer;
+    httpServer.on('error', (error: NodeJS.ErrnoException) => {
+      if (error.code === 'EADDRINUSE') {
+        log.log('error', `UsersService port ${SERVER_PORT} is already in use. Stop the stale users-service process and restart.`, error);
+        process.exit(1);
+      }
+      log.log('error', 'UsersService HTTP server error:', error);
+      process.exit(1);
+    });
     log.info(`Users server has started with process id ${process.pid}`);
     httpServer.listen(SERVER_PORT, () => {
       log.info(`Users server running on port ${SERVER_PORT}`);
@@ -83,5 +106,22 @@ const startServer = (app: Application): void => {
     log.log('error', 'UsersService startServer() method error:', error);
   }
 };
+
+const shutdown = (signal: NodeJS.Signals): void => {
+  if (!usersHttpServer) {
+    process.exit(0);
+  }
+  usersHttpServer.close(() => {
+    if (signal === 'SIGUSR2') {
+      process.kill(process.pid, signal);
+      return;
+    }
+    process.exit(0);
+  });
+};
+
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
+process.once('SIGUSR2', shutdown);
 
 export { start };

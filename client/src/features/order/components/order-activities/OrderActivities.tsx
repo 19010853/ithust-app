@@ -5,6 +5,7 @@ import { TimeAgo } from 'src/shared/utils/timeago.utils';
 
 import { OrderContext } from '../../context/OrderContext';
 import { DivElementRefType, IOrderActivitiesProps } from '../../interfaces/order.interface';
+import DisputeConversation from '../DisputeConversation';
 import OrderDelivered from './components/OrderDelivered';
 import OrderExtension from './components/OrderExtension';
 import OrderPlaced from './components/OrderPlaced';
@@ -41,6 +42,7 @@ const OrderActivities: ForwardRefExoticComponent<Omit<IOrderActivitiesProps, 're
         <OrderDelivered ref={ref} />
         <OrderReview />
       </OrderContext.Provider>
+      <DisputeConversation order={order} />
       <div className="px-3 pt-2 flex">
         Nếu bạn cần liên hệ với {order.buyerUsername === authUser.username ? 'người bán' : 'người mua'},
         <div

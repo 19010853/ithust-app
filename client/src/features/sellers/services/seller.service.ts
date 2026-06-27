@@ -44,14 +44,13 @@ export const sellerApi = api.injectEndpoints({
       },
       invalidatesTags: ['Seller']
     }),
-    createWithdrawal: build.mutation<IResponse, { sellerId: string; amount: number; bankAccount: { bankName: string; accountNumber: string; accountName: string } }>({
+    createWithdrawal: build.mutation<IResponse, { sellerId: string; amount: number }>({
       query(body) {
         return {
           url: `seller/${body.sellerId}/withdraw`,
           method: 'POST',
           body: {
-            amount: body.amount,
-            bankAccount: body.bankAccount
+            amount: body.amount
           }
         };
       },
@@ -80,6 +79,24 @@ export const sellerApi = api.injectEndpoints({
         };
       },
       invalidatesTags: ['Withdrawal', 'Seller']
+    }),
+    createStripeConnectAccount: build.mutation<IResponse, string>({
+      query: (sellerId: string) => ({
+        url: `seller/${sellerId}/stripe/connect-account`,
+        method: 'POST'
+      }),
+      invalidatesTags: ['Seller']
+    }),
+    createStripeAccountLink: build.mutation<IResponse & { url?: string }, string>({
+      query: (sellerId: string) => ({
+        url: `seller/${sellerId}/stripe/account-link`,
+        method: 'POST'
+      }),
+      invalidatesTags: ['Seller']
+    }),
+    getStripeAccountStatus: build.query<IResponse, string>({
+      query: (sellerId: string) => `seller/${sellerId}/stripe/status`,
+      providesTags: ['Seller']
     })
   })
 });
@@ -92,5 +109,8 @@ export const {
   useUpdateSellerMutation,
   useCreateWithdrawalMutation,
   useGetWithdrawalsQuery,
-  useUpdateWithdrawalStatusMutation
+  useUpdateWithdrawalStatusMutation,
+  useCreateStripeConnectAccountMutation,
+  useCreateStripeAccountLinkMutation,
+  useGetStripeAccountStatusQuery
 } = sellerApi;

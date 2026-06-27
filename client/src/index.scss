@@ -99,16 +99,21 @@ tbody {
 }
 
 /* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+input:not(.show-number-spinner)::-webkit-outer-spin-button,
+input:not(.show-number-spinner)::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* Firefox */
-input[type="number"] {
+input[type="number"]:not(.show-number-spinner) {
   appearance: textfield;
   -moz-appearance: textfield;
+}
+
+input[type="number"].show-number-spinner {
+  appearance: auto;
+  -moz-appearance: auto;
 }
 
 .hide-scroll-bar {
@@ -146,6 +151,21 @@ input[type="number"] {
   background-color: #74767e;
 }
 
+.disputed {
+  background-color: #8b5cf6;
+}
+
+.REFUND_PROCESSING,
+.refund_processing,
+.refundprocessing {
+  background-color: #f59e0b;
+}
+
+.REFUNDED,
+.refunded {
+  background-color: #64748b;
+}
+
 .INPROGRESS {
   color: #50b5ff;
   font-style: italic;
@@ -162,6 +182,11 @@ input[type="number"] {
 .CANCELLED {
   color: #74767e;
 }
+
+.DISPUTED {
+  color: #8b5cf6;
+}
+
 
 .zIndexDropdown {
   z-index: 100 !important;

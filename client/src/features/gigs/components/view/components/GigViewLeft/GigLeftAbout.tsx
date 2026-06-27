@@ -1,5 +1,6 @@
 import { FC, ReactElement, useContext } from 'react';
 import { GigContext } from 'src/features/gigs/context/GigContext';
+import { categoryDisplayLabel } from 'src/shared/utils/utils.service';
 // import HtmlParser from 'src/shared/html-parser/HtmlParser';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -17,7 +18,7 @@ const GigLeftAbout: FC = (): ReactElement => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-4">
         <div className="flex flex-col">
           <span className="text-[#95979d]">Danh mục chính</span>
-          <span className="font-normal">{gig.categories}</span>
+          <span className="font-normal">{categoryDisplayLabel(gig.categories)}</span>
         </div>
         <div className="flex flex-col">
           <span className="text-[#95979d]">Danh mục con</span>

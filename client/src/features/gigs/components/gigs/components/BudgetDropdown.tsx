@@ -1,10 +1,10 @@
-import { ChangeEvent, FC, KeyboardEvent, ReactElement, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useState } from 'react';
 import { FaChevronDown, FaChevronUp, FaTimes } from 'react-icons/fa';
 import { useSearchParams } from 'react-router-dom';
 import { ISelectedBudget } from 'src/features/gigs/interfaces/gig.interface';
 import Button from 'src/shared/button/Button';
 import TextInput from 'src/shared/inputs/TextInput';
-import { formatVnd, GIG_MAX_PRICE_VND, GIG_MIN_PRICE_VND } from 'src/shared/utils/currency.utils';
+import { formatVnd, formatVndNumber, GIG_MAX_PRICE_VND, GIG_MIN_PRICE_VND, parseVndInput } from 'src/shared/utils/currency.utils';
 import { saveToLocalStorage } from 'src/shared/utils/utils.service';
 
 const BudgetDropdown: FC = (): ReactElement => {
@@ -39,23 +39,19 @@ const BudgetDropdown: FC = (): ReactElement => {
                       TỐI THIỂU
                     </label>
                     <TextInput
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       id="min"
                       min={GIG_MIN_PRICE_VND}
                       max={GIG_MAX_PRICE_VND}
                       step={1}
                       name="minPrice"
-                      value={selectedBudget.minPrice ?? ''}
+                      value={selectedBudget.minPrice ? formatVndNumber(selectedBudget.minPrice) : ''}
                       className="block w-full border border-gray-300 p-2.5 text-sm text-gray-900 dark:placeholder-gray-400 dark:focus:border-black dark:focus:ring-black"
                       placeholder="Bất kỳ"
                       onChange={(event: ChangeEvent) => {
-                        const value = (event.target as HTMLInputElement).value;
-                        setSelectedBudget({ ...selectedBudget, minPrice: /^\d*$/.test(value) ? value : selectedBudget.minPrice });
-                      }}
-                      onKeyDown={(event: KeyboardEvent) => {
-                        if (event.key !== 'Backspace' && isNaN(parseInt(event.key))) {
-                          event.preventDefault();
-                        }
+                        const value = parseVndInput((event.target as HTMLInputElement).value);
+                        setSelectedBudget({ ...selectedBudget, minPrice: value });
                       }}
                     />
                   </div>
@@ -64,23 +60,19 @@ const BudgetDropdown: FC = (): ReactElement => {
                       TỐI ĐA
                     </label>
                     <TextInput
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       id="max"
                       min={GIG_MIN_PRICE_VND}
                       max={GIG_MAX_PRICE_VND}
                       step={1}
                       name="maxPrice"
-                      value={selectedBudget.maxPrice ?? ''}
+                      value={selectedBudget.maxPrice ? formatVndNumber(selectedBudget.maxPrice) : ''}
                       className="block w-full border border-gray-300 p-2.5 text-sm text-gray-900 dark:placeholder-gray-400 dark:focus:border-black dark:focus:ring-black"
                       placeholder="Bất kỳ"
                       onChange={(event: ChangeEvent) => {
-                        const value = (event.target as HTMLInputElement).value;
-                        setSelectedBudget({ ...selectedBudget, maxPrice: /^\d*$/.test(value) ? value : selectedBudget.maxPrice });
-                      }}
-                      onKeyDown={(event: KeyboardEvent) => {
-                        if (event.key !== 'Backspace' && isNaN(parseInt(event.key))) {
-                          event.preventDefault();
-                        }
+                        const value = parseVndInput((event.target as HTMLInputElement).value);
+                        setSelectedBudget({ ...selectedBudget, maxPrice: value });
                       }}
                     />
                   </div>

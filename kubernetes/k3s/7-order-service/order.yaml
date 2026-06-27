@@ -86,28 +86,22 @@ spec:
                 secretKeyRef:
                   name: ithust-backend-secret
                   key: platform-owner-email
-            - name: PLATFORM_BANK_ID
+            - name: STRIPE_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: ithust-backend-secret
-                  key: sepay-platform-bank-id
-            - name: PLATFORM_BANK_ACCOUNT
+                  key: stripe-secret-key
+            - name: STRIPE_WEBHOOK_SECRET
               valueFrom:
                 secretKeyRef:
                   name: ithust-backend-secret
-                  key: sepay-platform-bank-account
-            - name: SEPAY_MODE
-              value: "live"
-            - name: USD_TO_VND_RATE_API_URL
-              valueFrom:
-                secretKeyRef:
-                  name: ithust-backend-secret
-                  key: usd-to-vnd-rate-api-url
-            - name: USD_TO_VND_RATE_FALLBACK
-              valueFrom:
-                secretKeyRef:
-                  name: ithust-backend-secret
-                  key: usd-to-vnd-rate-fallback
+                  key: stripe-order-webhook-secret
+            - name: STRIPE_CURRENCY
+              value: "usd"
+            - name: STRIPE_VND_PER_UNIT
+              value: "25000"
+            - name: DISPUTE_SELLER_RESPONSE_HOURS
+              value: "48"
             - name: ELASTIC_APM_SERVER_URL
               valueFrom:
                 secretKeyRef:

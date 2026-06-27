@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, ReactElement, useEffect, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useEffect, useState, type KeyboardEvent } from 'react';
 import { useDeviceData, useMobileOrientation } from 'react-device-detect';
 import { FaEye, FaEyeSlash, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -71,10 +71,17 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
     }
   };
 
+  const onLoginKeyDown = (event: KeyboardEvent): void => {
+    if (event.key === 'Enter' && !isLoading) {
+      event.preventDefault();
+      onLoginUser();
+    }
+  };
+
   return (
     <ModalBg>
       <div className="relative top-[20%] mx-auto w-11/12 max-w-md rounded-lg bg-white md:w-2/3">
-        <div className="relative px-5 py-5">
+        <div className="relative px-5 py-5" onKeyDown={onLoginKeyDown}>
           <div className="mb-5 flex justify-between text-2xl font-bold text-gray-600">
             <h1 className="flex w-full justify-center">Đăng nhập ITHust</h1>
             <Button

@@ -7,6 +7,7 @@ import CircularPageLoader from 'src/shared/page-loader/CircularPageLoader';
 import PageMessage from 'src/shared/page-message/PageMessage';
 import {
   categories,
+  categoryDisplayLabel,
   getDataFromLocalStorage,
   lowerCase,
   replaceAmpersandAndDashWithSpace,
@@ -45,6 +46,7 @@ const Gigs: FC<IGigsProps> = ({ type }) => {
   const filterApplied = getDataFromLocalStorage('filterApplied');
   const categoryName = find(categories(), (item: string) => location.pathname.includes(replaceSpacesWithDash(`${lowerCase(`${item}`)}`)));
   const gigCategories = categoryName ?? searchParams.get('query');
+  const displayGigCategories = gigCategories ? categoryDisplayLabel(gigCategories) : '';
 
   if (isSuccess) {
     gigs.current = data.gigs as ISellerGig[];
@@ -62,7 +64,7 @@ const Gigs: FC<IGigsProps> = ({ type }) => {
             <>
               <h3 className="mb-5 flex gap-3 text-4xl">
                 {type === 'search' && <span className="text-black">Kết quả cho</span>}
-                <strong className="text-black">{gigCategories}</strong>
+                <strong className="text-black">{displayGigCategories}</strong>
               </h3>
               <div className="mb-4 flex gap-4">
                 <BudgetDropdown />

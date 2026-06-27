@@ -1,4 +1,4 @@
-import { getBuyerByEmail, getBuyerByUsername } from '@users/services/buyer.service';
+import { getBuyerByEmail, getBuyerByUsername, getOrCreateBuyerByAuth } from '@users/services/buyer.service';
 import { IBuyerDocument } from '@19010853/ithust-shared';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -9,7 +9,7 @@ const email = async (req: Request, res: Response): Promise<void> => {
 };
 
 const currentUsername = async (req: Request, res: Response): Promise<void> => {
-  const buyer: IBuyerDocument | null = await getBuyerByUsername(req.currentUser!.username);
+  const buyer: IBuyerDocument | null = await getOrCreateBuyerByAuth(req.currentUser!);
   res.status(StatusCodes.OK).json({ message: 'Buyer profile', buyer });
 };
 

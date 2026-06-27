@@ -15,10 +15,11 @@ import ApprovalModal from 'src/shared/modals/ApprovalModal';
 import { IApprovalModalContent } from 'src/shared/modals/interfaces/modal.interface';
 import CircularPageLoader from 'src/shared/page-loader/CircularPageLoader';
 import { IResponse } from 'src/shared/shared.interface';
-import { GIG_MAX_PRICE_VND, GIG_MIN_PRICE_VND } from 'src/shared/utils/currency.utils';
+import { formatVndNumber, GIG_MAX_PRICE_VND, GIG_MIN_PRICE_VND, parseVndInput } from 'src/shared/utils/currency.utils';
 import { checkImage, readAsBase64 } from 'src/shared/utils/image-utils.service';
 import {
   categories,
+  categoryDisplayLabel,
   expectedGigDelivery,
   lowerCase,
   reactQuillUtils,
@@ -124,7 +125,7 @@ const AddGig: FC = (): ReactElement => {
       const isValid: boolean = await schemaValidation();
       if (isValid) {
         const gig: ICreateGig = {
-          profilePicture: `${authUser.profilePicture}`,
+          profilePicture: `${seller.profilePicture || authUser.profilePicture}`,
           sellerId,
           title: gigInfo.title,
           categories: gigInfo.categories,
@@ -141,7 +142,7 @@ const AddGig: FC = (): ReactElement => {
         const updatedSeller: ISellerDocument = { ...seller, totalGigs: (seller.totalGigs as number) + 1 };
         dispatch(addSeller(updatedSeller));
         const title: string = replaceSpacesWithDash(gig.title);
-        navigate(`/gig/${lowerCase(`${authUser.username}`)}/${title}/${response?.gig?.sellerId}/${response?.gig?.id}/view`);
+        navigate(`/gig/${lowerCase(`${seller.username || authUser.username}`)}/${title}/${response?.gig?.sellerId}/${response?.gig?.id}/view`);
       }
     } catch (error) {
       showErrorToast('Không thể tạo gig');
@@ -149,7 +150,7 @@ const AddGig: FC = (): ReactElement => {
   };
 
   const onCancelCreate = (): void => {
-    navigate(`/seller_profile/${lowerCase(`${authUser.username}/${sellerId}/edit`)}`);
+    navigate(`/seller_profile/${lowerCase(`${seller.username || authUser.username}/${sellerId}/edit`)}`);
   };
 
   return (
@@ -201,7 +202,7 @@ const AddGig: FC = (): ReactElement => {
             </div>
             <div className="mb-6 grid md:grid-cols-5">
               <div className="pb-2 text-base font-medium">
-                Tiêu đề gói cơ bản<sup className="top-[-0.3em] text-base text-red-500">*</sup>
+                Tiêu đề gói<sup className="top-[-0.3em] text-base text-red-500">*</sup>
               </div>
               <div className="col-span-4 md:w-11/12 lg:w-8/12">
                 <TextInput
@@ -282,6 +283,7 @@ const AddGig: FC = (): ReactElement => {
                   maxHeight="300"
                   mainClassNames="absolute bg-white"
                   values={categories()}
+                  displayValue={categoryDisplayLabel}
                   onClick={(item: string) => {
                     setGigInfo({ ...gigInfo, categories: item });
                   }}
@@ -323,16 +325,17 @@ const AddGig: FC = (): ReactElement => {
               </div>
               <div className="col-span-4 md:w-11/12 lg:w-8/12">
                 <TextInput
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   className="border-grey mb-1 w-full rounded border p-3.5 text-sm font-normal text-gray-600 focus:outline-none"
                   placeholder="Nhập giá VND"
                   name="price"
-                  value={`${gigInfo.price}`}
+                  value={gigInfo.price ? formatVndNumber(gigInfo.price) : ''}
                   min={GIG_MIN_PRICE_VND}
                   max={GIG_MAX_PRICE_VND}
                   step={1}
                   onChange={(event: ChangeEvent) => {
-                    const value: string = (event.target as HTMLInputElement).value;
+                    const value: string = parseVndInput((event.target as HTMLInputElement).value);
                     const price = Number(value);
                     setGigInfo({ ...gigInfo, price: Number.isInteger(price) && price > 0 ? price : 0 });
                   }}

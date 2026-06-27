@@ -22,10 +22,16 @@ const GigSeller: FC = (): ReactElement => {
   const [approvalModalContent, setApprovalModalContent] = useState<IApprovalModalContent>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const { navigateToInbox } = useInboxNavigation();
+  const sellerUsername = `${seller.username || gig.username || ''}`;
+  const sellerId = `${seller._id || gig.sellerId || ''}`;
+  const sellerProfilePicture = `${seller.profilePicture || gig.profilePicture || ''}`;
+  const isOwnGig =
+    `${authUser.username || ''}`.toLowerCase() === sellerUsername.toLowerCase() ||
+    `${authUser.email || ''}`.toLowerCase() === `${seller.email || gig.email || ''}`.toLowerCase();
   const chatSeller: IChatSellerProps = {
-    username: `${seller.username}`,
-    _id: `${seller._id}`,
-    profilePicture: `${seller.profilePicture}`,
+    username: sellerUsername,
+    _id: sellerId,
+    profilePicture: sellerProfilePicture,
     responseTime: parseInt(`${seller.responseTime}`)
   };
   const chatBuyer: IChatBuyerProps = {
@@ -43,13 +49,13 @@ const GigSeller: FC = (): ReactElement => {
         </div>
         <div className="mb-0 px-4 pt-2">
           <div className="flex flex-col gap-y-3 md:flex-row md:gap-x-2">
-            <img className="flex h-24 w-24 self-center rounded-full object-cover" src={gig.profilePicture} alt="" />
+            <img className="flex h-24 w-24 self-center rounded-full object-cover" src={sellerProfilePicture} alt="" />
             <div className="flex flex-col self-center">
               <Link
-                to={`/seller_profile/${lowerCase(`${gig.username}`)}/${gig.sellerId}/view`}
+                to={`/seller_profile/${lowerCase(sellerUsername)}/${sellerId}/view`}
                 className="flex cursor-pointer self-center no-underline hover:underline md:block md:self-start"
               >
-                <span className="text-base font-bold md:mb-5">{gig.username}</span>
+                <span className="text-base font-bold md:mb-5">{sellerUsername}</span>
               </Link>
               <span className="flex self-center text-sm md:block md:self-start">{seller.oneliner}</span>
               <div className="flex w-full justify-center pt-1 md:justify-start">
@@ -97,9 +103,9 @@ const GigSeller: FC = (): ReactElement => {
           <hr className="border-grey my-2" />
           <div className="ml-15 mb-2 flex w-full py-1">
             <Button
-              disabled={authUser.username === gig.username}
+              disabled={isOwnGig}
               className={`text-md flex w-full justify-between rounded bg-sky-500 px-8 py-2 font-bold text-white focus:outline-none
-              ${authUser.username === gig.username ? 'opacity-20 cursor-not-allowed' : 'hover:bg-sky-400 cursor-pointer'}
+              ${isOwnGig ? 'opacity-20 cursor-not-allowed' : 'hover:bg-sky-400 cursor-pointer'}
               `}
               label={
                 <>

@@ -1,5 +1,8 @@
 import { BuyerModel } from '@users/models/buyer.schema';
-import { IBuyerDocument } from '@19010853/ithust-shared';
+import { IAuthPayload, IBuyerDocument } from '@19010853/ithust-shared';
+
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const FALLBACK_PROFILE_PICTURE = 'https://placehold.co/150x150?text=Anh+dai+dien';
 
 const getBuyerByEmail = async (email: string): Promise<IBuyerDocument | null> => {
   const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ email }).exec()) as IBuyerDocument;
@@ -7,8 +10,30 @@ const getBuyerByEmail = async (email: string): Promise<IBuyerDocument | null> =>
 };
 
 const getBuyerByUsername = async (username: string): Promise<IBuyerDocument | null> => {
-  const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ username }).exec()) as IBuyerDocument;
+  const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ username: new RegExp(`^${escapeRegex(username)}$`, 'i') }).exec()) as IBuyerDocument;
   return buyer;
+};
+
+const getOrCreateBuyerByAuth = async (currentUser: IAuthPayload): Promise<IBuyerDocument | null> => {
+  if (!currentUser?.username || !currentUser?.email) {
+    return null;
+  }
+
+  const existingBuyer = (await getBuyerByUsername(currentUser.username)) || (await getBuyerByEmail(currentUser.email));
+  if (existingBuyer) {
+    return existingBuyer;
+  }
+
+  return (await BuyerModel.create({
+    username: currentUser.username,
+    email: currentUser.email,
+    profilePicture: FALLBACK_PROFILE_PICTURE,
+    country: 'Vietnam',
+    accountStatus: 'ACTIVE',
+    isSeller: false,
+    purchasedGigs: [],
+    createdAt: new Date()
+  })) as IBuyerDocument;
 };
 
 const getRandomBuyers = async (count: number): Promise<IBuyerDocument[]> => {
@@ -51,4 +76,12 @@ const updateBuyerPurchasedGigsProp = async (buyerId: string, purchasedGigId: str
   ).exec();
 };
 
-export { getBuyerByEmail, getBuyerByUsername, getRandomBuyers, createBuyer, updateBuyerIsSellerProp, updateBuyerPurchasedGigsProp };
+export {
+  getBuyerByEmail,
+  getBuyerByUsername,
+  getOrCreateBuyerByAuth,
+  getRandomBuyers,
+  createBuyer,
+  updateBuyerIsSellerProp,
+  updateBuyerPurchasedGigsProp
+};

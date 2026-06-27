@@ -2,6 +2,9 @@ import { SellerModel } from '@users/models/seller.schema';
 import { IOrderMessage, IRatingTypes, IReviewMessageDetails, ISellerDocument } from '@19010853/ithust-shared';
 import mongoose from 'mongoose';
 import { updateBuyerIsSellerProp } from '@users/services/buyer.service';
+import { createOrGetStripeAccount } from '@users/services/stripe-seller.service';
+
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const backfillAvailableBalance = async (seller: ISellerDocument | null): Promise<ISellerDocument | null> => {
   if (!seller || seller.availableBalance !== undefined) {
@@ -23,7 +26,7 @@ const getSellerById = async (sellerId: string): Promise<ISellerDocument | null> 
 };
 
 const getSellerByUsername = async (username: string): Promise<ISellerDocument | null> => {
-  const seller: ISellerDocument | null = (await SellerModel.findOne({ username }).exec()) as ISellerDocument;
+  const seller: ISellerDocument | null = (await SellerModel.findOne({ username: new RegExp(`^${escapeRegex(username)}$`, 'i') }).exec()) as ISellerDocument;
   return backfillAvailableBalance(seller);
 };
 
@@ -40,7 +43,12 @@ const getRandomSellers = async (size: number): Promise<ISellerDocument[]> => {
 const createSeller = async (sellerData: ISellerDocument): Promise<ISellerDocument> => {
   const createdSeller: ISellerDocument = (await SellerModel.create(sellerData)) as ISellerDocument;
   await updateBuyerIsSellerProp(`${createdSeller.email}`);
-  return createdSeller;
+  try {
+    const stripeSeller = (await createOrGetStripeAccount(`${createdSeller._id}`)) as ISellerDocument;
+    return stripeSeller || createdSeller;
+  } catch {
+    return createdSeller;
+  }
 };
 
 const updateSeller = async (sellerId: string, sellerData: ISellerDocument): Promise<ISellerDocument> => {
@@ -79,6 +87,10 @@ const updateSellerOngoingJobsProp = async (sellerId: string, ongoingJobs: number
 
 const updateSellerCancelledJobsProp = async (sellerId: string): Promise<void> => {
   await SellerModel.updateOne({ _id: sellerId }, { $inc: { ongoingJobs: -1, cancelledJobs: 1 } }).exec();
+};
+
+const updateSellerRefundedOrderProp = async (sellerId: string, ongoingJobs = -1): Promise<void> => {
+  await SellerModel.updateOne({ _id: sellerId }, { $inc: { ongoingJobs } }).exec();
 };
 
 const updateSellerCompletedJobsProp = async (data: IOrderMessage): Promise<void> => {
@@ -130,5 +142,6 @@ export {
   updateSellerOngoingJobsProp,
   updateSellerCompletedJobsProp,
   updateSellerReview,
-  updateSellerCancelledJobsProp
+  updateSellerCancelledJobsProp,
+  updateSellerRefundedOrderProp
 };

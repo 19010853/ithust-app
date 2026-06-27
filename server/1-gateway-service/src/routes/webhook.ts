@@ -1,4 +1,5 @@
 import { Create } from '@gateway/controllers/order/create';
+import { StripeConnect } from '@gateway/controllers/users/seller/stripe';
 import express, { Router } from 'express';
 
 class WebhookRoutes {
@@ -9,8 +10,8 @@ class WebhookRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/sepay/webhook', Create.prototype.sepayWebhookInfo);
-    this.router.post('/sepay/webhook', Create.prototype.sepayWebhook);
+    this.router.post('/stripe/order/webhook', Create.prototype.stripeWebhook);
+    this.router.post('/stripe/connect/webhook', StripeConnect.prototype.webhook);
     return this.router;
   }
 }

@@ -23,7 +23,7 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
 
   const addEducationFields = (): void => {
     const newfield: IEducation = {
-      country: 'Quốc gia',
+      country: '',
       university: '',
       title: 'Bằng cấp',
       major: '',
@@ -69,6 +69,7 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
           <div className="relative h-[55px]">
             <Dropdown
               text={input.country}
+              placeholder="Quốc gia"
               maxHeight="300"
               showSearchInput={true}
               mainClassNames="absolute bg-white z-40"

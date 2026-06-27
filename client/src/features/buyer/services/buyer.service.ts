@@ -14,8 +14,19 @@ export const buyerApi = api.injectEndpoints({
     getBuyerByEmail: build.query<IResponse, void>({
       query: () => 'buyer/email',
       providesTags: ['Buyer']
+    }),
+    createRefundWithdrawal: build.mutation<IResponse, { buyerId: string; amount: number; paypalEmail: string }>({
+      query({ buyerId, amount, paypalEmail }) {
+        return {
+          url: `buyer/${buyerId}/refund-withdrawal`,
+          method: 'POST',
+          body: { amount, paypalEmail }
+        };
+      },
+      invalidatesTags: ['Buyer']
     })
   })
 });
 
-export const { useGetCurrentBuyerByUsernameQuery, useGetBuyerByUsernameQuery, useGetBuyerByEmailQuery } = buyerApi;
+export const { useGetCurrentBuyerByUsernameQuery, useGetBuyerByUsernameQuery, useGetBuyerByEmailQuery, useCreateRefundWithdrawalMutation } =
+  buyerApi;

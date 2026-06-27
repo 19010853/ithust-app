@@ -5,8 +5,8 @@ const styles = StyleSheet.create({
   theader: {
     marginTop: 20,
     fontSize: 10,
-    fontFamily: 'Lato Bold',
-    fontWeight: 'bold',
+    fontFamily: 'Noto Sans',
+    fontWeight: 700,
     paddingTop: 4,
     textAlign: 'center',
     flex: 1,

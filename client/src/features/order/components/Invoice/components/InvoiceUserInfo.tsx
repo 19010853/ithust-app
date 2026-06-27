@@ -8,8 +8,8 @@ const CLIENT_ENDPOINT = import.meta.env.VITE_CLIENT_ENDPOINT;
 const styles = StyleSheet.create({
   spaceBetween: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', color: '#3E3E3E' },
   titleContainer: { flexDirection: 'row', marginTop: 20 },
-  title: { fontSize: 11, fontFamily: 'Lato Bold', fontWeight: 'bold' },
-  subTitle: { fontSize: 10 },
+  title: { fontSize: 11, fontFamily: 'Noto Sans', fontWeight: 700 },
+  subTitle: { fontSize: 10, fontFamily: 'Noto Sans', fontWeight: 400 },
   link: { fontSize: 10, color: '#4aa1f3' }
 });
 
@@ -23,7 +23,7 @@ const InvoiceUserInfo: FC = (): ReactElement => {
           <View style={styles.titleContainer}>
             <View style={styles.spaceBetween}>
               <View style={{ maxWidth: 200 }}>
-                <Text style={styles.title}>Người nhận </Text>
+                <Text style={styles.title}>Người nhận</Text>
                 <Text style={styles.subTitle}>{orderInvoice.buyerUsername}</Text>
               </View>
               <View style={{ maxWidth: 200 }}>

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { array, number, object, ObjectSchema, string } from 'yup';
 
-import { GIG_MAX_PRICE_VND, GIG_MIN_PRICE_VND } from 'src/shared/utils/currency.utils';
+import { formatVnd, GIG_MAX_PRICE_VND, GIG_MIN_PRICE_VND } from 'src/shared/utils/currency.utils';
 
 import { ICreateGig } from '../interfaces/gig.interface';
 
@@ -23,14 +23,14 @@ const gigInfoSchema: ObjectSchema<ICreateGig | any> = object({
     .max(100, { basicDescription: 'Mô tả ngắn của gig tối đa 100 ký tự' })
     .required({ basicDescription: 'Vui lòng nhập mô tả ngắn của gig' }),
   basicTitle: string()
-    .max(40, { basicTitle: 'Tiêu đề gói cơ bản tối đa 40 ký tự' })
-    .required({ basicTitle: 'Vui lòng nhập tiêu đề gói cơ bản' }),
+    .max(40, { basicTitle: 'Tiêu đề gói tối đa 40 ký tự' })
+    .required({ basicTitle: 'Vui lòng nhập tiêu đề gói' }),
   subCategories: array(string()).min(1, { subCategories: 'Vui lòng thêm danh mục con' }),
   tags: array(string()).min(1, { tags: 'Vui lòng thêm thẻ tìm kiếm' }),
   price: number()
     .integer({ price: 'Giá phải là số nguyên VND' })
-    .min(GIG_MIN_PRICE_VND, { price: `Giá phải tối thiểu là ${GIG_MIN_PRICE_VND} VND` })
-    .max(GIG_MAX_PRICE_VND, { price: `Giá tối đa là ${GIG_MAX_PRICE_VND} VND` })
+    .min(GIG_MIN_PRICE_VND, { price: `Giá phải tối thiểu là ${formatVnd(GIG_MIN_PRICE_VND)}` })
+    .max(GIG_MAX_PRICE_VND, { price: `Giá tối đa là ${formatVnd(GIG_MAX_PRICE_VND)}` })
     .required({ price: 'Vui lòng nhập giá' })
 });
 

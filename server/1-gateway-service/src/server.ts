@@ -104,7 +104,7 @@ export class GatewayServer {
       json({
         limit: '200mb',
         verify: (req: RawBodyRequest, _res: Response, buffer: Buffer) => {
-          if (req.originalUrl.includes('/sepay/webhook')) {
+          if (req.originalUrl.includes('/stripe/order/webhook') || req.originalUrl.includes('/stripe/connect/webhook')) {
             req.rawBody = Buffer.from(buffer);
           }
         }

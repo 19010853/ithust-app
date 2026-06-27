@@ -25,8 +25,14 @@ class OrderService {
     return response;
   }
 
-  async sepayWebhook(body: any): Promise<AxiosResponse> {
-    const response: AxiosResponse = await axiosOrderInstance.post('/sepay/webhook', body);
+  async stripeWebhook(body: unknown, stripeSignature: string, rawBody?: Buffer): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosOrderInstance.post('/stripe/webhook', rawBody || body, {
+      headers: {
+        'stripe-signature': stripeSignature,
+        ...(rawBody ? { 'Content-Type': 'application/json' } : {})
+      },
+      transformRequest: rawBody ? [(data) => data] : undefined
+    });
     return response;
   }
 
@@ -37,6 +43,31 @@ class OrderService {
 
   async createRefundRequest(orderId: string, body: unknown): Promise<AxiosResponse> {
     const response: AxiosResponse = await axiosOrderInstance.post(`/refund/${orderId}`, body);
+    return response;
+  }
+
+  async createDispute(orderId: string, body: unknown): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosOrderInstance.post(`/dispute/${orderId}`, body);
+    return response;
+  }
+
+  async getDisputes(query: unknown): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosOrderInstance.get('/disputes', { params: query });
+    return response;
+  }
+
+  async getDisputeMessages(disputeId: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosOrderInstance.get(`/dispute/${disputeId}/messages`);
+    return response;
+  }
+
+  async createDisputeMessage(disputeId: string, body: unknown): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosOrderInstance.post(`/dispute/${disputeId}/messages`, body);
+    return response;
+  }
+
+  async decideDispute(disputeId: string, body: unknown): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosOrderInstance.put(`/dispute/${disputeId}/decision`, body);
     return response;
   }
 

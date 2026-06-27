@@ -28,7 +28,9 @@ const OrderExtension: FC = (): ReactElement => {
       };
       await updateDeliveryDate({ orderId: `${order?.orderId}`, type: extensionAction, body: extended });
       setShowExtensionApprovalModal(false);
-      showSuccessToast(`${extensionAction === 'approve' ? 'Phê duyệt gia hạn' : 'Từ chối gia hạn'} thành công.`);
+      showSuccessToast(
+        extensionAction === 'approve' ? 'Phê duyệt gia hạn thành công.' : 'Đã từ chối gia hạn và bắt đầu hoàn tiền qua Stripe.'
+      );
     } catch (error) {
       showErrorToast(`Không thể ${extensionAction === 'approve' ? 'phê duyệt' : 'từ chối'} yêu cầu gia hạn.`);
     }
@@ -46,6 +48,7 @@ const OrderExtension: FC = (): ReactElement => {
       )}
       {order?.requestExtension &&
         order.requestExtension.newDate &&
+        order.paymentStatus === 'HELD' &&
         TimeAgo.compareDates(order.offer.oldDeliveryDate, order.offer.newDeliveryDate) === 0 && (
           <div className="flex rounded-[4px] bg-white px-4 py-1">
             <div className="w-full">
@@ -104,13 +107,13 @@ const OrderExtension: FC = (): ReactElement => {
                           />
                           <Button
                             className="rounded bg-red-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-red-400 focus:outline-none md:px-4 md:py-2 md:text-base"
-                            label="Không, từ chối gia hạn"
+                            label="Không, từ chối và hoàn tiền"
                             onClick={() => {
                               setExtensionAction('reject');
                               setApprovalModalContent({
-                                header: 'Từ chối gia hạn',
-                                body: 'Bạn có chắc không muốn xem xét lại yêu cầu gia hạn này?',
-                                btnText: 'Từ chối',
+                                header: 'Từ chối gia hạn và hoàn tiền',
+                                body: 'Nếu từ chối yêu cầu gia hạn, hệ thống sẽ hoàn tiền về phương thức thanh toán ban đầu của bạn.',
+                                btnText: 'Từ chối và hoàn tiền',
                                 btnColor: 'bg-red-500 hover:bg-red-400'
                               });
                               setShowExtensionApprovalModal(true);

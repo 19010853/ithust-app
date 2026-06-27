@@ -11,14 +11,14 @@ const withdraw = async (req: Request, res: Response): Promise<void> => {
     throw new BadRequestError(error.details[0].message, 'withdraw()');
   }
 
-  const withdrawal = await createWithdrawal(sellerId, value.amount, value.bankAccount);
+  const withdrawal = await createWithdrawal(sellerId, value.amount);
 
   res.status(StatusCodes.CREATED).json({ message: 'Withdrawal request created', withdrawal });
 };
 
 const withdrawals = async (req: Request, res: Response): Promise<void> => {
   const status = req.query.status ? `${req.query.status}` : undefined;
-  if (status && !['PENDING', 'COMPLETED', 'REJECTED'].includes(status)) {
+  if (status && !['PENDING', 'PROCESSING', 'COMPLETED', 'REJECTED', 'FAILED', 'MANUAL_REVIEW', 'RECONCILIATION_REQUIRED'].includes(status)) {
     throw new BadRequestError('Invalid withdrawal status filter', 'withdrawals()');
   }
 

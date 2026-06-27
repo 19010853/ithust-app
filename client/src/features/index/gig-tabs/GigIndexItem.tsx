@@ -13,11 +13,12 @@ const GigIndexItem: FC<IGigsProps> = ({ gig }): ReactElement => {
   return (
     <div className="rounded">
       <div className="mb-8 flex cursor-pointer flex-col gap-2">
-        <Link to={`/gig/${gigData.id}/${title}`}>
+        <Link to={`/gig/${gigData.id}/${title}`} className="block aspect-[3/2] overflow-hidden rounded-lg bg-[#f5f5f5]">
           <LazyLoadImage
             src={gigData.coverImage}
             alt="Ảnh bìa gig"
-            className="w-full rounded-lg"
+            className="h-full w-full object-cover"
+            wrapperClassName="block h-full w-full"
             placeholderSrc="https://placehold.co/330x220?text=%E1%BA%A2nh+gig"
             effect="blur"
           />

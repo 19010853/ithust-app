@@ -3,7 +3,7 @@ import 'express-async-errors';
 import { attachCurrentUser, createServiceErrorHandler, winstonLogger } from '@19010853/ithust-shared';
 import { Logger } from 'winston';
 import { config } from '@order/config';
-import { Application, json, urlencoded } from 'express';
+import { Application, json, urlencoded, Request } from 'express';
 import hpp from 'hpp';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -19,6 +19,10 @@ const SERVER_PORT = 4006;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'orderServer', 'debug');
 let orderChannel: Channel;
 let socketIOOrderObject: Server;
+
+type RawBodyRequest = Request & {
+  rawBody?: Buffer;
+};
 
 const start = (app: Application): void => {
   securityMiddleware(app);
@@ -41,12 +45,20 @@ const securityMiddleware = (app: Application): void => {
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
     })
   );
-  app.use(attachCurrentUser(config.JWT_TOKEN!, (req) => req.originalUrl.includes('/sepay/webhook')));
+  config.validateStripeConfig();
+  app.use(attachCurrentUser(config.JWT_TOKEN!, (req) => req.originalUrl.includes('/stripe/webhook')));
 };
 
 const standardMiddleware = (app: Application): void => {
   app.use(compression());
-  app.use(json({ limit: '200mb' }));
+  app.use(json({
+    limit: '200mb',
+    verify: (req: RawBodyRequest, _res, buffer: Buffer) => {
+      if (req.originalUrl.includes('/stripe/webhook')) {
+        req.rawBody = Buffer.from(buffer);
+      }
+    }
+  }));
   app.use(urlencoded({ extended: true, limit: '200mb' }));
 };
 
@@ -57,6 +69,8 @@ const routesMiddleware = (app: Application): void => {
 const startQueues = async (): Promise<void> => {
   orderChannel = (await createConnection()) as Channel;
   await consumerReviewFanoutMessages(orderChannel);
+  const { startOverdueRefundJob } = await import('@order/jobs/overdue-refund.job');
+  startOverdueRefundJob();
 };
 
 const startElasticSearch = (): void => {

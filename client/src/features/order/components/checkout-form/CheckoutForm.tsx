@@ -11,20 +11,22 @@ const CheckoutForm: FC<ICheckoutProps> = ({ gigId, offer }): ReactElement => {
   const handleSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
     setIsLoading(true);
-    
+
     // Simulate a small delay for better UX
     setTimeout(() => {
-      navigate(`/gig/order/requirement/${gigId}?${createSearchParams({
-        offer: JSON.stringify(offer),
-        order_date: `${new Date()}`
-      })}`);
+      navigate(
+        `/gig/order/requirement/${gigId}?${createSearchParams({
+          offer: JSON.stringify(offer),
+          order_date: `${new Date()}`
+        })}`
+      );
     }, 500);
   };
 
   return (
     <form id="payment-form" onSubmit={handleSubmit} className="px-4 py-2">
       <div className="mb-6 text-sm text-gray-600">
-        Bạn sắp đặt đơn hàng. Nhấn nút bên dưới để chuyển sang trang yêu cầu, nơi bạn gửi hướng dẫn cho người bán và nhận mã QR thanh toán.
+        Bạn sắp đặt đơn hàng. Nhấn nút bên dưới để chuyển sang trang yêu cầu, nơi bạn gửi hướng dẫn cho người bán và thanh toán bằng Stripe.
       </div>
       <Button
         id="submit"

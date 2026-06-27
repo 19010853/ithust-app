@@ -24,7 +24,11 @@ const orderStatusLabel = (status: string): string => {
     'in progress': 'Đang thực hiện',
     pending: 'Chờ xử lý',
     placed: 'Đã đặt',
-    revision: 'Yêu cầu chỉnh sửa'
+    revision: 'Yêu cầu chỉnh sửa',
+    disputed: 'Đang tranh chấp',
+    refunded: 'Đã hoàn tiền',
+    refund_processing: 'Đang hoàn tiền',
+    'refund processing': 'Đang hoàn tiền'
   };
   const normalizedStatus = normalizeOrderStatus(status);
   return labels[normalizedStatus] || status;
@@ -81,10 +85,10 @@ const BuyerTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): ReactEl
                   <td className="px-3 py-1 text-left lg:p-3 lg:text-center">
                     <span
                       className={`status rounded bg-transparent p-0 text-xs font-bold uppercase text-black sm:px-[5px] sm:py-[4px] sm:text-white ${normalizeOrderStatus(
-                        order.status
+                        order.paymentStatus === 'REFUND_PROCESSING' ? 'REFUND_PROCESSING' : order.status
                       ).replace(/ /g, '')}`}
                     >
-                      {orderStatusLabel(order.status)}
+                      {orderStatusLabel(order.paymentStatus === 'REFUND_PROCESSING' ? 'refund processing' : order.status)}
                     </span>
                   </td>
                 </tr>

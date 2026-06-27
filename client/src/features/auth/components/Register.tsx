@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, ReactElement, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { useDeviceData, useMobileOrientation } from 'react-device-detect';
 import { FaCamera, FaChevronLeft, FaEye, FaEyeSlash, FaTimes } from 'react-icons/fa';
 import Alert from 'src/shared/alert/Alert';
@@ -66,8 +66,35 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
     }
   };
 
+  const onContinueRegistration = (): void => {
+    if (!userInfo.username) {
+      setAlertMessage('Vui lòng nhập tên người dùng');
+      return;
+    }
+    if (!userInfo.email) {
+      setAlertMessage('Vui lòng nhập email');
+      return;
+    }
+    if (!userInfo.password) {
+      setAlertMessage('Vui lòng nhập mật khẩu');
+      return;
+    }
+    setAlertMessage('');
+    setStep(2);
+  };
+
   const onRegisterUser = async (): Promise<void> => {
     try {
+      if (!userInfo.country) {
+        setAlertMessage('Vui lòng chọn quốc gia');
+        return;
+      }
+
+      if (!userInfo.profilePicture) {
+        setAlertMessage('Vui lòng chọn ảnh đại diện');
+        return;
+      }
+
       const isValid: boolean = await schemaValidation();
       if (isValid) {
         const result: IResponse = await signUp(userInfo).unwrap();
@@ -80,6 +107,22 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
       }
     } catch (error) {
       setAlertMessage(error?.data.message);
+    }
+  };
+
+  const onRegisterKeyDown = (event: KeyboardEvent): void => {
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    event.preventDefault();
+    if (step === 1) {
+      onContinueRegistration();
+      return;
+    }
+
+    if (!isLoading) {
+      onRegisterUser();
     }
   };
 
@@ -125,7 +168,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
         <div className="px-5">{alertMessage && <Alert type="error" message={alertMessage} />}</div>
 
         {step === 1 && (
-          <div className="relative px-5 py-5">
+          <div className="relative px-5 py-5" onKeyDown={onRegisterKeyDown}>
             <div>
               <label htmlFor="username" className="text-sm font-bold leading-tight tracking-normal text-gray-800">
                 Tên người dùng
@@ -186,28 +229,13 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
             <Button
               className="text-md block w-full cursor-pointer rounded bg-sky-500 px-8 py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none"
               label="Tiếp tục"
-              onClick={() => {
-                if (!userInfo.username) {
-                  setAlertMessage('Vui lòng nhập tên người dùng');
-                  return;
-                }
-                if (!userInfo.email) {
-                  setAlertMessage('Vui lòng nhập email');
-                  return;
-                }
-                if (!userInfo.password) {
-                  setAlertMessage('Vui lòng nhập mật khẩu');
-                  return;
-                }
-                setAlertMessage('');
-                setStep(2);
-              }}
+              onClick={onContinueRegistration}
             />
           </div>
         )}
 
         {step === 2 && (
-          <div className="relative px-5 py-5">
+          <div className="relative px-5 py-5" onKeyDown={onRegisterKeyDown}>
             <div className="h-24">
               <label htmlFor="country" className="text-sm font-bold leading-tight tracking-normal text-gray-800">
                 Quốc gia
@@ -271,8 +299,8 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
               </div>
             </div>
             <Button
-              disabled={!userInfo.country || !userInfo.profilePicture}
-              className={`text-md block w-full cursor-pointer rounded bg-sky-500 px-8 py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none ${!userInfo.country || !userInfo.profilePicture ? 'cursor-not-allowed' : 'cursor-pointer'
+              disabled={isLoading}
+              className={`text-md block w-full rounded bg-sky-500 px-8 py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none ${isLoading ? 'cursor-not-allowed' : 'cursor-pointer'
                 }`}
               label={`${isLoading ? 'ĐANG ĐĂNG KÝ...' : 'ĐĂNG KÝ'}`}
               onClick={onRegisterUser}

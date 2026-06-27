@@ -8,8 +8,8 @@ const styles = StyleSheet.create({
   tbody: {
     marginTop: 20,
     fontSize: 10,
-    fontFamily: 'Lato Bold',
-    fontWeight: 'bold',
+    fontFamily: 'Noto Sans',
+    fontWeight: 700,
     paddingTop: 4,
     textAlign: 'center',
     flex: 1,
@@ -40,7 +40,11 @@ const TableTotal: FC = (): ReactElement => {
             <Text>Tổng cộng</Text>
           </View>
           <View style={styles.tbody}>
-            <Text>{formatVnd(orderInvoice.orderService.reduce((sum: number, item: IOrderInvoiceService) => sum + item.price * item.quantity, 0))}</Text>
+            <Text>
+              {formatVnd(
+                orderInvoice.orderService.reduce((sum: number, item: IOrderInvoiceService) => sum + item.price * item.quantity, 0)
+              )}
+            </Text>
           </View>
         </View>
       )}

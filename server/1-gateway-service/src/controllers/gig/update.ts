@@ -6,13 +6,14 @@ import { assertGigOwner, assertGigSellerCanOpenMarketplaceActivity } from '@gate
 
 export class Update {
   public async gig(req: Request, res: Response): Promise<void> {
+    await assertGigOwner(req.params.gigId, req.currentUser);
     await assertGigSellerCanOpenMarketplaceActivity(req.params.gigId);
     const response: AxiosResponse = await gigService.updateGig(req.params.gigId, req.body);
     res.status(StatusCodes.OK).json({ message: response.data.message, gig: response.data.gig });
   }
 
   public async gigActive(req: Request, res: Response): Promise<void> {
-    await assertGigOwner(req.params.gigId, req.currentUser?.username);
+    await assertGigOwner(req.params.gigId, req.currentUser);
     if (req.body.active === true) {
       await assertGigSellerCanOpenMarketplaceActivity(req.params.gigId);
     }
