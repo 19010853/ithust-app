@@ -24,6 +24,11 @@ class BuyerService {
     const response: AxiosResponse = await axiosBuyerInstance.get('/email');
     return response;
   }
+
+  async createRefundWithdrawal(buyerId: string, body: unknown): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axiosBuyerInstance.post(`/${buyerId}/refund-withdrawal`, body);
+    return response;
+  }
 }
 
 export const buyerService: BuyerService = new BuyerService();
