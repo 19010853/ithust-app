@@ -2,11 +2,13 @@ import { normalizeGatewayTokenHeader, verifyGatewayRequest } from '@19010853/ith
 import { Application } from 'express';
 import { gigRoutes } from '@gig/routes/gig';
 import { healthRoutes } from '@gig/routes/health';
+import { benchmarkRoutes } from '@gig/routes/benchmark';
 
 const BASE_PATH = '/api/v1/gig';
 
 const appRoutes = (app: Application): void => {
   app.use('', healthRoutes());
+  app.use('/benchmark', benchmarkRoutes());
   app.use(BASE_PATH, normalizeGatewayTokenHeader, verifyGatewayRequest, gigRoutes());
 };
 

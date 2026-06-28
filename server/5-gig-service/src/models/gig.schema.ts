@@ -46,5 +46,22 @@ gigSchema.virtual('id').get(function () {
   return this._id;
 });
 
+gigSchema.index(
+  {
+    title: 'text',
+    description: 'text',
+    basicTitle: 'text',
+    basicDescription: 'text',
+    categories: 'text',
+    subCategories: 'text',
+    username: 'text',
+    tags: 'text'
+  },
+  {
+    weights: { title: 10, categories: 8, basicTitle: 7, tags: 6, description: 5, basicDescription: 3, username: 1 },
+    name: 'gig_text_index'
+  }
+);
+
 const GigModel: Model<ISellerGig> = model<ISellerGig>('Gig', gigSchema, 'Gig');
 export { GigModel };
