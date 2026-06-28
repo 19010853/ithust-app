@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@19010853/ithust-shared": "^0.1.3",
+    "@19010853/ithust-shared": "^0.1.4",
     "@elastic/elasticsearch": "^8.10.0",
     "@faker-js/faker": "^8.2.0",
     "amqplib": "^0.10.3",
