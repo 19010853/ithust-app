@@ -172,7 +172,7 @@ function generateGig(index, startSortId) {
 
   return {
     sellerId: new mongoose.Types.ObjectId(),
-    username: faker.internet.username().toLowerCase(),
+    username: faker.internet.userName().toLowerCase(),
     profilePicture: `https://placehold.co/200x200?text=${faker.string.alpha(2).toUpperCase()}`,
     email: faker.internet.email().toLowerCase(),
     title,

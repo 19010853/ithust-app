@@ -30,7 +30,7 @@ const GigViewReviews: FC<IGigViewReviewsProps> = ({ showRatings, reviews, hasFet
             <h2 className="mb-4 text-lg font-bold">Đánh giá</h2>
             <div className="flex flex-col gap-y-3 pt-2 lg:flex-row lg:gap-x-6">
               <div className="w-full">
-                {Object.entries(gig?.ratingCategories as IRatingCategories).map((rating: [string, IRatingCategoryItem]) => (
+                {Object.entries((gig?.ratingCategories ?? {}) as IRatingCategories).map((rating: [string, IRatingCategoryItem]) => (
                   <div key={uuidv4()} className="mb-8 flex flex-col gap-y-2 lg:flex-row lg:gap-x-2">
                     <div className="w-full truncate text-sm lg:w-1/12">
                       {ratingTypes[`${rating[0]}`]} sao
