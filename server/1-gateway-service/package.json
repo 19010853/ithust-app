@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@19010853/ithust-shared": "^0.1.1",
+    "@19010853/ithust-shared": "^0.1.2",
     "@elastic/elasticsearch": "^8.10.0",
     "@socket.io/redis-adapter": "^8.2.1",
     "axios": "^1.6.0",
