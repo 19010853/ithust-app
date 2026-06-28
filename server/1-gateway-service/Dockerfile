@@ -9,7 +9,7 @@ RUN set -eux; \
     if [ -n "${NPM_TOKEN:-}" ]; then \
       printf '@19010853:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "${NPM_TOKEN}" > .npmrc; \
     fi; \
-    npm ci --legacy-peer-deps; \
+    npm install --legacy-peer-deps; \
     rm -f .npmrc
 COPY src ./src
 RUN npm run build
@@ -25,7 +25,7 @@ RUN set -eux; \
     if [ -n "${NPM_TOKEN:-}" ]; then \
       printf '@19010853:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "${NPM_TOKEN}" > .npmrc; \
     fi; \
-    npm ci --omit=dev --legacy-peer-deps; \
+    npm install --omit=dev --legacy-peer-deps; \
     npm cache clean --force; \
     rm -f .npmrc
 COPY --from=builder /app/build ./build
