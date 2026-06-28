@@ -3,7 +3,6 @@ import { config } from '@gig/config';
 import {
   addIndexedDocument,
   checkElasticSearchConnection,
-  createElasticSearchClient,
   createIndexIfMissing,
   deleteIndexedDocument,
   getDocumentCount as getSharedDocumentCount,
@@ -16,7 +15,9 @@ import { Logger } from 'winston';
 
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gigElasticSearchServer', 'debug');
 
-const elasticSearchClient: Client = createElasticSearchClient(`${config.ELASTIC_SEARCH_URL}`) as Client;
+// Tạo client trực tiếp bằng v8 của gig-service, tránh dùng createElasticSearchClient
+// từ shared package vốn kéo @elastic/elasticsearch@9.x (không tương thích ES server 8.x)
+const elasticSearchClient: Client = new Client({ node: `${config.ELASTIC_SEARCH_URL}` });
 
 const checkConnection = async (): Promise<void> => {
   await checkElasticSearchConnection({
