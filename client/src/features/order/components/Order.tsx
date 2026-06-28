@@ -56,11 +56,15 @@ const Order: FC = (): ReactElement => {
   }, [data?.order, isSuccess]);
 
   useEffect(() => {
-    socket.on('order notification', (order: IOrderDocument) => {
+    const handleOrderNotification = (order: IOrderDocument) => {
       if (order.orderId === orderId) {
         setOrder({ ...order });
       }
-    });
+    };
+    socket.on('order notification', handleOrderNotification);
+    return () => {
+      socket.off('order notification', handleOrderNotification);
+    };
   }, [orderId]);
 
   return (

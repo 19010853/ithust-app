@@ -31,10 +31,10 @@ const markNotificationAsRead = async (notificationId: string): Promise<IOrderNot
 const sendNotification = async (data: IOrderDocument, userToId: string, message: string): Promise<void> => {
   const notification: IOrderNotifcation = {
     userTo: userToId,
-    senderUsername: data.sellerUsername,
-    senderPicture: data.sellerImage,
-    receiverUsername: data.buyerUsername,
-    receiverPicture: data.buyerImage,
+    senderUsername: data.buyerUsername,
+    senderPicture: data.buyerImage,
+    receiverUsername: data.sellerUsername,
+    receiverPicture: data.sellerImage,
     message,
     orderId: data.orderId
   } as IOrderNotifcation;

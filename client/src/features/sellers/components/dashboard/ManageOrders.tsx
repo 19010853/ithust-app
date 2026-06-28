@@ -1,5 +1,5 @@
 import { findIndex } from 'lodash';
-import { FC, ReactElement, useEffect, useMemo, useState } from 'react';
+import { FC, ReactElement, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { IOrderDocument } from 'src/features/order/interfaces/order.interface';
 import { orderTypes, sellerOrderList, shortenLargeNumbers } from 'src/shared/utils/utils.service';
@@ -18,17 +18,30 @@ const SELLER_GIG_STATUS = {
 
 const ManageOrders: FC = (): ReactElement => {
   const [type, setType] = useState<string>(SELLER_GIG_STATUS.ACTIVE);
-  const { orders } = useOutletContext<SellerContextType>();
-  const ordersRef = useMemo(() => [...orders], [orders]);
+  const { orders: contextOrders } = useOutletContext<SellerContextType>();
+  const [orders, setOrders] = useState<IOrderDocument[]>([...contextOrders]);
 
   useEffect(() => {
-    socket.on('order notification', (order: IOrderDocument) => {
-      const index = findIndex(ordersRef, ['orderId', order.orderId]);
-      if (index > -1) {
-        ordersRef.splice(index, 1, order);
-      }
-    });
-  }, [ordersRef]);
+    setOrders([...contextOrders]);
+  }, [contextOrders]);
+
+  useEffect(() => {
+    const handleOrderNotification = (order: IOrderDocument) => {
+      setOrders((prev) => {
+        const index = findIndex(prev, ['orderId', order.orderId]);
+        if (index > -1) {
+          const updated = [...prev];
+          updated[index] = order;
+          return updated;
+        }
+        return [order, ...prev];
+      });
+    };
+    socket.on('order notification', handleOrderNotification);
+    return () => {
+      socket.off('order notification', handleOrderNotification);
+    };
+  }, []);
 
   return (
     <div className="container mx-auto mt-8 px-6 md:px-12 lg:px-6">
@@ -44,9 +57,9 @@ const ManageOrders: FC = (): ReactElement => {
                 }`}
               >
                 Đang hoạt động
-                {orderTypes(SELLER_GIG_STATUS.IN_PROGRESS, ordersRef) > 0 && (
+                {orderTypes(SELLER_GIG_STATUS.IN_PROGRESS, orders) > 0 && (
                   <span className="ml-1 rounded-[5px] bg-sky-500 px-[5px] py-[1px] text-xs font-medium text-white">
-                    {shortenLargeNumbers(orderTypes(SELLER_GIG_STATUS.IN_PROGRESS, ordersRef))}
+                    {shortenLargeNumbers(orderTypes(SELLER_GIG_STATUS.IN_PROGRESS, orders))}
                   </span>
                 )}
               </a>
@@ -59,9 +72,9 @@ const ManageOrders: FC = (): ReactElement => {
                 }`}
               >
                 Hoàn thành
-                {orderTypes(SELLER_GIG_STATUS.COMPLETED, ordersRef) > 0 && (
+                {orderTypes(SELLER_GIG_STATUS.COMPLETED, orders) > 0 && (
                   <span className="ml-1 rounded-[5px] bg-sky-500 px-[5px] py-[1px] text-xs font-medium text-white">
-                    {shortenLargeNumbers(orderTypes(SELLER_GIG_STATUS.COMPLETED, ordersRef))}
+                    {shortenLargeNumbers(orderTypes(SELLER_GIG_STATUS.COMPLETED, orders))}
                   </span>
                 )}
               </a>
@@ -74,9 +87,9 @@ const ManageOrders: FC = (): ReactElement => {
                 }`}
               >
                 Đã hủy
-                {orderTypes(SELLER_GIG_STATUS.CANCELLED, ordersRef) > 0 && (
+                {orderTypes(SELLER_GIG_STATUS.CANCELLED, orders) > 0 && (
                   <span className="ml-1 rounded-[5px] bg-sky-500 px-[5px] py-[1px] text-xs font-medium text-white">
-                    {shortenLargeNumbers(orderTypes(SELLER_GIG_STATUS.CANCELLED, ordersRef))}
+                    {shortenLargeNumbers(orderTypes(SELLER_GIG_STATUS.CANCELLED, orders))}
                   </span>
                 )}
               </a>
@@ -87,22 +100,22 @@ const ManageOrders: FC = (): ReactElement => {
         {type === SELLER_GIG_STATUS.ACTIVE && (
           <ManageOrdersTable
             type="active"
-            orders={sellerOrderList(SELLER_GIG_STATUS.IN_PROGRESS, ordersRef)}
-            orderTypes={orderTypes(SELLER_GIG_STATUS.IN_PROGRESS, ordersRef)}
+            orders={sellerOrderList(SELLER_GIG_STATUS.IN_PROGRESS, orders)}
+            orderTypes={orderTypes(SELLER_GIG_STATUS.IN_PROGRESS, orders)}
           />
         )}
         {type === SELLER_GIG_STATUS.COMPLETED && (
           <ManageOrdersTable
             type="completed"
-            orders={sellerOrderList(SELLER_GIG_STATUS.COMPLETED, ordersRef)}
-            orderTypes={orderTypes(SELLER_GIG_STATUS.COMPLETED, ordersRef)}
+            orders={sellerOrderList(SELLER_GIG_STATUS.COMPLETED, orders)}
+            orderTypes={orderTypes(SELLER_GIG_STATUS.COMPLETED, orders)}
           />
         )}
         {type === SELLER_GIG_STATUS.CANCELLED && (
           <ManageOrdersTable
             type="cancelled"
-            orders={sellerOrderList(SELLER_GIG_STATUS.CANCELLED, ordersRef)}
-            orderTypes={orderTypes(SELLER_GIG_STATUS.CANCELLED, ordersRef)}
+            orders={sellerOrderList(SELLER_GIG_STATUS.CANCELLED, orders)}
+            orderTypes={orderTypes(SELLER_GIG_STATUS.CANCELLED, orders)}
           />
         )}
       </div>
