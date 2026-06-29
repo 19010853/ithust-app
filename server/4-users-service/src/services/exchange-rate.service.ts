@@ -21,6 +21,14 @@ let cache: RateCache | undefined;
 const CDN_PRIMARY = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/vnd.json';
 const CDN_FALLBACK = 'https://latest.currency-api.pages.dev/v1/currencies/vnd.json';
 
+// Approximate fallback rates (VND per 1 major unit) — only used if both CDN endpoints are unreachable.
+// Real-time rates are always preferred; these are intentionally conservative estimates.
+const CURRENCY_VND_FALLBACK: Record<string, number> = {
+  usd: 25000, eur: 27000, gbp: 32000, sgd: 18500,
+  jpy: 165,   krw: 18,    cny: 3500,  thb: 700,
+  myr: 5500,  hkd: 3200,  aud: 16000, cad: 18000,
+};
+
 const fetchJson = (url: string): Promise<unknown> =>
   new Promise((resolve, reject) => {
     const req = https.get(url, (res) => {
@@ -49,8 +57,8 @@ const tryFetchRate = async (url: string, currency: string): Promise<number | nul
   }
 };
 
-// Returns VND per 1 unit of STRIPE_CURRENCY. Fetches from a free public CDN API (no API key required),
-// falls back to the configured STRIPE_VND_PER_UNIT if the API is unavailable.
+// Returns VND per 1 unit of STRIPE_CURRENCY. Fetches from a free public CDN API (no API key required).
+// Supports any currency — set STRIPE_CURRENCY to sgd, usd, eur, jpy, krw, cny, etc.
 export const getVndPerUnit = async (): Promise<{ vndPerUnit: number; source: string }> => {
   const currency = config.STRIPE_CURRENCY;
 
@@ -70,5 +78,10 @@ export const getVndPerUnit = async (): Promise<{ vndPerUnit: number; source: str
     return { vndPerUnit: fromFallback, source: 'api:fawazahmed0-fallback' };
   }
 
-  return { vndPerUnit: config.STRIPE_VND_PER_UNIT, source: 'fallback:STRIPE_VND_PER_UNIT' };
+  const builtIn = CURRENCY_VND_FALLBACK[currency.toLowerCase()];
+  if (builtIn) {
+    return { vndPerUnit: builtIn, source: 'fallback:built-in' };
+  }
+
+  throw new Error(`Exchange rate unavailable for currency "${currency}". Please try again later.`);
 };

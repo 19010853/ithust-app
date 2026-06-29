@@ -112,9 +112,7 @@ spec:
                   name: ithust-backend-secret
                   key: stripe-connect-webhook-secret
             - name: STRIPE_CURRENCY
-              value: "usd"
-            - name: STRIPE_VND_PER_UNIT
-              value: "25000"
+              value: "sgd"
             - name: STRIPE_AUTOMATIC_PAYOUT_ENABLED
               value: "true"
             - name: STRIPE_CONNECT_RETURN_URL

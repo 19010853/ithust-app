@@ -147,15 +147,6 @@ export const createConnectedAccountPayout = async (
 ): Promise<{ payoutId: string; status: string; amount: string; currency: string }> => {
   const amount = await toStripeAmountFromVnd(amountVnd);
 
-  // In test mode, transfers land as pending on connected accounts, not available.
-  // Fund the connected account's available balance directly before payout.
-  if (isStripeTestMode()) {
-    await stripe().charges.create(
-      { amount: amount.amountInSmallestUnit, currency: amount.currency, source: 'tok_bypassPending' },
-      { stripeAccount: connectedAccountId }
-    );
-  }
-
   const payout = await stripe().payouts.create(
     {
       amount: amount.amountInSmallestUnit,
