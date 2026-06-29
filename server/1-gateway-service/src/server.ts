@@ -4,7 +4,6 @@ import { CustomError, IErrorResponse, winstonLogger } from '@19010853/ithust-sha
 import { Application, Request, Response, json, urlencoded, NextFunction } from 'express';
 import { Logger } from 'winston';
 import cookieSession from 'cookie-session';
-import cors from 'cors';
 import hpp from 'hpp';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -30,6 +29,7 @@ const DEFAULT_ERROR_CODE = 500;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
 export let socketIO: Server;
 const allowedOrigins = config.CLIENT_URLS.length > 0 ? config.CLIENT_URLS : [`${config.CLIENT_URL}`].filter(Boolean);
+log.info(`Gateway CORS allowedOrigins: ${JSON.stringify(allowedOrigins)}`);
 
 type RawBodyRequest = Request & {
   rawBody?: Buffer;
@@ -76,13 +76,21 @@ export class GatewayServer {
     );
     app.use(hpp());
     app.use(helmet());
-    app.use(
-      cors({
-        origin: allowedOrigins,
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
-      })
-    );
+    app.use((req: Request, res: Response, next: NextFunction) => {
+      const origin = req.headers['origin'] as string | undefined;
+      if (origin && allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,x-gateway-token,gatewayToken,Accept');
+        res.setHeader('Vary', 'Origin');
+      }
+      if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+        return;
+      }
+      next();
+    });
 
     app.use((req: Request, _res: Response, next: NextFunction) => {
       if (req.session?.jwt) {
