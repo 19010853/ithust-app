@@ -22,6 +22,7 @@
     "@19010853/ithust-shared": "^0.1.6",
     "@elastic/elasticsearch": "^8.10.0",
     "@socket.io/redis-adapter": "^8.2.1",
+    "amqplib": "^0.10.3",
     "axios": "^1.6.0",
     "bcrypt": "^5.1.1",
     "compression": "^1.7.4",

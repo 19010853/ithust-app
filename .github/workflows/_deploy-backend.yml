@@ -95,7 +95,7 @@ jobs:
           trap cleanup_npmrc EXIT
           printf '@19010853:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "$NPM_TOKEN" > .npmrc
           npm view @19010853/ithust-shared@0.0.18 version --registry=https://npm.pkg.github.com
-          npm ci --legacy-peer-deps
+          npm install --legacy-peer-deps
 
       - name: Build Docker Image
         working-directory: ${{ inputs.service_dir }}
