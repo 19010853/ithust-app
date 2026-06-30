@@ -202,11 +202,15 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
     if (!message && !selectedFile) {
       return;
     }
-    if (!isAdminChat && (!messageContext?.buyerId || !messageContext?.sellerId || !messageContext?.receiverUsername || !messageContext?.receiverPicture)) {
+    if (!messageContext) {
       showErrorToast('Không thể xác định người nhận. Vui lòng tải lại cuộc trò chuyện.');
       return;
     }
-    if (isAdminChat && (!messageContext?.receiverUsername || !messageContext?.receiverPicture)) {
+    if (!isAdminChat && (!messageContext.buyerId || !messageContext.sellerId || !messageContext.receiverUsername || !messageContext.receiverPicture)) {
+      showErrorToast('Không thể xác định người nhận. Vui lòng tải lại cuộc trò chuyện.');
+      return;
+    }
+    if (isAdminChat && (!messageContext.receiverUsername || !messageContext.receiverPicture)) {
       showErrorToast('Không thể xác định người nhận. Vui lòng tải lại cuộc trò chuyện.');
       return;
     }
