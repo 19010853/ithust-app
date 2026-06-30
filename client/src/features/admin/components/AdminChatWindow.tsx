@@ -177,29 +177,21 @@ const AdminChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation
     <>
       {!isLoading && (
         <div className="flex min-h-full w-full flex-col">
-          <div className="border-grey flex w-full flex-col border-b px-5 py-0.5">
-            <div className="flex gap-3 py-2">
-              {resolvedReceiverPicture && (
-                <img
-                  src={resolvedReceiverPicture}
-                  alt="Ảnh đại diện"
-                  className="h-10 w-10 rounded-full object-cover"
-                />
-              )}
-              <div>
-                {onlineReceiverRef.current === resolvedReceiverUsername ? (
-                  <>
-                    <div className="text-lg font-semibold">{firstLetterUppercase(`${resolvedReceiverUsername || username}`)}</div>
-                    <div className="flex gap-1 pb-1 text-xs font-normal">
-                      Đang trực tuyến
-                      <span className="flex h-2.5 w-2.5 self-center rounded-full border-2 border-white bg-green-400"></span>
-                    </div>
-                  </>
-                ) : (
-                  <div className="py-2.5 text-lg font-semibold">{firstLetterUppercase(`${resolvedReceiverUsername || username}`)}</div>
-                )}
-              </div>
-            </div>
+          <div className="border-grey flex w-full flex-col border-b px-5 py-0.5 ">
+            {onlineReceiverRef.current === resolvedReceiverUsername ? (
+              <>
+                <div className="text-lg font-semibold">{firstLetterUppercase(`${resolvedReceiverUsername || username}`)}</div>
+                <div className="flex gap-1 pb-1 text-xs font-normal">
+                  Đang trực tuyến
+                  <span className="flex h-2.5 w-2.5 self-center rounded-full border-2 border-white bg-green-400"></span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="py-2.5 text-lg font-semibold">{firstLetterUppercase(`${resolvedReceiverUsername || username}`)}</div>
+                <span className="py-2.5s text-xs font-normal"></span>
+              </>
+            )}
           </div>
 
           <div className="relative h-[100%]">

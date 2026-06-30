@@ -30,14 +30,14 @@ const ChatList: FC = (): ReactElement => {
 
   const ADMIN_USERNAME = (import.meta.env.VITE_ADMIN_USERNAME as string) || '';
   const isSeller = !!(seller?._id);
-  const existingAdminConv = isSeller && ADMIN_USERNAME
-    ? chatList.find(
-        (m) =>
-          m.isAdminChat ||
-          lowerCase(`${m.senderUsername}`) === lowerCase(ADMIN_USERNAME) ||
-          lowerCase(`${m.receiverUsername}`) === lowerCase(ADMIN_USERNAME)
-      )
-    : undefined;
+  const isAdminConv = (m: IMessageDocument): boolean =>
+    !!(
+      m.isAdminChat ||
+      lowerCase(`${m.senderUsername}`) === lowerCase(ADMIN_USERNAME) ||
+      lowerCase(`${m.receiverUsername}`) === lowerCase(ADMIN_USERNAME)
+    );
+  const existingAdminConv = isSeller && ADMIN_USERNAME ? chatList.find(isAdminConv) : undefined;
+  const visibleChatList = isSeller && ADMIN_USERNAME ? chatList.filter((m) => !isAdminConv(m)) : chatList;
 
   const selectAdminChat = async (): Promise<void> => {
     if (existingAdminConv) {
@@ -149,11 +149,11 @@ const ChatList: FC = (): ReactElement => {
             </div>
           </div>
         )}
-        {chatList.map((data: IMessageDocument, index: number) => (
+        {visibleChatList.map((data: IMessageDocument, index: number) => (
           <div
             key={uuidv4()}
             onClick={() => selectUserFromList(data)}
-            className={`flex w-full cursor-pointer items-center space-x-4 px-5 py-4 hover:bg-gray-50 ${index !== chatList.length - 1 ? 'border-grey border-b' : ''
+            className={`flex w-full cursor-pointer items-center space-x-4 px-5 py-4 hover:bg-gray-50 ${index !== visibleChatList.length - 1 ? 'border-grey border-b' : ''
               } ${!data.isRead ? 'bg-[#f5fbff]' : ''} ${data.conversationId === conversationId ? 'bg-[#f5fbff]' : ''}`}
           >
             <LazyLoadImage
