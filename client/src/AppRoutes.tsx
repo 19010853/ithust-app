@@ -3,6 +3,7 @@ import { RouteObject, useRoutes } from 'react-router-dom';
 
 import AppPage from './features/AppPage';
 import AdminRoute from './features/AdminRoute';
+import AdminInbox from './features/admin/components/AdminInbox';
 import AdminSettings from './features/admin/components/AdminSettings';
 import AdminUsers from './features/admin/components/AdminUsers';
 import AdminWithdrawals from './features/admin/components/AdminWithdrawals';
@@ -177,6 +178,42 @@ const AppRouter: FC = () => {
           <AdminRoute>
             <AdminLayout>
               <AdminSettings />
+            </AdminLayout>
+          </AdminRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/admin/inbox',
+      element: (
+        <Suspense>
+          <AdminRoute>
+            <AdminLayout>
+              <AdminInbox />
+            </AdminLayout>
+          </AdminRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/admin/inbox/:username',
+      element: (
+        <Suspense>
+          <AdminRoute>
+            <AdminLayout>
+              <AdminInbox />
+            </AdminLayout>
+          </AdminRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/admin/inbox/:username/:conversationId',
+      element: (
+        <Suspense>
+          <AdminRoute>
+            <AdminLayout>
+              <AdminInbox />
             </AdminLayout>
           </AdminRoute>
         </Suspense>

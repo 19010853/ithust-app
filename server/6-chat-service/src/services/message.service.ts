@@ -76,6 +76,7 @@ const getUserConversationList = async (username: string): Promise<IMessageDocume
         gigId: '$result.gigId',
         isRead: '$result.isRead',
         hasOffer: '$result.hasOffer',
+        isAdminChat: { $ifNull: ['$result.isAdminChat', false] },
         createdAt: '$result.createdAt'
       }
     }

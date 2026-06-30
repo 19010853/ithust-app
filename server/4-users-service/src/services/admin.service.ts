@@ -5,6 +5,7 @@ import { BadRequestError } from '@19010853/ithust-shared';
 import { IBuyerDocument, ISellerDocument } from '@19010853/ithust-shared';
 import { publishDirectMessage } from '@users/queues/user.producer';
 import { Channel } from 'amqplib';
+import { config } from '@users/config';
 
 interface IAdminUserQuery {
   country?: string;
@@ -151,12 +152,15 @@ const getAdminUsers = async (query: IAdminUserQuery): Promise<{ users: IAdminUse
     }
   });
 
-  users.sort((a: any, b: any) => `${a.username}`.localeCompare(`${b.username}`));
-  const total = users.length;
+  const adminEmail = config.PLATFORM_OWNER_EMAIL?.toLowerCase();
+  const filteredUsers = adminEmail ? users.filter((u) => `${u.email}`.toLowerCase() !== adminEmail) : users;
+
+  filteredUsers.sort((a: any, b: any) => `${a.username}`.localeCompare(`${b.username}`));
+  const total = filteredUsers.length;
   const totalPages = Math.max(Math.ceil(total / limit), 1);
 
   return {
-    users: users.slice(skip, skip + limit),
+    users: filteredUsers.slice(skip, skip + limit),
     pagination: { page, limit, total, totalPages },
     filters: query
   };

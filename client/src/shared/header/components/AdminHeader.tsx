@@ -30,6 +30,9 @@ const AdminHeader: FC = (): ReactElement => {
             <Link to="/admin/users" className="hover:text-sky-500">
               Người dùng
             </Link>
+            <Link to="/admin/inbox" className="hover:text-sky-500">
+              Chat
+            </Link>
           </nav>
         </div>
         <div className="relative">

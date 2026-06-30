@@ -11,12 +11,13 @@ import { useAppDispatch, useAppSelector } from 'src/store/store';
 import { IReduxState } from 'src/store/store.interface';
 import { v4 as uuidv4 } from 'uuid';
 
-import { IMessageDocument } from '../../interfaces/chat.interface';
+import { IInboxDraftConversation, IMessageDocument } from '../../interfaces/chat.interface';
 import { useGetConversationListQuery, useMarkMultipleMessagesAsReadMutation } from '../../services/chat.service';
 import { chatListMessageReceived, chatListMessageUpdated } from '../../services/chat.utils';
 
 const ChatList: FC = (): ReactElement => {
   const authUser = useAppSelector((state: IReduxState) => state.authUser);
+  const seller = useAppSelector((state: IReduxState) => state.seller);
   const [selectedUser, setSelectedUser] = useState<IMessageDocument>();
   const conversationsListRef = useRef<IMessageDocument[]>([]);
   const [chatList, setChatList] = useState<IMessageDocument[]>([]);
@@ -26,6 +27,46 @@ const ChatList: FC = (): ReactElement => {
   const dispatch = useAppDispatch();
   const { data, isSuccess } = useGetConversationListQuery(`${authUser.username}`);
   const [markMultipleMessagesAsRead] = useMarkMultipleMessagesAsReadMutation();
+
+  const ADMIN_USERNAME = (import.meta.env.VITE_ADMIN_USERNAME as string) || '';
+  const isSeller = !!(seller?._id);
+  const existingAdminConv = isSeller && ADMIN_USERNAME
+    ? chatList.find(
+        (m) =>
+          m.isAdminChat ||
+          lowerCase(`${m.senderUsername}`) === lowerCase(ADMIN_USERNAME) ||
+          lowerCase(`${m.receiverUsername}`) === lowerCase(ADMIN_USERNAME)
+      )
+    : undefined;
+
+  const selectAdminChat = async (): Promise<void> => {
+    if (existingAdminConv) {
+      await selectUserFromList(existingAdminConv);
+      return;
+    }
+    const newConvId = uuidv4();
+    const pathList: string[] = location.pathname.split('/');
+    pathList.splice(-2, 2);
+    const locationPathname: string = !pathList.join('/') ? location.pathname : pathList.join('/');
+    const draft: IInboxDraftConversation = {
+      seller: {
+        _id: `${seller._id || ''}`,
+        username: `${seller.username || ''}`,
+        profilePicture: `${seller.profilePicture || ''}`,
+        responseTime: (seller.responseTime as number) || 0
+      },
+      buyer: {
+        _id: '',
+        username: ADMIN_USERNAME,
+        profilePicture: 'https://placehold.co/150x150?text=Admin'
+      },
+      conversationId: newConvId,
+      gigId: '',
+      hasConversationId: false,
+      isAdminChat: true
+    };
+    navigate(`${locationPathname}/${lowerCase(ADMIN_USERNAME)}/${newConvId}`, { state: { draftConversation: draft } });
+  };
 
   const selectUserFromList = async (user: IMessageDocument): Promise<void> => {
     try {
@@ -77,6 +118,37 @@ const ChatList: FC = (): ReactElement => {
         <h2 className="w-6/12 truncate text-sm md:text-base lg:text-lg">Tất cả cuộc trò chuyện</h2>
       </div>
       <div className="absolute h-full w-full overflow-scroll pb-14">
+        {isSeller && ADMIN_USERNAME && (
+          <div
+            onClick={selectAdminChat}
+            className={`flex w-full cursor-pointer items-center space-x-4 px-5 py-4 hover:bg-gray-50 border-grey border-b ${
+              existingAdminConv?.conversationId === conversationId ? 'bg-[#f5fbff]' : ''
+            }`}
+          >
+            <LazyLoadImage
+              src="https://placehold.co/150x150?text=Admin"
+              alt="Quản trị viên"
+              className="h-10 w-10 object-cover rounded-full"
+              placeholderSrc="https://placehold.co/40x40"
+              effect="blur"
+              wrapperClassName="h-10 w-10 object-cover rounded-full"
+            />
+            <div className="w-full text-sm dark:text-white">
+              <div className="flex justify-between pb-1 font-bold text-[#777d74]">
+                <span className="flex items-center gap-1">
+                  {ADMIN_USERNAME}
+                  <span className="rounded bg-sky-100 px-1 text-xs text-sky-600">Admin</span>
+                </span>
+                {existingAdminConv?.createdAt && (
+                  <span className="font-normal">{TimeAgo.transform(`${existingAdminConv.createdAt}`)}</span>
+                )}
+              </div>
+              <div className="text-[#777d74]">
+                {existingAdminConv ? existingAdminConv.body || 'Đã gửi 1 tệp' : 'Trò chuyện với quản trị viên'}
+              </div>
+            </div>
+          </div>
+        )}
         {chatList.map((data: IMessageDocument, index: number) => (
           <div
             key={uuidv4()}

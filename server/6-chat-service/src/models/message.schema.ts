@@ -14,8 +14,21 @@ const messageSchema: Schema = new Schema(
     fileSize: { type: String, default: '' },
     fileName: { type: String, default: '' },
     gigId: { type: String, default: '' },
-    buyerId: { type: String, required: true },
-    sellerId: { type: String, required: true },
+    isAdminChat: { type: Boolean, default: false },
+    buyerId: {
+      type: String,
+      default: '',
+      required: function (this: { isAdminChat?: boolean }) {
+        return !this.isAdminChat;
+      }
+    },
+    sellerId: {
+      type: String,
+      default: '',
+      required: function (this: { isAdminChat?: boolean }) {
+        return !this.isAdminChat;
+      }
+    },
     isRead: { type: Boolean, default: false },
     hasOffer: { type: Boolean, default: false },
     offer: {

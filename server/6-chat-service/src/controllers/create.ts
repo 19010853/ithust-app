@@ -32,6 +32,7 @@ const message = async (req: Request, res: Response): Promise<void> => {
     gigId: req.body.gigId,
     buyerId: req.body.buyerId,
     sellerId: req.body.sellerId,
+    isAdminChat: req.body.isAdminChat,
     senderUsername: req.body.senderUsername,
     senderPicture: req.body.senderPicture,
     receiverUsername: req.body.receiverUsername,

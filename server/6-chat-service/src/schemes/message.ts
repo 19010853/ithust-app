@@ -22,8 +22,17 @@ const messageSchema: ObjectSchema = Joi.object().keys({
   fileName: Joi.string().optional().allow(null, ''),
   fileSize: Joi.string().optional().allow(null, ''),
   gigId: Joi.string().optional().allow(null, ''),
-  sellerId: requiredText('Seller id is required'),
-  buyerId: requiredText('Buyer id is required'),
+  sellerId: Joi.when('isAdminChat', {
+    is: true,
+    then: Joi.string().optional().allow(null, ''),
+    otherwise: requiredText('Seller id is required')
+  }),
+  buyerId: Joi.when('isAdminChat', {
+    is: true,
+    then: Joi.string().optional().allow(null, ''),
+    otherwise: requiredText('Buyer id is required')
+  }),
+  isAdminChat: Joi.boolean().optional(),
   senderUsername: requiredText('Sender username is required'),
   senderPicture: requiredText('Sender picture is required'),
   receiverUsername: requiredText('Receiver username is required'),

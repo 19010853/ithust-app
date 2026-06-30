@@ -1,7 +1,8 @@
 import { ChangeEvent, FC, ReactElement, useMemo, useState } from 'react';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import Button from 'src/shared/button/Button';
 import { formatVnd } from 'src/shared/utils/currency.utils';
-import { isFetchBaseQueryError, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
+import { isFetchBaseQueryError, lowerCase, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 
 import { IAdminUserSearchItem, IRestrictionPreview, IRestrictionStatusPayload } from '../interfaces/admin.interface';
 import {
@@ -34,6 +35,7 @@ const getQueryErrorMessage = (error: unknown, fallback: string): string => {
 };
 
 const AdminUsers: FC = (): ReactElement => {
+  const navigate: NavigateFunction = useNavigate();
   const [q, setQ] = useState<string>('');
   const [country, setCountry] = useState<string>('');
   const [isSeller, setIsSeller] = useState<string>('');
@@ -264,6 +266,11 @@ const AdminUsers: FC = (): ReactElement => {
               <div className="border-t border-grey pt-3">
                 <div className="mb-2 font-bold text-gray-900">Thao tác hạn chế</div>
                 <div className="flex flex-wrap gap-2">
+                  <Button
+                    className="rounded bg-sky-500 px-3 py-2 text-xs font-bold text-white hover:bg-sky-400"
+                    label="Chat"
+                    onClick={() => navigate(`/admin/inbox/${lowerCase(selectedUsername)}`)}
+                  />
                   {(detail.buyer?.accountStatus || detail.seller?.accountStatus) === 'ACCOUNT_LOCKED' ? (
                     <Button className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500" label="Mở khóa tài khoản" onClick={() => openStatusAction('account', 'ACTIVE', 'Mở khóa tài khoản')} />
                   ) : (

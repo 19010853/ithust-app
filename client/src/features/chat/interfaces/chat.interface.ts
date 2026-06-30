@@ -46,6 +46,7 @@ export interface IMessageDocument {
   receiverPicture?: string;
   isRead?: boolean;
   hasOffer?: boolean;
+  isAdminChat?: boolean;
   offer?: IOffer;
   hasConversationId?: boolean;
   createdAt?: Date | string;
@@ -75,5 +76,6 @@ export interface IInboxDraftConversation {
   conversationId: string;
   gigId: string;
   hasConversationId: boolean;
+  isAdminChat?: boolean;
   seller: IChatSellerProps;
 }

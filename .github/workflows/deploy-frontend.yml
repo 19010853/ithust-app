@@ -59,6 +59,7 @@ jobs:
           echo "VITE_STRIPE_PUBLISHABLE_KEY=${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}" >> .env.production
           echo "VITE_ELASTIC_APM_SERVER=${{ secrets.VITE_ELASTIC_APM_SERVER }}" >> .env.production
           echo "VITE_ELASTIC_APM_SERVER_TOKEN=${{ secrets.VITE_ELASTIC_APM_SERVER_TOKEN }}" >> .env.production
+          echo "VITE_ADMIN_USERNAME=${{ secrets.VITE_ADMIN_USERNAME }}" >> .env.production
 
       - name: Install Dependencies
         working-directory: client

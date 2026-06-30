@@ -179,7 +179,8 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
         sellerId: resolvedSellerId
       }
     : undefined;
-  const canCreateCustomOffer = !showImagePreview && hasConversationId && messageContext?.sellerId === seller?._id;
+  const isAdminChat = !!(chatMessages.some((m) => m.isAdminChat) || draftConversation?.isAdminChat);
+  const canCreateCustomOffer = !isAdminChat && !showImagePreview && hasConversationId && messageContext?.sellerId === seller?._id;
 
   const handleFileChange = (event: ChangeEvent): void => {
     const target: HTMLInputElement = event.target as HTMLInputElement;
@@ -201,7 +202,11 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
     if (!message && !selectedFile) {
       return;
     }
-    if (!messageContext?.buyerId || !messageContext?.sellerId || !messageContext?.receiverUsername || !messageContext?.receiverPicture) {
+    if (!isAdminChat && (!messageContext?.buyerId || !messageContext?.sellerId || !messageContext?.receiverUsername || !messageContext?.receiverPicture)) {
+      showErrorToast('Không thể xác định người nhận. Vui lòng tải lại cuộc trò chuyện.');
+      return;
+    }
+    if (isAdminChat && (!messageContext?.receiverUsername || !messageContext?.receiverPicture)) {
       showErrorToast('Không thể xác định người nhận. Vui lòng tải lại cuộc trò chuyện.');
       return;
     }
@@ -222,7 +227,8 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
         receiverUsername: messageContext.receiverUsername,
         receiverPicture: messageContext.receiverPicture,
         isRead: false,
-        hasOffer: false
+        hasOffer: false,
+        isAdminChat: isAdminChat || undefined
       };
       if (selectedFile) {
         const dataImage: string | ArrayBuffer | null = await readAsBase64(selectedFile);
