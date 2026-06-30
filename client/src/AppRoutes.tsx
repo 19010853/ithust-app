@@ -43,9 +43,9 @@ const Layout = ({ backgroundColor = '#fff', children }: { backgroundColor: strin
 );
 
 const AdminLayout = ({ children }: { children: ReactNode }): JSX.Element => (
-  <div className="min-h-screen bg-white">
+  <div className="flex min-h-screen w-full flex-col bg-white">
     <AdminHeader />
-    {children}
+    <div className="flex flex-grow">{children}</div>
   </div>
 );
 

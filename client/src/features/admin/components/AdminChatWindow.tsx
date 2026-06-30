@@ -29,10 +29,10 @@ const isUsableText = (value?: string | null): value is string => {
 const firstUsableText = (...values: Array<string | null | undefined>): string | undefined =>
   values.find(isUsableText);
 
-const AdminChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isLoading, setSkip }): ReactElement => {
+const AdminChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isLoading, isError, setSkip }): ReactElement => {
   const authUser = useAppSelector((state: IReduxState) => state.authUser);
   const fileRef = useRef<HTMLInputElement>(null);
-  const scrollRef = useChatScrollToBottom([]);
+  const scrollRef = useChatScrollToBottom(chatMessages);
   const { username, conversationId } = useParams<string>();
   const onlineReceiverRef = useRef<string>('');
   const [showImagePreview, setShowImagePreview] = useState(false);
@@ -196,6 +196,11 @@ const AdminChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation
 
           <div className="relative h-[100%]">
             <div className="absolute flex h-[98%] w-screen grow flex-col overflow-scroll" ref={scrollRef}>
+              {isError && (
+                <div className="flex w-full items-center justify-center py-4 text-sm text-red-500">
+                  Không tải được tin nhắn. Vui lòng tải lại trang.
+                </div>
+              )}
               {chatMessages.map((msg: IMessageDocument) => (
                 <div key={uuidv4()} className="mb-4">
                   <div className="flex w-full cursor-pointer items-center space-x-4 px-5 py-2 hover:bg-[#f5fbff]">
