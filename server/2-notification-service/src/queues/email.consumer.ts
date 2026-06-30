@@ -112,7 +112,11 @@ async function consumeOrderEmailMessages(channel: Channel): Promise<void> {
           bankName,
           accountNumber,
           accountName,
-          refundRequestId
+          refundRequestId,
+          recipientUsername,
+          actorUsername,
+          disputeId,
+          decision
         } = parsedMessage;
         receiverEmail = parsedMessage.receiverEmail;
         template = parsedMessage.template;
@@ -145,7 +149,11 @@ async function consumeOrderEmailMessages(channel: Channel): Promise<void> {
           bankName,
           accountNumber,
           accountName,
-          refundRequestId
+          refundRequestId,
+          recipientUsername,
+          actorUsername,
+          disputeId,
+          decision
         };
         if (template === 'orderPlaced') {
           await sendEmail('orderPlaced', receiverEmail, locals);

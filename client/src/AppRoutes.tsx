@@ -3,6 +3,7 @@ import { RouteObject, useRoutes } from 'react-router-dom';
 
 import AppPage from './features/AppPage';
 import AdminRoute from './features/AdminRoute';
+import AdminDisputes from './features/admin/components/AdminDisputes';
 import AdminInbox from './features/admin/components/AdminInbox';
 import AdminSettings from './features/admin/components/AdminSettings';
 import AdminUsers from './features/admin/components/AdminUsers';
@@ -154,6 +155,18 @@ const AppRouter: FC = () => {
           <AdminRoute>
             <AdminLayout>
               <AdminWithdrawals />
+            </AdminLayout>
+          </AdminRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/admin/disputes',
+      element: (
+        <Suspense>
+          <AdminRoute>
+            <AdminLayout>
+              <AdminDisputes />
             </AdminLayout>
           </AdminRoute>
         </Suspense>

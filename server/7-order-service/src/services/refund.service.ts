@@ -4,7 +4,7 @@ import { OrderModel } from '@order/models/order.schema';
 import { IRefundRequestDocument, RefundRequestModel } from '@order/models/refund-request.schema';
 import { publishDirectMessage } from '@order/queues/order.producer';
 import { orderChannel } from '@order/server';
-import { emitOrderUpdate } from '@order/services/notification.service';
+import { emitOrderUpdate, sendNotification } from '@order/services/notification.service';
 import { refundStripePaymentIntent } from '@order/services/stripe.service';
 
 interface IRefundRequestPayload {
@@ -164,6 +164,7 @@ export const completeRefundedOrder = async (orderId: string): Promise<PaidOrderD
   if (order) {
     await publishRefundedSellerUpdate(order);
     await emitOrderUpdate(order);
+    await sendNotification(order, order.buyerUsername, 'đã hoàn tiền cho đơn hàng của bạn.');
   }
 
   return order;

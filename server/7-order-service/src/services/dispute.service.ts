@@ -8,7 +8,7 @@ import { creditApprovedRefund } from '@order/services/refund.service';
 import { approveOrder } from '@order/services/order.service';
 import { publishDirectMessage } from '@order/queues/order.producer';
 import { orderChannel } from '@order/server';
-import { emitOrderUpdate } from '@order/services/notification.service';
+import { emitOrderUpdate, sendNotification } from '@order/services/notification.service';
 
 type Actor = { id?: number; username: string; email?: string; role?: string };
 
@@ -96,6 +96,7 @@ export const createQualityDispute = async (
     order.buyerUsername,
     reason
   );
+  await sendNotification(order as unknown as IOrderDocument, order.sellerUsername, 'đã mở tranh chấp cho đơn hàng của bạn.');
   return dispute;
 };
 
@@ -206,5 +207,13 @@ export const decideDispute = async (
     reason,
     decision
   );
+  const decisionMessage =
+    decision === 'REFUND_BUYER'
+      ? 'Admin đã quyết định hoàn tiền cho đơn hàng tranh chấp.'
+      : decision === 'RELEASE_SELLER'
+        ? 'Admin đã quyết định giải ngân cho seller sau tranh chấp.'
+        : 'Admin yêu cầu chỉnh sửa lại đơn hàng sau tranh chấp.';
+  await sendNotification(order as unknown as IOrderDocument, order.buyerUsername, decisionMessage);
+  await sendNotification(order as unknown as IOrderDocument, order.sellerUsername, decisionMessage);
   return updatedDispute;
 };
