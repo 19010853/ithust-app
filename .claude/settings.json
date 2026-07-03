@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(docker run *)"
+      "Bash(docker run *)",
+      "Bash(sudo crictl images -o json)",
+      "Bash(python3 -c ' *)",
+      "Bash(sudo du -sh /var/lib/rancher/k3s/agent/containerd)",
+      "Bash(sudo du -sh /var/lib/rancher/k3s/agent/containerd/io.containerd.content.v1.content)",
+      "Bash(sudo du -sh /var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs)",
+      "Bash(sudo crictl images -q)",
+      "Bash(sudo crictl images)",
+      "Bash(kubectl top *)"
     ]
   }
 }

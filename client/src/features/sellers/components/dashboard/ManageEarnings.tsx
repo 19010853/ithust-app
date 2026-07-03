@@ -4,7 +4,14 @@ import { useOutletContext } from 'react-router-dom';
 import { IOrderDocument } from 'src/features/order/interfaces/order.interface';
 import Button from 'src/shared/button/Button';
 import { formatVnd, formatVndNumber, parseVndInput, toVndInteger } from 'src/shared/utils/currency.utils';
-import { isFetchBaseQueryError, normalizeOrderStatus, shortenLargeNumbers, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
+import {
+  isFetchBaseQueryError,
+  normalizeOrderStatus,
+  shortenLargeNumbers,
+  showErrorToast,
+  showSuccessToast,
+  stripeDisabledReasonLabel
+} from 'src/shared/utils/utils.service';
 
 import { ISellerDocument, SellerContextType } from '../../interfaces/seller.interface';
 import { useCreateStripeAccountLinkMutation, useCreateWithdrawalMutation, useGetStripeAccountStatusQuery } from '../../services/seller.service';
@@ -144,7 +151,7 @@ const ManageEarnings: FC = (): ReactElement => {
               <h2 className="text-base font-bold">{stripePanel.title}</h2>
               <p className="mt-1 text-sm">{stripePanel.body}</p>
               {stripeSeller?.stripeRequirementsDisabledReason && (
-                <p className="mt-1 text-xs">Lý do hạn chế: {stripeSeller.stripeRequirementsDisabledReason}</p>
+                <p className="mt-1 text-xs">Lý do hạn chế: {stripeDisabledReasonLabel(stripeSeller.stripeRequirementsDisabledReason)}</p>
               )}
             </div>
             <Button

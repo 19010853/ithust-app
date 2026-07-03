@@ -190,6 +190,27 @@ export const orderStatusDisplayLabel = (status?: string): string => {
   return labels[normalizeOrderStatus(`${status || ''}`)] || `${status || ''}`;
 };
 
+export const stripeDisabledReasonLabel = (reason?: string): string => {
+  const labels: Record<string, string> = {
+    'requirements.past_due': 'Thông tin xác minh đã quá hạn, cần bổ sung ngay để tiếp tục nhận thanh toán.',
+    'requirements.pending_verification': 'Stripe đang xác minh thông tin bạn vừa cung cấp, vui lòng chờ.',
+    'action_required.requested_capabilities': 'Cần bổ sung thêm thông tin cho các quyền thanh toán đã yêu cầu.',
+    under_review: 'Tài khoản đang được Stripe xem xét.',
+    listed: 'Tài khoản đang bị đưa vào danh sách cảnh báo, cần Stripe xem xét thêm.',
+    platform_paused: 'Nền tảng đang tạm dừng tính năng thanh toán.',
+    'rejected.fraud': 'Tài khoản bị từ chối do Stripe nghi ngờ gian lận.',
+    'rejected.incomplete_verification': 'Tài khoản bị từ chối do xác minh không đầy đủ.',
+    'rejected.listed': 'Tài khoản bị từ chối do nằm trong danh sách cảnh báo.',
+    'rejected.platform_fraud': 'Tài khoản bị từ chối do nền tảng phát hiện gian lận.',
+    'rejected.platform_terms_of_service': 'Tài khoản bị từ chối do vi phạm điều khoản dịch vụ của nền tảng.',
+    'rejected.terms_of_service': 'Tài khoản bị từ chối do vi phạm điều khoản dịch vụ của Stripe.',
+    'rejected.platform_other': 'Tài khoản bị từ chối bởi nền tảng vì lý do khác.',
+    'rejected.other': 'Tài khoản bị Stripe từ chối vì lý do khác.',
+    other: 'Có vấn đề khác từ Stripe, vui lòng liên hệ hỗ trợ.'
+  };
+  return labels[`${reason || ''}`] || `${reason || ''}`;
+};
+
 export const notificationMessageDisplayLabel = (message?: string): string => {
   const value = `${message || ''}`;
   const exactLabels: Record<string, string> = {

@@ -17,7 +17,7 @@ const signupSchema: ObjectSchema = Joi.object().keys({
     'string.base': 'Country must be of type string',
     'string.empty': 'Country is a required field'
   }),
-  email: Joi.string().email().required().messages({
+  email: Joi.string().trim().email().required().messages({
     'string.base': 'Email must be of type string',
     'string.email': 'Invalid email',
     'string.empty': 'Email is a required field'

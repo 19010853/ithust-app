@@ -79,7 +79,7 @@ const DashboardMain: FC = (): ReactElement => {
                   <FaRegClock className="mr-2 mt-1" />
                   <div className="mr-3">Lần giao gần nhất</div>
                 </div>
-                <div className="ml-8 mr-4 font-bold sm:ml-0">{TimeAgo.dateInDays(`${seller?.recentDelivery}`)}</div>
+                <div className="ml-8 mr-4 font-bold sm:ml-0">{TimeAgo.dateInDays(seller?.recentDelivery ? `${seller.recentDelivery}` : '')}</div>
               </li>
             </ul>
           </div>
