@@ -42,7 +42,7 @@ const defaultGigInfo: ICreateGig = {
   subCategories: [],
   tags: [],
   price: 0,
-  coverImage: 'https://placehold.co/330x220?text=%E1%BA%A2nh+b%C3%ACa',
+  coverImage: '',
   expectedDelivery: 'Thời gian giao dự kiến',
   basicTitle: '',
   basicDescription: ''
@@ -198,6 +198,7 @@ const AddGig: FC = (): ReactElement => {
                   }}
                 />
                 <span className="flex justify-end text-xs text-[#95979d]">{allowedGigItemLength.gigTitle} ký tự</span>
+                {getErrorMessage('title') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('title')}</p>}
               </div>
             </div>
             <div className="mb-6 grid md:grid-cols-5">
@@ -220,6 +221,7 @@ const AddGig: FC = (): ReactElement => {
                   }}
                 />
                 <span className="flex justify-end text-xs text-[#95979d]">{allowedGigItemLength.basicTitle} ký tự</span>
+                {getErrorMessage('basicTitle') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('basicTitle')}</p>}
               </div>
             </div>
             <div className="mb-6 grid md:grid-cols-5">
@@ -242,6 +244,7 @@ const AddGig: FC = (): ReactElement => {
                   }}
                 />
                 <span className="flex justify-end text-xs text-[#95979d]">{allowedGigItemLength.basicDescription} ký tự</span>
+                {getErrorMessage('basicDescription') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('basicDescription')}</p>}
               </div>
             </div>
             <div className="mb-6 grid md:grid-cols-5">
@@ -271,6 +274,7 @@ const AddGig: FC = (): ReactElement => {
                   }}
                 />
                 <span className="flex justify-end text-xs text-[#95979d]">{allowedGigItemLength.descriptionCharacters} ký tự</span>
+                {getErrorMessage('description') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('description')}</p>}
               </div>
             </div>
             <div className="mb-12 grid md:grid-cols-5">
@@ -288,6 +292,7 @@ const AddGig: FC = (): ReactElement => {
                     setGigInfo({ ...gigInfo, categories: item });
                   }}
                 />
+                {getErrorMessage('categories') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('categories')}</p>}
               </div>
             </div>
 
@@ -300,7 +305,7 @@ const AddGig: FC = (): ReactElement => {
               itemInput={subCategoryInput}
               itemName="subCategories"
               counterText="danh mục con"
-              inputErrorMessage={false}
+              errorMessage={getErrorMessage('subCategories')}
               setItem={setSubCategory}
               setItemInput={setSubCategoryInput}
             />
@@ -314,7 +319,7 @@ const AddGig: FC = (): ReactElement => {
               itemInput={tagsInput}
               itemName="tags"
               counterText="thẻ"
-              inputErrorMessage={false}
+              errorMessage={getErrorMessage('tags')}
               setItem={setTags}
               setItemInput={setTagsInput}
             />
@@ -357,47 +362,51 @@ const AddGig: FC = (): ReactElement => {
                     setGigInfo({ ...gigInfo, expectedDelivery: item });
                   }}
                 />
+                {getErrorMessage('expectedDelivery') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('expectedDelivery')}</p>}
               </div>
             </div>
             <div className="mb-6 grid md:grid-cols-5">
               <div className="mt-6 pb-2 text-base font-medium lg:mt-0">
                 Ảnh bìa<sup className="top-[-0.3em] text-base text-red-500">*</sup>
               </div>
-              <div
-                className="relative col-span-4 cursor-pointer md:w-11/12 lg:w-8/12"
-                onMouseEnter={() => {
-                  setShowGigModal((item) => ({ ...item, image: !item.image }));
-                }}
-                onMouseLeave={() => {
-                  setShowGigModal((item) => ({ ...item, image: false }));
-                }}
-              >
-                {gigInfo.coverImage && (
-                  <img src={gigInfo.coverImage} alt="Ảnh bìa" className="left-0 top-0 h-[220px] w-[320px] bg-white object-cover" />
-                )}
-                {!gigInfo.coverImage && (
-                  <div className="left-0 top-0 flex h-[220px] w-[320px] cursor-pointer justify-center bg-[#dee1e7]"></div>
-                )}
-                {showGigModal.image && (
-                  <div
-                    onClick={() => fileRef.current?.click()}
-                    className="absolute left-0 top-0 flex h-[220px] w-[320px] cursor-pointer justify-center bg-[#dee1e7]"
-                  >
-                    <FaCamera className="flex self-center" />
-                  </div>
-                )}
-                <TextInput
-                  name="image"
-                  ref={fileRef}
-                  type="file"
-                  style={{ display: 'none' }}
-                  onClick={() => {
-                    if (fileRef.current) {
-                      fileRef.current.value = '';
-                    }
+              <div className="col-span-4 md:w-11/12 lg:w-8/12">
+                <div
+                  className="relative cursor-pointer"
+                  onMouseEnter={() => {
+                    setShowGigModal((item) => ({ ...item, image: !item.image }));
                   }}
-                  onChange={handleFileChange}
-                />
+                  onMouseLeave={() => {
+                    setShowGigModal((item) => ({ ...item, image: false }));
+                  }}
+                >
+                  {gigInfo.coverImage && (
+                    <img src={gigInfo.coverImage} alt="Ảnh bìa" className="left-0 top-0 h-[220px] w-[320px] bg-white object-cover" />
+                  )}
+                  {!gigInfo.coverImage && (
+                    <div className="left-0 top-0 flex h-[220px] w-[320px] cursor-pointer justify-center bg-[#dee1e7]"></div>
+                  )}
+                  {showGigModal.image && (
+                    <div
+                      onClick={() => fileRef.current?.click()}
+                      className="absolute left-0 top-0 flex h-[220px] w-[320px] cursor-pointer justify-center bg-[#dee1e7]"
+                    >
+                      <FaCamera className="flex self-center" />
+                    </div>
+                  )}
+                  <TextInput
+                    name="image"
+                    ref={fileRef}
+                    type="file"
+                    style={{ display: 'none' }}
+                    onClick={() => {
+                      if (fileRef.current) {
+                        fileRef.current.value = '';
+                      }
+                    }}
+                    onChange={handleFileChange}
+                  />
+                </div>
+                {getErrorMessage('coverImage') && <p className="mt-1 text-xs text-red-500">{getErrorMessage('coverImage')}</p>}
               </div>
             </div>
             <div className="grid xs:grid-cols-1 md:grid-cols-5">

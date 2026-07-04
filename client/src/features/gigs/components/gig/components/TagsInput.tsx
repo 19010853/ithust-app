@@ -4,7 +4,7 @@ import TextInput from 'src/shared/inputs/TextInput';
 import { v4 as uuidv4 } from 'uuid';
 
 const TagsInput: FC<ITagsInputProps> = (props): ReactElement => {
-  const { title, placeholder, gigInfo, tags, itemName, itemInput, setItem, setItemInput, setGigInfo, counterText } = props;
+  const { title, placeholder, gigInfo, tags, itemName, itemInput, errorMessage, setItem, setItemInput, setGigInfo, counterText } = props;
   const [isKeyReleased, setIsKeyReleased] = useState<boolean>(false);
 
   const maxTagCount = 10;
@@ -84,6 +84,7 @@ const TagsInput: FC<ITagsInputProps> = (props): ReactElement => {
         <span className="flex justify-end text-xs text-[#95979d]">
           {maxTagCount - tags.length} {counterText}
         </span>
+        {errorMessage && <p className="mt-1 text-xs text-red-500">{errorMessage}</p>}
       </div>
     </div>
   );

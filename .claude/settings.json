@@ -9,7 +9,10 @@
       "Bash(sudo du -sh /var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs)",
       "Bash(sudo crictl images -q)",
       "Bash(sudo crictl images)",
-      "Bash(kubectl top *)"
+      "Bash(kubectl top *)",
+      "Skill(artifact-design)",
+      "Skill(artifact-design:*)",
+      "Bash(kubectl patch *)"
     ]
   }
 }

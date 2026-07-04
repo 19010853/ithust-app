@@ -9,7 +9,7 @@ export interface ITagsInputProps {
   tags: string[];
   itemName: string;
   itemInput: string;
-  inputErrorMessage: boolean;
+  errorMessage?: string;
   counterText: string;
   setItem: Dispatch<SetStateAction<string[]>>;
   setItemInput: Dispatch<SetStateAction<string>>;
