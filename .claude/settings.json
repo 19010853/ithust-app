@@ -14,7 +14,12 @@
       "Skill(artifact-design:*)",
       "Bash(kubectl patch *)",
       "Bash(sudo grep -E \"PasswordAuthentication|PubkeyAuthentication|PermitRootLogin\" /etc/ssh/sshd_config)",
-      "Bash(kubectl apply *)"
+      "Bash(kubectl apply *)",
+      "Bash(timeout 3 bash -c \"echo > /dev/tcp/127.0.0.1/27017\")",
+      "Bash(grep -n 'textScore\\\\|$meta\\\\|score' server/5-gig-service/src/services/mongo-search.service.ts)",
+      "Bash(kubectl scale *)",
+      "Bash(command -v node)",
+      "Bash(command -v npm)"
     ]
   }
 }

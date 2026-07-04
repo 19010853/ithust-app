@@ -76,12 +76,14 @@ const gigsSearch = async (
     });
   }
 
-  if (!isNaN(parseInt(`${min}`)) && !isNaN(parseInt(`${max}`))) {
+  const hasMin = !isNaN(parseInt(`${min}`));
+  const hasMax = !isNaN(parseInt(`${max}`));
+  if (hasMin || hasMax) {
     queryList.push({
       range: {
         price: {
-          gte: min,
-          lte: max
+          ...(hasMin && { gte: min }),
+          ...(hasMax && { lte: max })
         }
       }
     });

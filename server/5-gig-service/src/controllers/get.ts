@@ -1,12 +1,15 @@
 import { getUserSelectedGigCategory } from '@gig/redis/gig.cache';
 import { getGigById, getSellerGigs, getSellerPausedGigs } from '@gig/services/gig.service';
 import { getMoreGigsLikeThis, getTopRatedGigsByCategory, gigsSearchByCategory } from '@gig/services/search.service';
-import { ISearchResult, ISellerGig } from '@19010853/ithust-shared';
+import { ISearchResult, ISellerGig, NotFoundError } from '@19010853/ithust-shared';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
 const gigById = async (req: Request, res: Response): Promise<void> => {
   const gig: ISellerGig = await getGigById(req.params.gigId);
+  if (!gig || Object.keys(gig).length === 0) {
+    throw new NotFoundError('Gig not found', 'gigById() method');
+  }
   res.status(StatusCodes.OK).json({ message: 'Get gig by id', gig });
 };
 
