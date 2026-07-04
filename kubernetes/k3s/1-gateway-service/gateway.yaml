@@ -4,7 +4,6 @@ metadata:
   name: ithust-gateway
   namespace: production
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: ithust-gateway
@@ -28,7 +27,7 @@ spec:
               memory: 512Mi
             requests:
               cpu: 100m
-              memory: 120Mi
+              memory: 192Mi
           ports:
             - name: gateway
               containerPort: 4000

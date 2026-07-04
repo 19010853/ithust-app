@@ -4,7 +4,6 @@ metadata:
   name: ithust-order
   namespace: production
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: ithust-order
@@ -28,7 +27,7 @@ spec:
               cpu: "300m"
             requests:
               cpu: 100m
-              memory: 120Mi
+              memory: 192Mi
           ports:
             - name: order
               containerPort: 4006

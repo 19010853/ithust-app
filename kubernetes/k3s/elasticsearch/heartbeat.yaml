@@ -154,7 +154,7 @@ data:
         id: ithust-chat
         name: ithust Chat Service
         schedule: '@every 5s'
-        hosts: ["http://ithust-chat.production.svc.cluster.local:4005/chat-health"]
+        hosts: ["http://ithust-chat.production.svc.cluster.local:4005/api/v1/message/chat-health"]
         check.request.method: GET
         check.response.status: [200]
 

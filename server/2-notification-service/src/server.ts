@@ -17,7 +17,7 @@ const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'notificationS
 
 export function start(app: Application): void {
   startServer(app);
-  app.use('', healthRoutes);
+  app.use('', healthRoutes());
   startQueues();
   startElasticSearch();
 }

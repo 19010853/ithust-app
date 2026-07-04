@@ -12,7 +12,9 @@
       "Bash(kubectl top *)",
       "Skill(artifact-design)",
       "Skill(artifact-design:*)",
-      "Bash(kubectl patch *)"
+      "Bash(kubectl patch *)",
+      "Bash(sudo grep -E \"PasswordAuthentication|PubkeyAuthentication|PermitRootLogin\" /etc/ssh/sshd_config)",
+      "Bash(kubectl apply *)"
     ]
   }
 }

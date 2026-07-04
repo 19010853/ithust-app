@@ -4,7 +4,7 @@ metadata:
   name: ithust-kibana
   namespace: production
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: ithust-kibana
@@ -19,7 +19,7 @@ spec:
           resources:
             limits:
               memory: "1Gi"
-              cpu: "1500m"
+              cpu: "500m"
             requests:
               cpu: 250m
               memory: 1Gi

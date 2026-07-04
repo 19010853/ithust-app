@@ -9,7 +9,8 @@ class HealthRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/gateway-health', Health.prototype.health);
+    const healthInstance = new Health();
+    this.router.get('/gateway-health', (req, res) => healthInstance.health(req, res));
     return this.router;
   }
 }

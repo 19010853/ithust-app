@@ -4,7 +4,6 @@ metadata:
   name: ithust-review
   namespace: production
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: ithust-review
@@ -28,7 +27,7 @@ spec:
               cpu: "300m"
             requests:
               cpu: 100m
-              memory: 120Mi
+              memory: 192Mi
           ports:
             - name: review
               containerPort: 4007
