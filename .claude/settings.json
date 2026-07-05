@@ -19,7 +19,11 @@
       "Bash(grep -n 'textScore\\\\|$meta\\\\|score' server/5-gig-service/src/services/mongo-search.service.ts)",
       "Bash(kubectl scale *)",
       "Bash(command -v node)",
-      "Bash(command -v npm)"
+      "Bash(command -v npm)",
+      "Bash(curl -sL -o logo-download.png \"https://res.cloudinary.com/dbxa1k1w1/image/upload/v1782299631/ithustapp-logo_aqsc4o.png\")",
+      "Bash(identify logo-download.png)",
+      "Bash(python3 -c \"from PIL import Image; print\\('PIL available'\\)\")",
+      "Bash(node -e \"console.log\\(require.resolve\\('sharp'\\)\\)\")"
     ]
   }
 }
