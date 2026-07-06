@@ -3,8 +3,6 @@ import { orderService } from '@gateway/services/api/order.service';
 import { sellerService } from '@gateway/services/api/seller.service';
 import { BadRequestError, IAuthPayload } from '@19010853/ithust-shared';
 
-const SELLER_RESTRICTED_STATUSES = ['SELLER_RESTRICTED', 'SELLER_LOCKED_HARD'];
-
 interface IGatewaySeller {
   _id?: string;
   username?: string;
@@ -33,7 +31,7 @@ const assertSellerCanOpenMarketplaceActivity = async (sellerId: string): Promise
   if (seller.accountStatus === 'ACCOUNT_LOCKED') {
     throw new BadRequestError('This account is locked.', 'Gateway restriction check');
   }
-  if (SELLER_RESTRICTED_STATUSES.includes(`${seller.sellerStatus || 'ACTIVE'}`)) {
+  if (`${seller.sellerStatus || 'ACTIVE'}` === 'SELLER_RESTRICTED') {
     throw new BadRequestError('This seller cannot create gigs or receive new orders.', 'Gateway restriction check');
   }
 };
@@ -73,18 +71,18 @@ const assertSellerCanWithdraw = async (sellerId: string): Promise<void> => {
   if (!seller) {
     throw new BadRequestError('Seller profile not found.', 'Gateway withdrawal restriction check');
   }
-  if (seller.accountStatus === 'ACCOUNT_LOCKED' || seller.sellerStatus === 'SELLER_LOCKED_HARD') {
+  if (seller.accountStatus === 'ACCOUNT_LOCKED') {
     throw new BadRequestError('Withdrawals are disabled for this account.', 'Gateway withdrawal restriction check');
   }
 };
 
-const assertSellerNotHardLocked = async (sellerId: string): Promise<void> => {
+const assertSellerAccountNotLocked = async (sellerId: string): Promise<void> => {
   const seller = await getSellerById(sellerId);
   if (!seller) {
     throw new BadRequestError('Seller profile not found.', 'Gateway seller action restriction check');
   }
-  if (seller.accountStatus === 'ACCOUNT_LOCKED' || seller.sellerStatus === 'SELLER_LOCKED_HARD') {
-    throw new BadRequestError('Seller actions are locked pending admin review.', 'Gateway seller action restriction check');
+  if (seller.accountStatus === 'ACCOUNT_LOCKED') {
+    throw new BadRequestError('This account is locked.', 'Gateway seller action restriction check');
   }
 };
 
@@ -128,11 +126,11 @@ const assertGigCanReceiveNewOrders = async (gigId: string): Promise<void> => {
   }
 };
 
-const assertOrderSellerNotHardLocked = async (orderId: string): Promise<void> => {
+const assertOrderSellerAccountNotLocked = async (orderId: string): Promise<void> => {
   const response = await orderService.getOrderById(orderId);
   const order = response.data.order;
   if (order?.sellerId) {
-    await assertSellerNotHardLocked(`${order.sellerId}`);
+    await assertSellerAccountNotLocked(`${order.sellerId}`);
   }
 };
 
@@ -142,6 +140,6 @@ export {
   assertGigSellerCanOpenMarketplaceActivity,
   assertGigCanReceiveNewOrders,
   assertGigOwner,
-  assertOrderSellerNotHardLocked,
+  assertOrderSellerAccountNotLocked,
   assertSellerCanWithdraw
 };

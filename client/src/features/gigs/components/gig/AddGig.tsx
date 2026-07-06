@@ -51,8 +51,7 @@ const defaultGigInfo: ICreateGig = {
 const restrictionLabel = (status?: string | null): string => {
   const labels: Record<string, string> = {
     ACCOUNT_LOCKED: 'tài khoản bị khóa',
-    SELLER_RESTRICTED: 'người bán bị hạn chế',
-    SELLER_LOCKED_HARD: 'người bán bị khóa cứng'
+    SELLER_RESTRICTED: 'người bán bị hạn chế'
   };
   return labels[`${status}`] || `${status || ''}`;
 };
@@ -85,7 +84,7 @@ const AddGig: FC = (): ReactElement => {
   const [schemaValidation, validationErrors] = useGigSchema({ schema: gigInfoSchema, gigInfo });
   const [createGig, { isLoading }] = useCreateGigMutation();
   const sellerIsRestricted =
-    seller?.accountStatus === 'ACCOUNT_LOCKED' || seller?.sellerStatus === 'SELLER_RESTRICTED' || seller?.sellerStatus === 'SELLER_LOCKED_HARD';
+    seller?.accountStatus === 'ACCOUNT_LOCKED' || seller?.sellerStatus === 'SELLER_RESTRICTED';
   const getErrorMessage = (field: keyof ICreateGig): string => {
     const error = validationErrors.find((item) => typeof item === 'object' && field in item);
     const message = typeof error === 'object' ? (error as Record<string, unknown>)[field] : '';

@@ -16,8 +16,7 @@ import {
 const statusLabel: Record<IRestrictionStatusPayload['status'], string> = {
   ACTIVE: 'Đang hoạt động',
   ACCOUNT_LOCKED: 'Đã khóa tài khoản',
-  SELLER_RESTRICTED: 'Người bán bị hạn chế',
-  SELLER_LOCKED_HARD: 'Người bán bị khóa cứng'
+  SELLER_RESTRICTED: 'Đã khóa tài khoản (vẫn xử lý đơn đang diễn ra)'
 };
 
 const getQueryErrorMessage = (error: unknown, fallback: string): string => {
@@ -272,16 +271,15 @@ const AdminUsers: FC = (): ReactElement => {
                     onClick={() => navigate(`/admin/inbox/${lowerCase(selectedUsername)}`)}
                   />
                   {(detail.buyer?.accountStatus || detail.seller?.accountStatus) === 'ACCOUNT_LOCKED' ? (
-                    <Button className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500" label="Mở khóa tài khoản" onClick={() => openStatusAction('account', 'ACTIVE', 'Mở khóa tài khoản')} />
+                    <Button className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500" label="Khôi phục tài khoản" onClick={() => openStatusAction('account', 'ACTIVE', 'Khôi phục tài khoản')} />
+                  ) : detail.seller ? (
+                    detail.seller.sellerStatus === 'SELLER_RESTRICTED' ? (
+                      <Button className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500" label="Khôi phục tài khoản" onClick={() => openStatusAction('seller', 'ACTIVE', 'Khôi phục tài khoản')} />
+                    ) : (
+                      <Button className="rounded bg-red-600 px-3 py-2 text-xs font-bold text-white hover:bg-red-500" label="Khóa tài khoản" onClick={() => openStatusAction('seller', 'SELLER_RESTRICTED', 'Khóa tài khoản')} />
+                    )
                   ) : (
                     <Button className="rounded bg-red-600 px-3 py-2 text-xs font-bold text-white hover:bg-red-500" label="Khóa tài khoản" onClick={() => openStatusAction('account', 'ACCOUNT_LOCKED', 'Khóa tài khoản')} />
-                  )}
-                  {detail.seller && (
-                    <>
-                      <Button className="rounded bg-amber-600 px-3 py-2 text-xs font-bold text-white hover:bg-amber-500" label="Hạn chế người bán" onClick={() => openStatusAction('seller', 'SELLER_RESTRICTED', 'Hạn chế người bán')} />
-                      <Button className="rounded bg-red-700 px-3 py-2 text-xs font-bold text-white hover:bg-red-600" label="Khóa cứng người bán" onClick={() => openStatusAction('seller', 'SELLER_LOCKED_HARD', 'Khóa cứng người bán')} />
-                      <Button className="rounded bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500" label="Khôi phục người bán" onClick={() => openStatusAction('seller', 'ACTIVE', 'Khôi phục người bán')} />
-                    </>
                   )}
                 </div>
               </div>
@@ -319,7 +317,7 @@ const AdminUsers: FC = (): ReactElement => {
             )}
             {preview && statusAction.status === 'ACCOUNT_LOCKED' && (preview.activeBuyerOrders > 0 || preview.activeSellerOrders > 0) && (
               <div className="mb-4 rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
-                Người dùng vẫn còn đơn đang hoạt động. Nên hạn chế quyền người bán nếu mục tiêu là chặn hoạt động mới mà không ảnh hưởng đơn hiện tại.
+                Người dùng vẫn còn đơn đang hoạt động. Khóa tài khoản sẽ chặn đăng nhập nên các đơn này có thể bị gián đoạn.
               </div>
             )}
             <label className="mb-1 block text-sm font-bold text-gray-700">Lý do</label>

@@ -12,7 +12,6 @@ const sellerStatusLabel = (status: string): string => {
   const labels: Record<string, string> = {
     ACTIVE: 'đang hoạt động',
     SELLER_RESTRICTED: 'bị hạn chế',
-    SELLER_LOCKED_HARD: 'bị khóa',
     ACCOUNT_LOCKED: 'tài khoản bị khóa'
   };
   return labels[status] || status;
@@ -22,7 +21,7 @@ const SellerDashboard: FC = (): ReactElement => {
   const { seller } = useOutletContext<SellerContextType>();
   const dispatch = useAppDispatch();
   const sellerStatus = seller?.sellerStatus || 'ACTIVE';
-  const sellerIsRestricted = sellerStatus === 'SELLER_RESTRICTED' || sellerStatus === 'SELLER_LOCKED_HARD' || seller?.accountStatus === 'ACCOUNT_LOCKED';
+  const sellerIsRestricted = sellerStatus === 'SELLER_RESTRICTED' || seller?.accountStatus === 'ACCOUNT_LOCKED';
 
   return (
     <div className="container mx-auto px-2 md:px-0">

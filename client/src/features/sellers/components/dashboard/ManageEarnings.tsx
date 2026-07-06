@@ -7,7 +7,6 @@ import { formatVnd, formatVndNumber, parseVndInput, toVndInteger } from 'src/sha
 import {
   isFetchBaseQueryError,
   normalizeOrderStatus,
-  shortenLargeNumbers,
   showErrorToast,
   showSuccessToast,
   stripeDisabledReasonLabel
@@ -48,9 +47,8 @@ const ManageEarnings: FC = (): ReactElement => {
     orders,
     (order: IOrderDocument) => normalizeOrderStatus(order.status) === 'delivered' && order.paymentStatus === 'HELD'
   );
-  const sum: number = sumBy(orders, 'price');
-  const average: number = orders.length ? sum / orders.length : 0;
-  const averageSellingPrice = average ? parseInt(shortenLargeNumbers(average)) : 0;
+  const sum: number = sumBy(completedOrders, 'price');
+  const averageSellingPrice: number = completedOrders.length ? Math.round(sum / completedOrders.length) : 0;
   const [amount, setAmount] = useState<string>('');
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [createWithdrawal, { isLoading }] = useCreateWithdrawalMutation();

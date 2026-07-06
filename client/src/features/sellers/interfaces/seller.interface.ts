@@ -214,7 +214,7 @@ export interface ISellerDocument extends Record<string, SellerType> {
   description: string;
   country: string;
   accountStatus?: 'ACTIVE' | 'ACCOUNT_LOCKED';
-  sellerStatus?: 'ACTIVE' | 'SELLER_RESTRICTED' | 'SELLER_LOCKED_HARD';
+  sellerStatus?: 'ACTIVE' | 'SELLER_RESTRICTED';
   sellerStatusReason?: string;
   sellerStatusUpdatedAt?: Date | string;
   oneliner: string;

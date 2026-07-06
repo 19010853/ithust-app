@@ -16,7 +16,7 @@ export interface IAdminUserSearchItem {
   email?: string;
   isSeller: boolean;
   accountStatus?: 'ACTIVE' | 'ACCOUNT_LOCKED';
-  sellerStatus?: 'ACTIVE' | 'SELLER_RESTRICTED' | 'SELLER_LOCKED_HARD';
+  sellerStatus?: 'ACTIVE' | 'SELLER_RESTRICTED';
   profilePicture?: string;
   sellerId?: string;
   sellerSummary?: {
@@ -62,12 +62,12 @@ export interface IRestrictionPreview {
     username?: string;
   };
   pendingWithdrawals: number;
-  sellerStatus: 'ACTIVE' | 'SELLER_RESTRICTED' | 'SELLER_LOCKED_HARD';
+  sellerStatus: 'ACTIVE' | 'SELLER_RESTRICTED';
 }
 
 export interface IRestrictionStatusPayload {
   reason: string;
-  status: 'ACTIVE' | 'ACCOUNT_LOCKED' | 'SELLER_RESTRICTED' | 'SELLER_LOCKED_HARD';
+  status: 'ACTIVE' | 'ACCOUNT_LOCKED' | 'SELLER_RESTRICTED';
 }
 
 export interface IAdminUserFilters {

@@ -12,7 +12,7 @@ const sellerSchema: Schema = new Schema(
     oneliner: { type: String, default: '' },
     country: { type: String, required: true },
     accountStatus: { type: String, enum: ['ACTIVE', 'ACCOUNT_LOCKED'], default: 'ACTIVE' },
-    sellerStatus: { type: String, enum: ['ACTIVE', 'SELLER_RESTRICTED', 'SELLER_LOCKED_HARD'], default: 'ACTIVE' },
+    sellerStatus: { type: String, enum: ['ACTIVE', 'SELLER_RESTRICTED'], default: 'ACTIVE' },
     sellerStatusReason: { type: String, default: '' },
     sellerStatusUpdatedAt: { type: Date },
     sellerStatusUpdatedBy: {

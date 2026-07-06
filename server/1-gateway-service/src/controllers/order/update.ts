@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Request, Response } from 'express';
 import { AxiosResponse } from 'axios';
 import { orderService } from '@gateway/services/api/order.service';
-import { assertOrderSellerNotHardLocked } from '@gateway/services/restriction.service';
+import { assertOrderSellerAccountNotLocked } from '@gateway/services/restriction.service';
 
 export class Update {
   public async cancel(req: Request, res: Response): Promise<void> {
@@ -14,7 +14,7 @@ export class Update {
 
   public async requestExtension(req: Request, res: Response): Promise<void> {
     const { orderId } = req.params;
-    await assertOrderSellerNotHardLocked(orderId);
+    await assertOrderSellerAccountNotLocked(orderId);
     const response: AxiosResponse = await orderService.requestDeliveryDateExtension(orderId, req.body);
     res.status(StatusCodes.OK).json({ message: response.data.message, order: response.data.order });
   }
@@ -27,7 +27,7 @@ export class Update {
 
   public async deliverOrder(req: Request, res: Response): Promise<void> {
     const { orderId } = req.params;
-    await assertOrderSellerNotHardLocked(orderId);
+    await assertOrderSellerAccountNotLocked(orderId);
     const response: AxiosResponse = await orderService.deliverOrder(orderId, req.body);
     res.status(StatusCodes.OK).json({ message: response.data.message, order: response.data.order });
   }

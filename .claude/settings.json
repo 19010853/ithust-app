@@ -23,7 +23,9 @@
       "Bash(curl -sL -o logo-download.png \"https://res.cloudinary.com/dbxa1k1w1/image/upload/v1782299631/ithustapp-logo_aqsc4o.png\")",
       "Bash(identify logo-download.png)",
       "Bash(python3 -c \"from PIL import Image; print\\('PIL available'\\)\")",
-      "Bash(node -e \"console.log\\(require.resolve\\('sharp'\\)\\)\")"
+      "Bash(node -e \"console.log\\(require.resolve\\('sharp'\\)\\)\")",
+      "Bash(bash -lc 'command -v node npm; node -v')",
+      "Read(//snap/bin/**)"
     ]
   }
 }

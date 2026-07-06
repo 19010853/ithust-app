@@ -281,9 +281,7 @@ const sendRestrictionNotification = async (
           ? 'Your account is locked. Contact support for help.'
           : status === 'SELLER_RESTRICTED'
             ? 'Your seller capability is restricted. You can still complete active orders.'
-            : status === 'SELLER_LOCKED_HARD'
-              ? 'Your seller capability is locked pending admin review.'
-              : 'Your account or seller capability has been restored.'
+            : 'Your account or seller capability has been restored.'
     }),
     'Restriction status email sent to notification service.'
   );
@@ -305,7 +303,7 @@ const updateAccountStatus = async (username: string, data: IStatusUpdateData): P
 };
 
 const updateSellerStatus = async (username: string, data: IStatusUpdateData): Promise<ISellerDocument> => {
-  if (!['ACTIVE', 'SELLER_RESTRICTED', 'SELLER_LOCKED_HARD'].includes(data.status)) {
+  if (!['ACTIVE', 'SELLER_RESTRICTED'].includes(data.status)) {
     throw new BadRequestError('Invalid seller status', 'updateSellerStatus()');
   }
   const seller = (await SellerModel.findOne({ username }).exec()) as (ISellerDocument & { sellerStatus?: string }) | null;

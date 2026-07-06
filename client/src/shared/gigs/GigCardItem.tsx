@@ -31,7 +31,7 @@ const GigCardItem: FC<IGigsProps> = ({ gig: gigData }): ReactElement => {
   const [deleteGig] = useDeleteGigMutation();
   const sellerIsRestricted =
     `${seller?._id}` === `${gig.sellerId}` &&
-    (seller?.accountStatus === 'ACCOUNT_LOCKED' || seller?.sellerStatus === 'SELLER_RESTRICTED' || seller?.sellerStatus === 'SELLER_LOCKED_HARD');
+    (seller?.accountStatus === 'ACCOUNT_LOCKED' || seller?.sellerStatus === 'SELLER_RESTRICTED');
 
   const navigateToEditGig = (gigId: string): void => {
     if (sellerIsRestricted) {
