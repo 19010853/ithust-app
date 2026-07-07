@@ -67,6 +67,10 @@ const AdminDisputes: FC = (): ReactElement => {
                 key={item._id}
                 className="w-full cursor-pointer rounded border p-4 text-left hover:border-sky-500"
                 onClick={() => {
+                  if (selected?._id === item._id) {
+                    setSelected(null);
+                    return;
+                  }
                   setSelected(item);
                   setShowDetailPanel(true);
                 }}

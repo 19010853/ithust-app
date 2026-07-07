@@ -2,7 +2,7 @@ import { ChangeEvent, FC, ReactElement, useMemo, useState } from 'react';
 import { IWithdrawalDocument } from 'src/features/sellers/interfaces/seller.interface';
 import { useGetWithdrawalsQuery, useUpdateWithdrawalStatusMutation } from 'src/features/sellers/services/seller.service';
 import Button from 'src/shared/button/Button';
-import { formatVnd } from 'src/shared/utils/currency.utils';
+import { formatVnd, parseVndInput } from 'src/shared/utils/currency.utils';
 import { isFetchBaseQueryError, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 
 type WithdrawalStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'REJECTED' | 'FAILED' | 'MANUAL_REVIEW' | 'RECONCILIATION_REQUIRED';
@@ -19,9 +19,8 @@ const withdrawalStatusLabel: Record<WithdrawalStatus, string> = {
 };
 
 const AdminWithdrawals: FC = (): ReactElement => {
-  const [statusFilter, setStatusFilter] = useState<string>('PROCESSING');
+  const [statusFilter, setStatusFilter] = useState<string>('');
   const [q, setQ] = useState<string>('');
-  const [bankName, setBankName] = useState<string>('');
   const [minAmount, setMinAmount] = useState<string>('');
   const [maxAmount, setMaxAmount] = useState<string>('');
   const [createdFrom, setCreatedFrom] = useState<string>('');
@@ -37,9 +36,8 @@ const AdminWithdrawals: FC = (): ReactElement => {
     () => ({
       status: statusFilter,
       q,
-      bankName,
-      minAmount,
-      maxAmount,
+      minAmount: parseVndInput(minAmount),
+      maxAmount: parseVndInput(maxAmount),
       createdFrom,
       createdTo,
       processedFrom,
@@ -47,7 +45,7 @@ const AdminWithdrawals: FC = (): ReactElement => {
       page,
       limit: 20
     }),
-    [bankName, createdFrom, createdTo, maxAmount, minAmount, page, processedFrom, processedTo, q, statusFilter]
+    [createdFrom, createdTo, maxAmount, minAmount, page, processedFrom, processedTo, q, statusFilter]
   );
   const { data, isLoading, isFetching } = useGetWithdrawalsQuery(filters);
   const [updateWithdrawalStatus, { isLoading: isUpdating }] = useUpdateWithdrawalStatusMutation();
@@ -142,12 +140,6 @@ const AdminWithdrawals: FC = (): ReactElement => {
             </option>
           ))}
         </select>
-        <input
-          className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
-          placeholder="Ngân hàng manual"
-          value={bankName}
-          onChange={resetPageOnChange(setBankName)}
-        />
         <div className="grid grid-cols-2 gap-2">
           <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" placeholder="Tối thiểu" value={minAmount} onChange={resetPageOnChange(setMinAmount)} />
           <input className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500" placeholder="Tối đa" value={maxAmount} onChange={resetPageOnChange(setMaxAmount)} />

@@ -81,13 +81,29 @@ const parseOptionalNumber = (value: string | undefined): number | undefined => {
 
 const escapedRegex = (value: string): RegExp => new RegExp(value.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
 
+// Date-only filters come from the admin UI in Vietnam time; anchor them to UTC+7
+// and stretch the "to" bound to the end of that day so the chosen day is included.
+const DATE_ONLY_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+const VN_TIMEZONE_OFFSET = '+07:00';
+
+const parseDateBoundary = (value: string | undefined, endOfDay: boolean): Date | undefined => {
+  if (!value) {
+    return undefined;
+  }
+  const normalized = DATE_ONLY_REGEX.test(value) ? `${value}T${endOfDay ? '23:59:59.999' : '00:00:00.000'}${VN_TIMEZONE_OFFSET}` : value;
+  const parsed = Date.parse(normalized);
+  return Number.isNaN(parsed) ? undefined : new Date(parsed);
+};
+
 const appendDateRange = (query: Record<string, unknown>, field: string, from?: string, to?: string): void => {
   const range: Record<string, Date> = {};
-  if (from && !Number.isNaN(Date.parse(from))) {
-    range.$gte = new Date(from);
+  const fromDate = parseDateBoundary(from, false);
+  const toDate = parseDateBoundary(to, true);
+  if (fromDate) {
+    range.$gte = fromDate;
   }
-  if (to && !Number.isNaN(Date.parse(to))) {
-    range.$lte = new Date(to);
+  if (toDate) {
+    range.$lte = toDate;
   }
   if (Object.keys(range).length) {
     query[field] = range;
@@ -315,7 +331,8 @@ const getWithdrawals = async (filters: IWithdrawalFilters = {}): Promise<any> =>
       { 'bankInfo.accountName': regex },
       { providerTransferId: regex },
       { providerPayoutId: regex },
-      { paymentReference: regex }
+      { paymentReference: regex },
+      { stripeAccountId: regex }
     ];
     if (matchingSellers.length) {
       searchConditions.push({ sellerId: { $in: matchingSellers.map((seller) => seller._id) } });
