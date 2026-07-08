@@ -1,5 +1,6 @@
 import { BadRequestError, IOrderDocument } from '@19010853/ithust-shared';
 import { config } from '@order/config';
+import { DisputeModel } from '@order/models/dispute.schema';
 import { OrderModel } from '@order/models/order.schema';
 import { IRefundRequestDocument, RefundRequestModel } from '@order/models/refund-request.schema';
 import { publishDirectMessage } from '@order/queues/order.producer';
@@ -162,6 +163,12 @@ export const completeRefundedOrder = async (orderId: string): Promise<PaidOrderD
   ).exec()) as unknown as PaidOrderDocument | null;
 
   if (order) {
+    // Funds went back to the buyer, so a dispute still awaiting a decision has nothing left to decide — close it.
+    // The admin REFUND_BUYER path overwrites this status with its own right after.
+    await DisputeModel.updateMany(
+      { orderId, status: { $in: ['OPEN', 'SELLER_RESPONSE_REQUIRED', 'REVISION_REQUIRED'] } },
+      { $set: { status: 'CLOSED', decisionReason: 'Đơn hàng đã được hoàn tiền nên tranh chấp được đóng tự động.', decidedAt: new Date() } }
+    ).exec();
     await publishRefundedSellerUpdate(order);
     await emitOrderUpdate(order);
     await sendNotification(order, order.buyerUsername, 'đã hoàn tiền cho đơn hàng của bạn.');

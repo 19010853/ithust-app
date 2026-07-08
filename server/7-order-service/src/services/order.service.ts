@@ -1,4 +1,5 @@
 import { config } from '@order/config';
+import { DisputeModel } from '@order/models/dispute.schema';
 import { OrderModel } from '@order/models/order.schema';
 import { publishDirectMessage } from '@order/queues/order.producer';
 import { orderChannel } from '@order/server';
@@ -161,6 +162,12 @@ export const approveOrder = async (orderId: string, data: IOrderMessage, allowDi
   if (!order) {
     throw new BadRequestError('Order cannot be approved because funds are not held or delivery is not ready.', 'approveOrder()');
   }
+  // Funds are released, so any dispute still awaiting a decision can no longer be acted on — close it.
+  // The admin RELEASE_SELLER path overwrites this status with its own right after.
+  await DisputeModel.updateMany(
+    { orderId, status: { $in: ['OPEN', 'SELLER_RESPONSE_REQUIRED', 'REVISION_REQUIRED'] } },
+    { $set: { status: 'CLOSED', decisionReason: 'Buyer đã duyệt bàn giao nên tranh chấp được đóng tự động.', decidedAt: new Date() } }
+  ).exec();
   const messageDetails: IOrderMessage = {
     sellerId: data.sellerId,
     buyerId: data.buyerId,
