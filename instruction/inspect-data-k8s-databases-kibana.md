@@ -13,6 +13,7 @@
 5. [Xem Kibana trên browser máy cá nhân](#5-xem-kibana-trên-browser-máy-cá-nhân)
 6. [Xem Metricbeat & Heartbeat](#6-xem-metricbeat--heartbeat)
 7. [Tra cứu Elasticsearch trên Kibana](#7-tra-cứu-elasticsearch-trên-kibana)
+8. [Xem RabbitMQ Management UI trên browser](#8-xem-rabbitmq-management-ui-trên-browser)
 
 ---
 
@@ -759,6 +760,90 @@ GET heartbeat-*/_search
 
 ---
 
+## 8. Xem RabbitMQ Management UI trên browser
+
+RabbitMQ chạy image `rabbitmq:3.12.8-management-alpine` ([queue.yaml](../kubernetes/k3s/rabbitmq/queue.yaml)) nên đã có sẵn **management plugin**, expose ở port `15672` cùng với port AMQP `5672` ([service.yaml](../kubernetes/k3s/rabbitmq/service.yaml)).
+
+**Đăng nhập:**
+- **Username**: lấy từ secret `ithust-rabbitmq-user`
+- **Password**: lấy từ secret `ithust-rabbitmq-password`
+
+```bash
+kubectl get secret ithust-backend-secret -n production \
+  -o jsonpath='{.data.ithust-rabbitmq-user}' | base64 --decode
+
+kubectl get secret ithust-backend-secret -n production \
+  -o jsonpath='{.data.ithust-rabbitmq-password}' | base64 --decode
+```
+
+---
+
+### 8.1 Truy cập qua `kubectl port-forward` (nhanh nhất)
+
+```bash
+# Forward RabbitMQ Management UI về máy local port 15672
+kubectl port-forward svc/ithust-queue -n production 15672:15672
+
+# Mở browser:
+# http://localhost:15672
+```
+
+---
+
+### 8.2 Truy cập qua SSH tunnel
+
+```bash
+# Tunnel cổng 15672 tới ClusterIP của ithust-queue (10.43.134.198)
+ssh -L 15672:10.43.134.198:15672 vmadmin@103.147.123.149 -N
+
+# (ClusterIP hiện tại xem bằng: kubectl get svc ithust-queue -n production)
+# Mở browser: http://localhost:15672
+```
+
+---
+
+### 8.3 Truy cập trực tiếp qua domain (giống Kibana — cần tạo Ingress)
+
+Hiện tại RabbitMQ **chưa có Ingress** như Kibana ([kibana/ingress.yaml](../kubernetes/k3s/kibana/ingress.yaml)). Nếu muốn expose ra domain kiểu `https://rabbitmq.ithust.store`, tạo file `kubernetes/k3s/rabbitmq/ingress.yaml` theo mẫu:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rabbitmq-ingress
+  namespace: production
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - rabbitmq.ithust.store
+  rules:
+  - host: rabbitmq.ithust.store
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: ithust-queue
+            port:
+              number: 15672
+```
+
+Sau đó apply và trỏ DNS `rabbitmq.ithust.store` về IP VPS `103.147.123.149`:
+
+```bash
+kubectl apply -f kubernetes/k3s/rabbitmq/ingress.yaml
+```
+
+> **Lưu ý bảo mật**: management UI không có giới hạn IP mặc định — nếu expose qua domain public, nên cân nhắc thêm Traefik middleware (basic auth / IP whitelist) vì đây là port quản trị RabbitMQ (có thể xem queue, publish/purge message).
+
+---
+
 ## Tham khảo nhanh — Port Mapping
 
 | Service | Kubernetes DNS | ClusterIP |
@@ -769,5 +854,6 @@ GET heartbeat-*/_search
 | MySQL | `ithust-mysql.production.svc.cluster.local:3307` | `10.43.138.196` |
 | PostgreSQL | `ithust-postgres.production.svc.cluster.local:5432` | `10.43.79.54` |
 | Redis | `ithust-redis.production.svc.cluster.local:6379` | `10.43.204.28` |
-| RabbitMQ | `ithust-queue.production.svc.cluster.local:5672` | `10.43.134.198` |
+| RabbitMQ (AMQP) | `ithust-queue.production.svc.cluster.local:5672` | `10.43.134.198` |
+| RabbitMQ (Management UI) | `ithust-queue.production.svc.cluster.local:15672` | `10.43.134.198` |
 | Gateway | `ithust-gateway.production.svc.cluster.local:4000` | `10.43.173.232` |

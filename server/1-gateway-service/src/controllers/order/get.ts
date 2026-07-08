@@ -1,4 +1,6 @@
 import { orderService } from '@gateway/services/api/order.service';
+import { buyerService } from '@gateway/services/api/buyer.service';
+import { NotAuthorizedError } from '@19010853/ithust-shared';
 import { AxiosResponse } from 'axios';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -15,6 +17,10 @@ export class Get {
   }
 
   public async buyerOrders(req: Request, res: Response): Promise<void> {
+    const buyerResponse: AxiosResponse = await buyerService.getBuyerByEmail();
+    if (`${buyerResponse.data.buyer?._id}` !== req.params.buyerId) {
+      throw new NotAuthorizedError('You can only view your own orders.', 'GatewayService buyerOrders() method error');
+    }
     const response: AxiosResponse = await orderService.buyerOrders(req.params.buyerId);
     res.status(StatusCodes.OK).json({ message: response.data.message, orders: response.data.orders });
   }
