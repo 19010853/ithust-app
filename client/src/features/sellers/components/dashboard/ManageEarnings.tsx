@@ -3,7 +3,14 @@ import { FC, ReactElement, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { IOrderDocument } from 'src/features/order/interfaces/order.interface';
 import Button from 'src/shared/button/Button';
-import { formatVnd, formatVndNumber, parseVndInput, toVndInteger } from 'src/shared/utils/currency.utils';
+import {
+  formatVnd,
+  formatVndNumber,
+  parseVndInput,
+  PAYOUT_MAX_AMOUNT_PER_REQUEST_VND,
+  PAYOUT_MIN_AMOUNT_VND,
+  toVndInteger
+} from 'src/shared/utils/currency.utils';
 import {
   isFetchBaseQueryError,
   normalizeOrderStatus,
@@ -97,6 +104,8 @@ const ManageEarnings: FC = (): ReactElement => {
       const nextErrors: Record<string, string> = {};
       if (!Number.isFinite(parsedAmount) || parsedAmount <= 0 || !Number.isInteger(parsedAmount)) {
         nextErrors.amount = 'Nhập số tiền rút VND nguyên lớn hơn 0.';
+      } else if (parsedAmount < PAYOUT_MIN_AMOUNT_VND) {
+        nextErrors.amount = `Số tiền rút tối thiểu là ${formatVnd(PAYOUT_MIN_AMOUNT_VND)}.`;
       }
       setFormErrors(nextErrors);
       if (Object.keys(nextErrors).length) {
@@ -177,15 +186,16 @@ const ManageEarnings: FC = (): ReactElement => {
                 className="rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky-500 disabled:bg-gray-100"
                 type="text"
                 inputMode="numeric"
-                min="1"
-                max={availableBalance}
+                min={PAYOUT_MIN_AMOUNT_VND}
+                max={Math.min(availableBalance, PAYOUT_MAX_AMOUNT_PER_REQUEST_VND)}
                 step="1"
                 value={amount ? formatVndNumber(amount) : ''}
                 disabled={!stripeReady}
                 onChange={(event) => {
                   const parsed = parseVndInput(event.target.value);
                   const numericValue = Number(parsed);
-                  setAmount(numericValue > availableBalance ? String(availableBalance) : parsed);
+                  const cappedMax = Math.min(availableBalance, PAYOUT_MAX_AMOUNT_PER_REQUEST_VND);
+                  setAmount(numericValue > cappedMax ? String(cappedMax) : parsed);
                   setFormErrors((currentErrors) => ({ ...currentErrors, amount: '' }));
                 }}
                 placeholder="Nhập số tiền"
