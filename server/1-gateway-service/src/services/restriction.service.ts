@@ -141,5 +141,6 @@ export {
   assertGigCanReceiveNewOrders,
   assertGigOwner,
   assertOrderSellerAccountNotLocked,
+  assertSellerAccountNotLocked,
   assertSellerCanWithdraw
 };
