@@ -292,11 +292,30 @@ const updateAccountStatus = async (username: string, data: IStatusUpdateData): P
     throw new BadRequestError('Invalid account status', 'updateAccountStatus()');
   }
   const current = await getRestrictionPreview(username);
+  const shouldLiftSellerRestriction = data.status === 'ACTIVE' && current.sellerStatus === 'SELLER_RESTRICTED';
   await Promise.all([
     BuyerModel.updateOne({ username }, { $set: { accountStatus: data.status } }).exec(),
-    SellerModel.updateOne({ username }, { $set: { accountStatus: data.status } }).exec()
+    SellerModel.updateOne(
+      { username },
+      {
+        $set: {
+          accountStatus: data.status,
+          ...(shouldLiftSellerRestriction
+            ? {
+                sellerStatus: 'ACTIVE',
+                sellerStatusReason: '',
+                sellerStatusUpdatedAt: new Date(),
+                sellerStatusUpdatedBy: data.admin || {}
+              }
+            : {})
+        }
+      }
+    ).exec()
   ]);
   await writeAudit(username, 'ACCOUNT_STATUS', current.accountStatus, data.status, data);
+  if (shouldLiftSellerRestriction) {
+    await writeAudit(username, 'SELLER_STATUS', 'SELLER_RESTRICTED', 'ACTIVE', data);
+  }
   const updated = await getAdminUserDetail(username);
   await sendRestrictionNotification(username, updated.buyer?.email || updated.seller?.email, data.status, data.reason);
   return { buyer: updated.buyer, seller: updated.seller };
