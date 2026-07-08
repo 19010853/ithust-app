@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, ReactElement, useMemo, useState } from 'react';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import Button from 'src/shared/button/Button';
+import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
 import { formatVnd } from 'src/shared/utils/currency.utils';
 import { isFetchBaseQueryError, lowerCase, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 
@@ -105,7 +106,7 @@ const AdminUsers: FC = (): ReactElement => {
       closeStatusAction();
     } catch (error) {
       if (isFetchBaseQueryError(error)) {
-        showErrorToast(error?.data?.message || 'Không thể cập nhật trạng thái.');
+        showErrorToast(translateApiErrorMessage(error?.data?.message) || 'Không thể cập nhật trạng thái.');
         return;
       }
       showErrorToast('Không thể cập nhật trạng thái.');

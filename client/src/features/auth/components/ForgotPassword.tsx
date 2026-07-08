@@ -6,6 +6,7 @@ import TextInput from 'src/shared/inputs/TextInput';
 import { IModalBgProps } from 'src/shared/modals/interfaces/modal.interface';
 import ModalBg from 'src/shared/modals/ModalBg';
 import { IResponse } from 'src/shared/shared.interface';
+import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
 
 import { AUTH_FETCH_STATUS } from '../interfaces/auth.interface';
 import { useForgotPasswordMutation } from '../services/auth.service';
@@ -22,7 +23,7 @@ const ForgotPasswordModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactEle
       setAlertMessage(`${result.message}`);
       setStatus(AUTH_FETCH_STATUS.SUCCESS);
     } catch (error) {
-      setAlertMessage(error?.data.message);
+      setAlertMessage(translateApiErrorMessage(error?.data.message) || 'Không thể gửi yêu cầu đặt lại mật khẩu.');
       setStatus(AUTH_FETCH_STATUS.ERROR);
     }
   };

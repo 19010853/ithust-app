@@ -4,6 +4,7 @@ import { FaCheck, FaCheckDouble, FaCircle } from 'react-icons/fa';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Location, NavigateFunction, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { updateNotification } from 'src/shared/header/reducers/notification.reducer';
+import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
 import { isFetchBaseQueryError, lowerCase, showErrorToast } from 'src/shared/utils/utils.service';
 import { socket } from 'src/sockets/socket.service';
@@ -92,7 +93,7 @@ const ChatList: FC = (): ReactElement => {
       }
     } catch (error) {
       if (isFetchBaseQueryError(error)) {
-        showErrorToast(error?.data?.message);
+        showErrorToast(translateApiErrorMessage(error?.data?.message) || 'Không thể đánh dấu tin nhắn đã đọc.');
       }
     }
   };

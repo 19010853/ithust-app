@@ -4,6 +4,7 @@ import { NavigateFunction, useNavigate } from 'react-router-dom';
 import Alert from 'src/shared/alert/Alert';
 import Button from 'src/shared/button/Button';
 import TextInput from 'src/shared/inputs/TextInput';
+import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
 import { PASSWORD_TYPE } from 'src/shared/utils/static-data';
 import { applicationLogout, isFetchBaseQueryError, showErrorToast } from 'src/shared/utils/utils.service';
 import { useAppDispatch } from 'src/store/store';
@@ -36,8 +37,9 @@ const ChangePassword: FC = (): ReactElement => {
       }, 3000);
     } catch (error) {
       if (isFetchBaseQueryError(error)) {
-        setAlertMessage(error?.data?.message);
-        showErrorToast(error?.data?.message);
+        const message = translateApiErrorMessage(error?.data?.message) || 'Không thể đổi mật khẩu.';
+        setAlertMessage(message);
+        showErrorToast(message);
       }
     }
   };

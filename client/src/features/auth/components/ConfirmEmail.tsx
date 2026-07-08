@@ -2,6 +2,7 @@ import { FC, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Alert from 'src/shared/alert/Alert';
 import { IResponse } from 'src/shared/shared.interface';
+import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
 import { useAppDispatch } from 'src/store/store';
 
 import { AUTH_FETCH_STATUS } from '../interfaces/auth.interface';
@@ -23,7 +24,7 @@ const ConfirmEmail: FC = (): ReactElement => {
       dispatch(addAuthUser({ authInfo: result.user }));
     } catch (error) {
       setStatus(AUTH_FETCH_STATUS.ERROR);
-      setAlertMessage(error?.data.message);
+      setAlertMessage(translateApiErrorMessage(error?.data.message) || 'Không thể xác minh email.');
     }
   }, [dispatch, searchParams, verifyEmail]);
 

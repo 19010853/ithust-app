@@ -13,6 +13,7 @@ import TextAreaInput from 'src/shared/inputs/TextAreaInput';
 import PageMessage from 'src/shared/page-message/PageMessage';
 import { IResponse } from 'src/shared/shared.interface';
 import { calculateServiceFeeVnd, formatVnd } from 'src/shared/utils/currency.utils';
+import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
 import { generateRandomNumber, isFetchBaseQueryError, showErrorToast } from 'src/shared/utils/utils.service';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
@@ -195,7 +196,7 @@ const Requirement: FC = (): ReactElement => {
       }
     } catch (error) {
       if (isFetchBaseQueryError(error)) {
-        showErrorToast(error?.data?.message || 'Không thể bắt đầu đơn hàng của bạn.');
+        showErrorToast(translateApiErrorMessage(error?.data?.message) || 'Không thể bắt đầu đơn hàng của bạn.');
         return;
       }
       showErrorToast('Không thể bắt đầu đơn hàng của bạn.');

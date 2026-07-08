@@ -2,6 +2,7 @@ import { ChangeEvent, FC, ReactElement, useMemo, useState } from 'react';
 import { IWithdrawalDocument } from 'src/features/sellers/interfaces/seller.interface';
 import { useGetWithdrawalsQuery, useUpdateWithdrawalStatusMutation } from 'src/features/sellers/services/seller.service';
 import Button from 'src/shared/button/Button';
+import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
 import { formatVnd, parseVndInput } from 'src/shared/utils/currency.utils';
 import { isFetchBaseQueryError, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 
@@ -87,7 +88,7 @@ const AdminWithdrawals: FC = (): ReactElement => {
       closeStatusModal();
     } catch (error) {
       if (isFetchBaseQueryError(error)) {
-        showErrorToast(error?.data?.message || 'Không thể cập nhật yêu cầu rút tiền.');
+        showErrorToast(translateApiErrorMessage(error?.data?.message) || 'Không thể cập nhật yêu cầu rút tiền.');
         return;
       }
       showErrorToast('Không thể cập nhật yêu cầu rút tiền.');

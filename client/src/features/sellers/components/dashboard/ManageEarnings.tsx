@@ -11,6 +11,7 @@ import {
   PAYOUT_MIN_AMOUNT_VND,
   toVndInteger
 } from 'src/shared/utils/currency.utils';
+import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
 import {
   isFetchBaseQueryError,
   normalizeOrderStatus,
@@ -82,7 +83,7 @@ const ManageEarnings: FC = (): ReactElement => {
       }
     } catch (error) {
       if (isFetchBaseQueryError(error)) {
-        showErrorToast(error?.data?.message || 'Không thể tạo liên kết Stripe onboarding.');
+        showErrorToast(translateApiErrorMessage(error?.data?.message) || 'Không thể tạo liên kết Stripe onboarding.');
         return;
       }
       showErrorToast('Không thể tạo liên kết Stripe onboarding.');
@@ -121,7 +122,7 @@ const ManageEarnings: FC = (): ReactElement => {
       showSuccessToast('Yêu cầu rút tiền đã được gửi sang Stripe. Hệ thống sẽ cập nhật khi payout hoàn tất.');
     } catch (error) {
       if (isFetchBaseQueryError(error)) {
-        showErrorToast(error?.data?.message || 'Không thể tạo yêu cầu rút tiền.');
+        showErrorToast(translateApiErrorMessage(error?.data?.message) || 'Không thể tạo yêu cầu rút tiền.');
         return;
       }
       showErrorToast('Không thể tạo yêu cầu rút tiền.');

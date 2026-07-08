@@ -10,6 +10,7 @@ import TextInput from 'src/shared/inputs/TextInput';
 import { IModalBgProps } from 'src/shared/modals/interfaces/modal.interface';
 import ModalBg from 'src/shared/modals/ModalBg';
 import { IResponse } from 'src/shared/shared.interface';
+import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
 import { saveToSessionStorage } from 'src/shared/utils/utils.service';
 import { useAppDispatch } from 'src/store/store';
 
@@ -67,7 +68,7 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
         }
       }
     } catch (error) {
-      setAlertMessage(error?.data.message);
+      setAlertMessage(translateApiErrorMessage(error?.data.message) || 'Không thể đăng nhập.');
     }
   };
 

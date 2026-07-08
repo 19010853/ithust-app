@@ -5,6 +5,7 @@ import Button from 'src/shared/button/Button';
 import Header from 'src/shared/header/components/Header';
 import TextInput from 'src/shared/inputs/TextInput';
 import { IResponse } from 'src/shared/shared.interface';
+import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
 
 import { useAuthSchema } from '../hooks/useAuthSchema';
 import { AUTH_FETCH_STATUS, IResetPassword } from '../interfaces/auth.interface';
@@ -49,7 +50,7 @@ const ResetPassword: FC = (): ReactElement => {
       }
     } catch (error) {
       setStatus(AUTH_FETCH_STATUS.ERROR);
-      setAlertMessage(error?.data.message);
+      setAlertMessage(translateApiErrorMessage(error?.data.message) || 'Không thể đặt lại mật khẩu.');
     }
   };
 

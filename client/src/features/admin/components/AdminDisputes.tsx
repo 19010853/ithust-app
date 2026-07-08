@@ -8,6 +8,7 @@ import {
 } from 'src/features/order/services/order.service';
 import { IDisputeDocument } from 'src/features/order/interfaces/order.interface';
 import Button from 'src/shared/button/Button';
+import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
 import { showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 
 const disputeStatusLabel: Record<IDisputeDocument['status'], string> = {
@@ -39,7 +40,7 @@ const AdminDisputes: FC = (): ReactElement => {
       await sendMessage({ disputeId: selected._id, body: message.trim() }).unwrap();
       setMessage('');
     } catch (error) {
-      showErrorToast(error?.data?.message || 'Không thể gửi tin nhắn tranh chấp.');
+      showErrorToast(translateApiErrorMessage(error?.data?.message) || 'Không thể gửi tin nhắn tranh chấp.');
     }
   };
 
@@ -51,7 +52,7 @@ const AdminDisputes: FC = (): ReactElement => {
       showSuccessToast('Đã cập nhật quyết định tranh chấp.');
       setSelected(null);
     } catch (error) {
-      showErrorToast(error?.data?.message || 'Không thể quyết định tranh chấp.');
+      showErrorToast(translateApiErrorMessage(error?.data?.message) || 'Không thể quyết định tranh chấp.');
     }
   };
 

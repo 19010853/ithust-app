@@ -6,6 +6,7 @@ import { useDeliverOrderMutation } from 'src/features/order/services/order.servi
 import Button from '../button/Button';
 import TextAreaInput from '../inputs/TextAreaInput';
 import TextInput from '../inputs/TextInput';
+import { translateApiErrorMessage } from '../utils/api-error-messages';
 import { checkFile, fileType, readAsBase64 } from '../utils/image-utils.service';
 import { bytesToSize, isFetchBaseQueryError, showErrorToast, showSuccessToast } from '../utils/utils.service';
 import { IModalProps } from './interfaces/modal.interface';
@@ -48,7 +49,7 @@ const DeliverWorkModal: FC<IModalProps> = ({ order, onClose }): ReactElement => 
     } catch (error) {
       if (isFetchBaseQueryError(error)) {
         const queryError = error as { data?: { message?: string } };
-        showErrorToast(queryError.data?.message || 'Không thể bàn giao đơn hàng.');
+        showErrorToast(translateApiErrorMessage(queryError.data?.message) || 'Không thể bàn giao đơn hàng.');
         return;
       }
       showErrorToast('Không thể bàn giao đơn hàng.');

@@ -14,6 +14,7 @@ import { updateCategoryContainer } from 'src/shared/header/reducers/category.red
 import { updateHeader } from 'src/shared/header/reducers/header.reducer';
 import TextInput from 'src/shared/inputs/TextInput';
 import { IResponse } from 'src/shared/shared.interface';
+import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
 import { saveToSessionStorage, showErrorToast } from 'src/shared/utils/utils.service';
 import { socket } from 'src/sockets/socket.service';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
@@ -60,7 +61,7 @@ const VerifyOTP: FC = (): ReactElement => {
       navigate('/');
     } catch (error) {
       setHasLoaded(false);
-      showErrorToast(error?.data?.message ?? 'Không thể xác minh OTP');
+      showErrorToast(translateApiErrorMessage(error?.data?.message) || 'Không thể xác minh OTP');
     }
   };
 
