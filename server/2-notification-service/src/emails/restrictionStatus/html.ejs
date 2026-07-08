@@ -1,0 +1,54 @@
+<%
+  const isLocked = status === 'ACCOUNT_LOCKED';
+  const isSellerRestricted = status === 'SELLER_RESTRICTED';
+  const title = isLocked
+    ? 'Tài khoản của bạn đã bị khóa'
+    : isSellerRestricted
+      ? 'Quyền bán hàng của bạn đã bị hạn chế'
+      : 'Tài khoản của bạn đã được khôi phục';
+  const headerColor = isLocked || isSellerRestricted ? '#b91c1c' : '#047857';
+%>
+<div style="font-family: Arial, sans-serif; background: #f7f7f7; padding: 24px; color: #1f2937;">
+  <div style="max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid #e5e7eb;">
+    <h2 style="margin: 0 0 12px; font-size: 22px; color: <%= headerColor %>;"><%= title %></h2>
+    <p style="margin: 0 0 16px; line-height: 1.6;">
+      Chào <strong><%= username %></strong>,
+    </p>
+    <% if (isLocked) { %>
+      <p style="margin: 0 0 16px; line-height: 1.6;">
+        Tài khoản của bạn trên ITHust đã bị quản trị viên khóa. Trong thời gian này bạn sẽ không thể đăng nhập
+        hoặc sử dụng các tính năng của nền tảng.
+      </p>
+    <% } else if (isSellerRestricted) { %>
+      <p style="margin: 0 0 16px; line-height: 1.6;">
+        Quyền bán hàng của bạn trên ITHust đã bị quản trị viên hạn chế. Bạn vẫn có thể hoàn tất các đơn hàng
+        đang thực hiện, nhưng không thể tạo gig mới hoặc nhận đơn hàng mới cho đến khi được khôi phục.
+      </p>
+    <% } else { %>
+      <p style="margin: 0 0 16px; line-height: 1.6;">
+        Tài khoản hoặc quyền bán hàng của bạn trên ITHust đã được khôi phục. Bạn có thể đăng nhập và sử dụng
+        đầy đủ các tính năng của nền tảng như bình thường.
+      </p>
+    <% } %>
+    <% if (reason) { %>
+      <div style="margin: 0 0 20px; padding: 12px 16px; background: #f9fafb; border-left: 4px solid <%= headerColor %>; border-radius: 4px;">
+        <div style="font-weight: 700; margin-bottom: 4px;">Lý do</div>
+        <div style="line-height: 1.6;"><%= reason %></div>
+      </div>
+    <% } %>
+    <% if (isLocked || isSellerRestricted) { %>
+      <p style="margin: 0 0 20px; line-height: 1.6;">
+        Nếu bạn cho rằng đây là nhầm lẫn, vui lòng liên hệ đội ngũ hỗ trợ để được xem xét lại.
+      </p>
+    <% } else { %>
+      <div style="text-align: center; margin: 24px 0;">
+        <a href="<%= appLink %>" style="display: inline-block; background: #0ea5e9; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-weight: 700;">
+          Truy cập ITHust
+        </a>
+      </div>
+    <% } %>
+    <p style="margin: 0; line-height: 1.6; color: #6b7280; font-size: 13px;">
+      Email này được gửi tự động từ hệ thống ITHust, vui lòng không trả lời trực tiếp.
+    </p>
+  </div>
+</div>

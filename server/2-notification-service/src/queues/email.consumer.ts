@@ -14,6 +14,9 @@ interface IAuthEmailMessage {
   username?: string;
   verifyLink?: string;
   otp?: string;
+  status?: string;
+  reason?: string;
+  message?: string;
 }
 
 async function consumeAuthEmailMessages(channel: Channel): Promise<void> {
@@ -37,16 +40,19 @@ async function consumeAuthEmailMessages(channel: Channel): Promise<void> {
 
       try {
         const parsedMessage = JSON.parse(msg.content.toString()) as IAuthEmailMessage;
-        const { username, verifyLink, resetLink, otp } = parsedMessage;
+        const { username, verifyLink, resetLink, otp, status, reason, message } = parsedMessage;
         receiverEmail = parsedMessage.receiverEmail;
         template = parsedMessage.template;
-        const locals: IEmailLocals = {
+        const locals: IEmailLocals & Record<string, unknown> = {
           appLink: `${config.CLIENT_URL}`,
           appIcon: 'https://res.cloudinary.com/dbxa1k1w1/image/upload/v1782299631/ithustapp-logo_aqsc4o.png',
           username,
           verifyLink,
           resetLink,
-          otp
+          otp,
+          status,
+          reason,
+          message
         };
         await sendEmail(template, receiverEmail, locals);
         channel.ack(msg);
