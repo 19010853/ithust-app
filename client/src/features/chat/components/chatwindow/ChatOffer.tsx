@@ -28,7 +28,8 @@ const ChatOffer: FC<IChatMessageProps> = ({ message, seller, gig }): ReactElemen
         cancelled: offer.cancelled
       };
       if (type === 'accepted') {
-        navigate(`/gig/checkout/${message.gigId}?${createSearchParams({ offer: JSON.stringify(offerParams) })}`, { state: gig });
+        const offerGig = gig && `${gig.id ?? gig._id}` === `${message.gigId}` ? gig : undefined;
+        navigate(`/gig/checkout/${message.gigId}?${createSearchParams({ offer: JSON.stringify(offerParams) })}`, { state: offerGig });
       }
     } catch (error) {
       showErrorToast('Không thể cập nhật đề nghị cho người mua.');

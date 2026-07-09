@@ -3,6 +3,7 @@ import { FaCog, FaRegClock, FaRegMoneyBillAlt } from 'react-icons/fa';
 import { NavigateFunction, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
 import { useGetGigByIdQuery } from 'src/features/gigs/services/gigs.service';
+import CircularPageLoader from 'src/shared/page-loader/CircularPageLoader';
 import PageMessage from 'src/shared/page-message/PageMessage';
 import { calculateServiceFeeVnd, formatVnd } from 'src/shared/utils/currency.utils';
 
@@ -15,7 +16,7 @@ const Checkout: FC = (): ReactElement => {
   const { state }: { state: ISellerGig } = useLocation();
   const navigate: NavigateFunction = useNavigate();
   const [offer] = useState<IOffer>(JSON.parse(`${searchParams.get('offer')}`));
-  const { data, isSuccess } = useGetGigByIdQuery(`${gigId}`);
+  const { data, isSuccess, isError } = useGetGigByIdQuery(`${gigId}`);
   const currentGig = isSuccess ? (data.gig as ISellerGig) : state;
   const gigIsPaused = currentGig?.active === false;
   const serviceFee: number = calculateServiceFeeVnd(offer.price);
@@ -28,6 +29,14 @@ const Checkout: FC = (): ReactElement => {
 
   if (gigIsPaused) {
     return <PageMessage header="Gig đã tạm dừng" body="Gig này hiện đang tạm dừng và chưa thể nhận đơn mới." />;
+  }
+
+  if (!currentGig) {
+    return isError ? (
+      <PageMessage header="Không tìm thấy gig" body="Gig của đề nghị này không còn tồn tại nên không thể tạo đơn hàng." />
+    ) : (
+      <CircularPageLoader />
+    );
   }
 
   return (

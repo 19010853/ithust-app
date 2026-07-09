@@ -20,6 +20,10 @@ const EXACT_MESSAGES: Record<string, string> = {
   'Withdrawals are disabled for this account.': 'Tài khoản này đã bị khóa nên không thể rút tiền.',
   'This seller cannot create gigs or receive new orders.': 'Người bán này hiện không thể tạo gig hoặc nhận đơn hàng mới.',
   'This gig is currently paused and cannot receive new orders.': 'Gig này đang tạm dừng nên không thể nhận đơn hàng mới.',
+  'This gig is currently paused and cannot be used for a custom offer.':
+    'Gig này đang tạm dừng nên không thể dùng để tạo đề nghị tùy chỉnh.',
+  'This gig does not belong to the seller creating the offer.': 'Gig này không thuộc về người bán đang tạo đề nghị.',
+  'A custom offer requires a seller and a gig.': 'Đề nghị tùy chỉnh cần có người bán và gig hợp lệ.',
   'Seller profile not found.': 'Không tìm thấy hồ sơ người bán.',
   'Seller profile is required.': 'Cần có hồ sơ người bán.',
   'Seller not found': 'Không tìm thấy người bán.',
@@ -55,6 +59,20 @@ const EXACT_MESSAGES: Record<string, string> = {
   'Seller is not eligible for Stripe payouts yet.': 'Người bán chưa đủ điều kiện nhận payout từ Stripe.',
   'Stripe secret key is not configured.': 'Chưa cấu hình khóa bí mật Stripe.',
   'Stripe webhook signature or raw body is missing.': 'Thiếu chữ ký hoặc dữ liệu webhook Stripe.',
+
+  // Thông báo lỗi từ Stripe.js khi thanh toán
+  'Please select a payment method to pay with.': 'Vui lòng chọn phương thức thanh toán.',
+  'Please provide complete payment details.': 'Vui lòng nhập đầy đủ thông tin thanh toán.',
+  'Your payment information is incomplete.': 'Thông tin thanh toán của bạn chưa đầy đủ.',
+  'Your card number is incomplete.': 'Số thẻ chưa được nhập đầy đủ.',
+  // eslint-disable-next-line quotes
+  "Your card's expiration date is incomplete.": 'Ngày hết hạn thẻ chưa được nhập đầy đủ.',
+  // eslint-disable-next-line quotes
+  "Your card's security code is incomplete.": 'Mã bảo mật thẻ chưa được nhập đầy đủ.',
+  'Your card number is invalid.': 'Số thẻ không hợp lệ.',
+  'Your card has expired.': 'Thẻ đã hết hạn.',
+  'Your card was declined.': 'Thẻ của bạn đã bị từ chối.',
+  'Your card has insufficient funds.': 'Thẻ của bạn không đủ số dư.',
 
   // Đơn hàng / tranh chấp / hoàn tiền
   'Order not found.': 'Không tìm thấy đơn hàng.',

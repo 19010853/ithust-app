@@ -487,6 +487,17 @@ https://kibana.ithust.store
     -o jsonpath='{.data.ithust-elasticsearch-password}' | base64 --decode
   ```
 
+**Đường dẫn nhanh các app hay dùng trong Kibana:**
+
+| App | URL | Dùng để |
+|-----|-----|---------|
+| Dev Tools (Console) | `https://kibana.ithust.store/app/dev_tools#/console` | Chạy query Elasticsearch trực tiếp (index `gigs`, logs, beats…) |
+| Discover | `https://kibana.ithust.store/app/discover` | Tìm kiếm log/document bằng KQL |
+| Dashboards | `https://kibana.ithust.store/app/dashboards` | Dashboard Metricbeat có sẵn |
+| Infrastructure (Metrics) | `https://kibana.ithust.store/app/metrics` | Metrics node/pod từ Metricbeat |
+| Uptime | `https://kibana.ithust.store/app/uptime` | Trạng thái Up/Down từ Heartbeat |
+| Index Management | `https://kibana.ithust.store/app/management/data/index_management/indices` | Danh sách index, dung lượng, health |
+
 ---
 
 ### 5.2 Truy cập qua `kubectl port-forward` (khi không có domain / dev)
@@ -557,6 +568,65 @@ kubectl exec -it metricbeat-<pod-id> -n production -- \
   cat /usr/share/metricbeat/metricbeat.yml
 ```
 
+**Tra cứu Metricbeat bằng Dev Tools** (`https://kibana.ithust.store/app/dev_tools#/console`):
+
+> Metricbeat của hệ thống này chạy DaemonSet với module `system` + `kubernetes`
+> (cấu hình: [metricbeat.yaml](../kubernetes/k3s/elasticsearch/metricbeat.yaml)).
+
+```json
+// Kiểm tra Metricbeat có đang ghi dữ liệu không (index/data stream + dung lượng)
+GET _cat/indices/metricbeat-*?v&s=index
+
+// Bản ghi mới nhất — xác nhận dữ liệu còn "tươi"
+GET metricbeat-*/_search
+{
+  "size": 1,
+  "sort": [{ "@timestamp": "desc" }],
+  "_source": ["@timestamp", "host.name", "metricset.name"]
+}
+
+// CPU của node (module system)
+GET metricbeat-*/_search
+{
+  "size": 5,
+  "sort": [{ "@timestamp": "desc" }],
+  "query": { "match": { "metricset.name": "cpu" } },
+  "_source": ["@timestamp", "host.name", "system.cpu.total.pct"]
+}
+
+// RAM của node
+GET metricbeat-*/_search
+{
+  "size": 5,
+  "sort": [{ "@timestamp": "desc" }],
+  "query": { "match": { "metricset.name": "memory" } },
+  "_source": ["@timestamp", "host.name", "system.memory.actual.used.pct"]
+}
+
+// CPU/memory theo từng pod trong namespace production (module kubernetes)
+GET metricbeat-*/_search
+{
+  "size": 10,
+  "sort": [{ "@timestamp": "desc" }],
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "metricset.name": "pod" } },
+        { "match": { "kubernetes.namespace": "production" } }
+      ]
+    }
+  },
+  "_source": ["@timestamp", "kubernetes.pod.name", "kubernetes.pod.cpu.usage.node.pct", "kubernetes.pod.memory.usage.node.pct"]
+}
+```
+
+**KQL tương ứng trong Discover** (chọn data view `metricbeat-*`):
+
+```kql
+metricset.name: "pod" AND kubernetes.namespace: "production"
+metricset.name: "container" AND kubernetes.container.name: "ithust-gig"
+```
+
 ---
 
 ### 6.3 Xem Heartbeat (Uptime Monitoring) trong Kibana
@@ -576,11 +646,75 @@ Heartbeat ping health endpoint của 8 services mỗi 5 giây.
 | Order | `http://103.147.123.149:4006/order-health` |
 | Review | `http://103.147.123.149:4007/review-health` |
 
+> **Lưu ý**: Heartbeat thực tế ping qua **DNS nội bộ cluster** (ví dụ
+> `http://ithust-gig.production.svc.cluster.local:4004/gig-health`), không phải IP public.
+> Cấu hình monitor: [heartbeat.yaml](../kubernetes/k3s/elasticsearch/heartbeat.yaml).
+
+**Tên monitor trong Kibana Uptime** (khớp `monitor.id` / `monitor.name` trong config):
+
+| monitor.id | monitor.name |
+|------------|--------------|
+| `ithust-api-gateway` | ithust API Gateway Service |
+| `ithust-notification` | ithust Notification Service |
+| `ithust-auth` | ithust Auth Service |
+| `ithust-users` | ithust Users Service |
+| `ithust-gigs` | ithust Gigs Service |
+| `ithust-chat` | ithust Chat Service |
+| `ithust-orders` | ithust Orders Service |
+| `ithust-reviews` | ithust Reviews Service |
+
 **Trong Kibana UI:**
 
-1. Vào **Observability** → **Uptime** (hoặc **Synthetics**)
+1. Vào **Observability** → **Uptime** (`https://kibana.ithust.store/app/uptime`)
 2. Xem trạng thái Up/Down của từng service
 3. Xem history và thời gian response
+
+**Tra cứu Heartbeat bằng Dev Tools:**
+
+```json
+// Trạng thái mới nhất của từng monitor
+GET heartbeat-*/_search
+{
+  "size": 0,
+  "aggs": {
+    "monitors": {
+      "terms": { "field": "monitor.id", "size": 20 },
+      "aggs": {
+        "latest": {
+          "top_hits": {
+            "size": 1,
+            "sort": [{ "@timestamp": "desc" }],
+            "_source": ["@timestamp", "monitor.name", "monitor.status", "monitor.duration.us"]
+          }
+        }
+      }
+    }
+  }
+}
+
+// Các lần service bị DOWN trong 24h qua
+GET heartbeat-*/_search
+{
+  "size": 20,
+  "sort": [{ "@timestamp": "desc" }],
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "monitor.status": "down" } },
+        { "range": { "@timestamp": { "gte": "now-24h" } } }
+      ]
+    }
+  },
+  "_source": ["@timestamp", "monitor.name", "error.message"]
+}
+```
+
+**KQL trong Discover** (data view `heartbeat-*`):
+
+```kql
+monitor.status: "down"
+monitor.id: "ithust-gigs" AND monitor.status: "down"
+```
 
 ---
 
@@ -602,7 +736,8 @@ GET _cat/indices?v&health=yellow,green
 
 | Index pattern | Nội dung |
 |---------------|---------|
-| `logs-*` | Application logs từ tất cả services |
+| `gigs` | **Dữ liệu gig của ứng dụng** — gig service đọc/ghi trực tiếp index này (nguồn cho search, gig theo seller…) |
+| `logs-*` | Application logs từ tất cả services (winston ghi theo ngày: `logs-YYYY.MM.DD`) |
 | `metricbeat-*` | System & service metrics |
 | `heartbeat-*` | Uptime monitoring |
 | `apm-*` | APM traces (khi ENABLE_APM=1) |
@@ -612,28 +747,44 @@ GET _cat/indices?v&health=yellow,green
 
 ### 7.2 Tìm kiếm logs trong Discover
 
-1. Vào **Analytics** → **Discover**
+1. Vào **Analytics** → **Discover** (`https://kibana.ithust.store/app/discover`)
 2. Chọn data view `logs-*` hoặc `*`
-3. Dùng KQL (Kibana Query Language):
+3. Dùng KQL (Kibana Query Language)
+
+> **Cấu trúc log của app này** (winston → Elasticsearch, xem
+> [logger.ts](../server/ithust-shared/src/logger.ts)): mỗi document có
+> `@timestamp`, `message`, `severity` (info/error/debug) và `fields.service`
+> (tên logger đặt trong code). **Không dùng** `service.name` / `level` —
+> đó là field ECS của beats, không tồn tại trong log app.
+
+**Giá trị `fields.service` của từng service:**
+
+| Service | fields.service |
+|---------|----------------|
+| gateway | `apiGatewayServer` |
+| auth | `authenticationServer`, `authDatabaseServer`, `authElasticSearchServer` |
+| users | `usersServer`, `usersDatabaseServer`, `usersElasticSearchServer` |
+| gig | `gigServer`, `gigDatabaseServer`, `gigElasticSearchServer` |
+| chat | `chatServer`, `chatDatabaseServer`, `chatElasticSearchServer` |
+| order | `orderServer`, `orderDatabaseServer`, `orderElasticSearchServer` |
+| review | `reviewServer`, `reviewDatabaseServer`, `reviewElasticSearchServer` |
+| notification | `notificationServer`, `notificationElasticSearchServer` |
 
 ```kql
-# Tìm log của auth service
-service.name: "auth-service"
+# Tìm log của gig service
+fields.service: "gigServer"
 
 # Tìm lỗi trong tất cả service
-level: "error" OR level: "ERROR"
+severity: "error"
 
-# Tìm log theo user ID
-userId: "abc123"
+# Lỗi của order service
+fields.service: "orderServer" AND severity: "error"
 
-# Tìm log trong 1 giờ qua với lỗi
-level: "error" AND @timestamp > "now-1h"
+# Tìm theo nội dung message (ví dụ lỗi khi tạo offer)
+message: *offer* AND severity: "error"
 
-# Tìm HTTP request cụ thể
-http.request.method: "POST" AND url.path: "/api/v1/auth/register"
-
-# Tìm log của order service có lỗi
-service.name: "order-service" AND level: "error"
+# Lỗi trong 1 giờ qua (hoặc dùng time picker góc phải trên)
+severity: "error" AND @timestamp > now-1h
 ```
 
 ---
@@ -649,7 +800,7 @@ GET _cat/indices?v
 // Đếm document trong index logs
 GET logs-*/_count
 
-// Tìm 10 log lỗi gần nhất
+// Tìm 10 log lỗi gần nhất (log app dùng field `severity`, không phải `level`)
 GET logs-*/_search
 {
   "size": 10,
@@ -657,13 +808,13 @@ GET logs-*/_search
   "query": {
     "bool": {
       "must": [
-        { "match": { "level": "error" } }
+        { "match": { "severity": "error" } }
       ]
     }
   }
 }
 
-// Tìm log theo service và time range
+// Tìm log theo service và time range (tên service xem bảng ở mục 7.2)
 GET logs-*/_search
 {
   "size": 20,
@@ -671,7 +822,7 @@ GET logs-*/_search
   "query": {
     "bool": {
       "must": [
-        { "match": { "service.name": "auth-service" } },
+        { "match": { "fields.service": "authenticationServer" } },
         {
           "range": {
             "@timestamp": {
@@ -689,10 +840,10 @@ GET logs-*/_search
 GET logs-*/_search
 {
   "size": 0,
-  "query": { "match": { "level": "error" } },
+  "query": { "match": { "severity": "error" } },
   "aggs": {
     "errors_by_service": {
-      "terms": { "field": "service.name.keyword", "size": 20 }
+      "terms": { "field": "fields.service.keyword", "size": 20 }
     }
   }
 }
@@ -719,7 +870,95 @@ GET heartbeat-*/_search
 
 ---
 
-### 7.4 Tạo Dashboard tùy chỉnh trong Kibana
+### 7.4 Tra cứu index `gigs` (dữ liệu gig của ứng dụng)
+
+Gig service lưu bản sao mỗi gig vào Elasticsearch index **`gigs`** — đây chính là dữ liệu
+mà API `gig/:gigId`, `gig/seller/:sellerId` và tìm kiếm gig đọc ra
+(code: [gig.service.ts](../server/5-gig-service/src/services/gig.service.ts),
+[search.service.ts](../server/5-gig-service/src/services/search.service.ts)).
+`_id` của document = `gigId` dùng trong app; `_source` chứa `sellerId`, `title`, `active`
+(true = đang hoạt động, false = tạm dừng), `price`, `categories`, `ratingsCount`…
+
+Mở **Dev Tools**: `https://kibana.ithust.store/app/dev_tools#/console`
+
+```json
+// Đếm tổng số gig
+GET gigs/_count
+
+// Xem 1 gig theo id (chính là gigId trong URL của app)
+GET gigs/_doc/6a4930df5746b75c54dc7aa1
+
+// Liệt kê gig mới nhất
+GET gigs/_search
+{
+  "size": 10,
+  "sort": [{ "sortId": "desc" }],
+  "_source": ["id", "sellerId", "title", "active", "price"]
+}
+
+// Tất cả gig của 1 seller (cả active lẫn tạm dừng)
+GET gigs/_search
+{
+  "size": 50,
+  "query": {
+    "query_string": { "fields": ["sellerId"], "query": "*6a46a03f8c82d26eb0f8757c*" }
+  },
+  "_source": ["id", "title", "active", "price"]
+}
+
+// Gig ĐANG HOẠT ĐỘNG của 1 seller — đúng query mà API gig/seller/:sellerId dùng
+GET gigs/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "query_string": { "fields": ["sellerId"], "query": "*6a46a03f8c82d26eb0f8757c*" } },
+        { "term": { "active": true } }
+      ]
+    }
+  }
+}
+
+// Gig đang TẠM DỪNG của 1 seller (đổi term active thành false)
+// Tìm gig theo tiêu đề
+GET gigs/_search
+{
+  "query": { "match": { "title": "lồng tiếng" } },
+  "_source": ["id", "sellerId", "title", "active"]
+}
+
+// Đếm số gig active/paused của từng seller
+GET gigs/_search
+{
+  "size": 0,
+  "aggs": {
+    "by_seller": {
+      "terms": { "field": "sellerId.keyword", "size": 20 },
+      "aggs": {
+        "by_active": { "terms": { "field": "active" } }
+      }
+    }
+  }
+}
+
+// Kiểm tra dữ liệu lệch: _id của document phải trùng _source.id
+// (hữu ích khi debug offer/checkout trỏ sai gig)
+GET gigs/_search
+{
+  "size": 50,
+  "_source": ["id", "title", "active", "sellerId"]
+}
+// → so sánh cột "_id" với "_source.id" trong kết quả trả về
+```
+
+> **Cẩn trọng khi ghi**: có thể sửa document bằng `POST gigs/_update/<gigId>`
+> nhưng dữ liệu gốc nằm ở MongoDB (`ithust-gig`) — sửa tay một phía sẽ làm
+> Mongo và Elasticsearch lệch nhau. Chỉ đọc để tra cứu; muốn đổi dữ liệu hãy
+> dùng API của app (ví dụ bật/tắt gig qua `PUT gig/active/:gigId`).
+
+---
+
+### 7.5 Tạo Dashboard tùy chỉnh trong Kibana
 
 1. Vào **Analytics** → **Dashboards** → **Create dashboard**
 2. **Add panel** → chọn loại visualization:
@@ -732,24 +971,24 @@ GET heartbeat-*/_search
 - Chọn **Lens**
 - Index: `logs-*`
 - X-axis: `@timestamp` (interval: 1 hour)
-- Y-axis: `Count` where `level: "error"`
-- Break down: `service.name.keyword`
+- Y-axis: `Count` where `severity: "error"`
+- Break down: `fields.service.keyword`
 
 ---
 
-### 7.5 Tạo Alert khi có lỗi (Kibana Alerting)
+### 7.6 Tạo Alert khi có lỗi (Kibana Alerting)
 
 1. Vào **Management** → **Stack Management** → **Rules**
 2. **Create rule** → **Elasticsearch query**
 3. Cấu hình:
    - Index: `logs-*`
-   - Query: `{ "match": { "level": "error" } }`
+   - Query: `{ "match": { "severity": "error" } }`
    - Threshold: > 10 lần trong 5 phút
    - Action: gửi email / Slack / webhook
 
 ---
 
-### 7.6 Xem APM Traces (khi ENABLE_APM=1)
+### 7.7 Xem APM Traces (khi ENABLE_APM=1)
 
 1. Vào **Observability** → **APM**
 2. Xem services, transactions, traces

@@ -180,7 +180,9 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
       }
     : undefined;
   const isAdminChat = !!(chatMessages.some((m) => m.isAdminChat) || draftConversation?.isAdminChat);
-  const canCreateCustomOffer = !isAdminChat && !showImagePreview && hasConversationId && messageContext?.sellerId === seller?._id;
+  const sellerAccountIsLocked = seller?.accountStatus === 'ACCOUNT_LOCKED';
+  const canCreateCustomOffer =
+    !isAdminChat && !showImagePreview && hasConversationId && messageContext?.sellerId === seller?._id && !sellerAccountIsLocked;
 
   const handleFileChange = (event: ChangeEvent): void => {
     const target: HTMLInputElement = event.target as HTMLInputElement;
@@ -274,10 +276,9 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, draftConversation, isL
 
   return (
     <>
-      {!isLoading && displayCustomOffer && (
+      {!isLoading && displayCustomOffer && canCreateCustomOffer && (
           <OfferModal
           header="Tạo đề nghị tùy chỉnh"
-          gigTitle={data && data?.gig?.title ? data?.gig?.title : ''}
           singleMessage={messageContext}
           receiver={receiver}
           authUser={authUser}

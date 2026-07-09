@@ -1,15 +1,18 @@
 /* eslint-disable prettier/prettier */
-import { ChangeEvent, FC, ReactElement, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { IMessageDocument } from 'src/features/chat/interfaces/chat.interface';
 import { useSaveChatMessageMutation } from 'src/features/chat/services/chat.service';
+import { ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
+import { useGetGigsBySellerIdQuery } from 'src/features/gigs/services/gigs.service';
 
 import Button from '../button/Button';
 import Dropdown from '../dropdown/Dropdown';
 import TextAreaInput from '../inputs/TextAreaInput';
 import TextInput from '../inputs/TextInput';
+import { translateApiErrorMessage } from '../utils/api-error-messages';
 import { formatVnd, formatVndNumber, GIG_MAX_PRICE_VND, GIG_MIN_PRICE_VND, parseVndInput } from '../utils/currency.utils';
-import { expectedGigDelivery, showErrorToast } from '../utils/utils.service';
+import { expectedGigDelivery, isFetchBaseQueryError, showErrorToast } from '../utils/utils.service';
 import { IModalProps } from './interfaces/modal.interface';
 import ModalBg from './ModalBg';
 
@@ -21,6 +24,7 @@ interface ISellerOffer {
 }
 
 interface IOfferErrors {
+  gig?: string;
   description?: string;
   price?: string;
   delivery?: string;
@@ -31,20 +35,42 @@ const cleanRequiredText = (value?: string | null): string | undefined => {
   return normalizedValue && normalizedValue !== 'undefined' && normalizedValue !== 'null' ? normalizedValue : undefined;
 };
 
-const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, singleMessage, cancelBtnHandler }): ReactElement => {
+const OfferModal: FC<IModalProps> = ({ header, receiver, authUser, singleMessage, cancelBtnHandler }): ReactElement => {
   const [offer, setOffer] = useState<ISellerOffer>({
     description: '',
     price: '',
     delivery: 'Thời gian giao dự kiến',
     deliveryDate: ''
   });
+  const [selectedGigId, setSelectedGigId] = useState<string>('');
   const [fieldErrors, setFieldErrors] = useState<IOfferErrors>({});
   const [saveChatMessage, { isLoading }] = useSaveChatMessageMutation();
+  const offerSellerId = cleanRequiredText(singleMessage?.sellerId);
+  const { data: sellerGigsData, isLoading: isLoadingGigs } = useGetGigsBySellerIdQuery(`${offerSellerId ?? ''}`, {
+    skip: !offerSellerId
+  });
+  const activeSellerGigs: ISellerGig[] = (sellerGigsData?.gigs as ISellerGig[]) ?? [];
+  const selectedGig = activeSellerGigs.find((gig: ISellerGig) => `${gig.id ?? gig._id}` === selectedGigId);
   const offerPrice = Number(parseVndInput(offer.price));
   const offerHasValidPrice = Number.isInteger(offerPrice) && offerPrice >= GIG_MIN_PRICE_VND && offerPrice <= GIG_MAX_PRICE_VND;
 
+  useEffect(() => {
+    const conversationGigId = cleanRequiredText(singleMessage?.gigId);
+    if (!conversationGigId || !activeSellerGigs.length) {
+      return;
+    }
+    const conversationGig = activeSellerGigs.find((gig: ISellerGig) => `${gig.id ?? gig._id}` === conversationGigId);
+    if (conversationGig) {
+      setSelectedGigId(conversationGigId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sellerGigsData]);
+
   const validateOffer = (): IOfferErrors => {
     const errors: IOfferErrors = {};
+    if (!selectedGig) {
+      errors.gig = 'Vui lòng chọn gig để tạo đề nghị';
+    }
     if (!offer.description.trim()) {
       errors.description = 'Vui lòng nhập mô tả đề nghị';
     }
@@ -68,7 +94,7 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
       }
 
       const conversationId = cleanRequiredText(singleMessage?.conversationId);
-      const gigId = cleanRequiredText(singleMessage?.gigId);
+      const gigId = cleanRequiredText(`${selectedGig?.id ?? selectedGig?._id ?? ''}`);
       const sellerId = cleanRequiredText(singleMessage?.sellerId);
       const buyerId = cleanRequiredText(singleMessage?.buyerId);
       const senderUsername = cleanRequiredText(authUser?.username);
@@ -94,7 +120,7 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
         isRead: false,
         hasOffer: true,
         offer: {
-          gigTitle: `${gigTitle}`,
+          gigTitle: `${selectedGig?.title ?? ''}`,
           price: offerPrice,
           description: offer.description.trim(),
           deliveryInDays: parseInt(offer.delivery),
@@ -109,6 +135,10 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
         cancelBtnHandler();
       }
     } catch (error) {
+      if (isFetchBaseQueryError(error)) {
+        showErrorToast(translateApiErrorMessage(error?.data?.message) || 'Không thể gửi đề nghị gig.');
+        return;
+      }
       showErrorToast('Không thể gửi đề nghị gig.');
     }
   };
@@ -131,9 +161,33 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
 
           <div className="relative mb-16 px-5">
             <div className="py-4">
-              <label htmlFor="username" className="text-[20px] font-medium leading-tight tracking-normal">
-                {gigTitle}
+              <label htmlFor="gig" className="text-sm font-bold leading-tight tracking-normal">
+                Gig áp dụng<sup className="top-[-0.1em] text-base text-red-500">*</sup>
               </label>
+              <div id="gig" className="relative mt-2 h-11">
+                {isLoadingGigs ? (
+                  <p className="text-sm text-gray-500">Đang tải danh sách gig...</p>
+                ) : activeSellerGigs.length ? (
+                  <Dropdown
+                    text={selectedGigId}
+                    placeholder="Chọn gig đang hoạt động"
+                    maxHeight="200"
+                    mainClassNames="absolute bg-white z-[60]"
+                    showSearchInput={false}
+                    values={activeSellerGigs.map((gig: ISellerGig) => `${gig.id ?? gig._id}`)}
+                    displayValue={(gigId: string) =>
+                      `${activeSellerGigs.find((gig: ISellerGig) => `${gig.id ?? gig._id}` === gigId)?.title ?? gigId}`
+                    }
+                    onClick={(gigId: string) => {
+                      setSelectedGigId(gigId);
+                      setFieldErrors({ ...fieldErrors, gig: '' });
+                    }}
+                  />
+                ) : (
+                  <p className="text-sm text-red-500">Bạn chưa có gig nào đang hoạt động để tạo đề nghị.</p>
+                )}
+              </div>
+              {fieldErrors.gig && <p className="mt-1 text-xs text-red-500">{fieldErrors.gig}</p>}
             </div>
             <div>
               <label htmlFor="description" className="text-sm font-bold leading-tight tracking-normal">
@@ -204,8 +258,12 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
           <div className="px-5 py-4">
             <div className="ml-2 flex w-full justify-center text-sm font-medium">
               <Button
-                className="rounded bg-sky-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
-                disabled={isLoading}
+                className={`rounded px-6 py-3 text-center text-sm font-bold text-white focus:outline-none md:px-4 md:py-2 md:text-base ${
+                  isLoading || isLoadingGigs || !activeSellerGigs.length
+                    ? 'cursor-not-allowed bg-sky-200 hover:bg-sky-200'
+                    : 'bg-sky-500 hover:bg-sky-400'
+                }`}
+                disabled={isLoading || isLoadingGigs || !activeSellerGigs.length}
                 label={isLoading ? 'Đang gửi...' : 'Gửi đề nghị'}
                 onClick={sendGigOffer}
               />

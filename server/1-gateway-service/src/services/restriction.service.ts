@@ -126,6 +126,16 @@ const assertGigCanReceiveNewOrders = async (gigId: string): Promise<void> => {
   }
 };
 
+const assertOfferGigIsValidForSeller = async (gigId: string, sellerId: string): Promise<void> => {
+  const gig = await getGigForRestrictionCheck(gigId);
+  if (gig.active === false) {
+    throw new BadRequestError('This gig is currently paused and cannot be used for a custom offer.', 'Gateway offer gig check');
+  }
+  if (gig.sellerId && `${gig.sellerId}` !== `${sellerId}`) {
+    throw new BadRequestError('This gig does not belong to the seller creating the offer.', 'Gateway offer gig check');
+  }
+};
+
 const assertOrderSellerAccountNotLocked = async (orderId: string): Promise<void> => {
   const response = await orderService.getOrderById(orderId);
   const order = response.data.order;
@@ -140,6 +150,7 @@ export {
   assertGigSellerCanOpenMarketplaceActivity,
   assertGigCanReceiveNewOrders,
   assertGigOwner,
+  assertOfferGigIsValidForSeller,
   assertOrderSellerAccountNotLocked,
   assertSellerAccountNotLocked,
   assertSellerCanWithdraw

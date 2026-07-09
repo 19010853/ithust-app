@@ -12,8 +12,8 @@ import Button from 'src/shared/button/Button';
 import TextAreaInput from 'src/shared/inputs/TextAreaInput';
 import PageMessage from 'src/shared/page-message/PageMessage';
 import { IResponse } from 'src/shared/shared.interface';
-import { calculateServiceFeeVnd, formatVnd } from 'src/shared/utils/currency.utils';
 import { translateApiErrorMessage } from 'src/shared/utils/api-error-messages';
+import { calculateServiceFeeVnd, formatVnd } from 'src/shared/utils/currency.utils';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
 import { generateRandomNumber, isFetchBaseQueryError, showErrorToast } from 'src/shared/utils/utils.service';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
@@ -45,7 +45,7 @@ const StripePaymentForm: FC<{ orderId: string }> = ({ orderId }): ReactElement =
       }
     });
     if (result.error) {
-      showErrorToast(result.error.message || 'Không thể xác nhận thanh toán Stripe.');
+      showErrorToast(translateApiErrorMessage(result.error.message) || 'Không thể xác nhận thanh toán Stripe.');
       setIsSubmitting(false);
     }
   };
@@ -57,7 +57,7 @@ const StripePaymentForm: FC<{ orderId: string }> = ({ orderId }): ReactElement =
       <Button
         className="mt-4 rounded bg-sky-500 px-5 py-2 text-white hover:bg-sky-600 disabled:cursor-not-allowed disabled:bg-gray-300"
         disabled={!stripe || !elements || isSubmitting}
-        label={isSubmitting ? 'Đang xác nhận...' : 'Thanh toán bằng Stripe Sandbox'}
+        label={isSubmitting ? 'Đang xác nhận...' : 'Thanh toán'}
         onClick={submitPayment}
       />
     </div>
@@ -242,7 +242,7 @@ const Requirement: FC = (): ReactElement => {
                   Sau khi Stripe xác nhận thanh toán, bạn sẽ được chuyển đến trang hoạt động của đơn hàng.
                 </div>
                 <div className="mt-4 w-full max-w-md">
-                  <Elements stripe={stripePromise} options={{ clientSecret: stripeClientSecret }}>
+                  <Elements stripe={stripePromise} options={{ clientSecret: stripeClientSecret, locale: 'vi' }}>
                     <StripePaymentForm orderId={orderId} />
                   </Elements>
                 </div>
